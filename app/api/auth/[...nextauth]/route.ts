@@ -17,26 +17,31 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
-      console.log(
-        "USER=======\n",
-        user,
-        "\n\n\nACCOUNT========\n",
-        account,
-        "\n\n\nPROFILE=======\n",
-        profile
-      );
+      // console.log(
+      //   "USER=======\n",
+      //   user,
+      //   "\n\n\nACCOUNT========\n",
+      //   account,
+      //   "\n\n\nPROFILE=======\n",
+      //   profile
+      // );
+
+      fetch("http://localhost:1400/test");
       return true;
     },
     async session({ session, token, user }) {
       // Send properties to the client, like an access_token and user id from a provider.
-      console.log(
-        "Session stuff=======\n",
-        session,
-        "\n\n\nTOKEN========\n",
-        token,
-        "\n\n\nUSER=======\n",
-        user
-      );
+      // console.log(
+      //   "Session stuff=======\n",
+      //   session,
+      //   "\n\n\nTOKEN========\n",
+      //   token,
+      //   "\n\n\nUSER=======\n",
+      //   user
+      // );
+      // console.log("userID: ", user.id);
+      session.user.id = user.id;
+      // session.user.id = token.id;
       return session;
       // return {session, token, user};
     },

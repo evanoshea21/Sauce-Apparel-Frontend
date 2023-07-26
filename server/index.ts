@@ -24,7 +24,12 @@ app.use(morgan("dev"));
 app.use(cors());
 
 //ROUTES
-//
+
+app.get("/test", (req: any, res: any) => {
+  // create customer profile
+  console.log("server hit [test]");
+  res.send("pong [server test]");
+});
 
 app.get("/createprofile", (req: any, res: any) => {
   // create customer profile
