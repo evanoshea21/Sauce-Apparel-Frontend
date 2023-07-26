@@ -37,13 +37,23 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
+  id              String            @id @default(cuid())
+  name            String?
+  email           String?           @unique
+  emailVerified   DateTime?
+  image           String?
+  accounts        Account[]
+  sessions        Session[]
+  CustomerProfile CustomerProfile[]
+}
+
+model CustomerProfile {
+  id                String @id @default(cuid())
+  customerProfileId String @unique
+  userId            String @unique
+  user              User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index(fields: [userId])
 }
 
 model VerificationToken {

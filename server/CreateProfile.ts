@@ -2,11 +2,11 @@
 //working
 
 interface CreateProfileData {
-  creditCard?: {
+  creditCard: {
     card_number: string;
-    expData: string;
+    expDate: string;
   };
-  address?: {
+  billTo: {
     firstName: string;
     lastName: string;
     address: string;
@@ -18,7 +18,7 @@ interface CreateProfileData {
   };
   merchantCustomerId?: string;
   description?: string;
-  email?: string;
+  email: string;
 
   // respond with customerProfileId --> response.getCustomerProfileId()
 }
@@ -38,21 +38,21 @@ function createCustomerProfile(data: CreateProfileData, callback: any) {
   );
 
   var creditCard = new ApiContracts.CreditCardType();
-  creditCard.setCardNumber("4494538643332715");
-  creditCard.setExpirationDate("0328");
+  creditCard.setCardNumber(data.creditCard.card_number);
+  creditCard.setExpirationDate(data.creditCard.expDate);
 
   var paymentType = new ApiContracts.PaymentType();
   paymentType.setCreditCard(creditCard);
 
   var customerAddress = new ApiContracts.CustomerAddressType();
-  customerAddress.setFirstName("bob");
-  customerAddress.setLastName("dean");
-  customerAddress.setAddress("1223 Main Street");
-  customerAddress.setCity("Bellevue");
-  customerAddress.setState("WA");
-  customerAddress.setZip("98004");
-  customerAddress.setCountry("USA");
-  customerAddress.setPhoneNumber("425-123-1229");
+  customerAddress.setFirstName(data.billTo.firstName);
+  customerAddress.setLastName(data.billTo.lastName);
+  customerAddress.setAddress(data.billTo.address);
+  customerAddress.setCity(data.billTo.city);
+  customerAddress.setState(data.billTo.state);
+  customerAddress.setZip(data.billTo.zip_code);
+  customerAddress.setCountry(data.billTo.country);
+  customerAddress.setPhoneNumber(data.billTo.phone);
 
   var customerPaymentProfileType =
     new ApiContracts.CustomerPaymentProfileType();
@@ -67,11 +67,13 @@ function createCustomerProfile(data: CreateProfileData, callback: any) {
 
   var customerProfileType = new ApiContracts.CustomerProfileType();
   customerProfileType.setMerchantCustomerId(
-    "M_1" + "cust67224"
+    "M_" + data.merchantCustomerId ?? "1234"
     // utils.getRandomString("cust")
   );
-  customerProfileType.setDescription("Profile descriptio313n here12");
-  customerProfileType.setEmail(utils.getRandomString("cus1tt") + "@anet.net");
+  customerProfileType.setDescription(
+    "Profile created on ECigCity sign up form"
+  );
+  customerProfileType.setEmail(data.email);
   customerProfileType.setPaymentProfiles(paymentProfilesList);
 
   var createRequest = new ApiContracts.CreateCustomerProfileRequest();

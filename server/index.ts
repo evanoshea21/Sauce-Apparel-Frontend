@@ -31,20 +31,24 @@ app.get("/test", (req: any, res: any) => {
   res.send("pong [server test]");
 });
 
-app.get("/createprofile", (req: any, res: any) => {
+app.post("/createprofile", (req: any, res: any) => {
   // create customer profile
-  createProfile({}, function (response: any) {
+  createProfile(req.body, function (response: any) {
     console.log(
       "createCustomerProfile RESPONSE\n==================================",
       response
     );
-    res.send(response);
+
+    if (response.messages.resultCode === "Error") {
+      res.status(500).send(response);
+    } else {
+      res.send(response);
+    }
   });
-  // res.send("server pong");
 });
-app.get("/getprofile", (req: any, res: any) => {
+app.post("/getprofile", (req: any, res: any) => {
   // create customer profile
-  getProfile("512824681", function (response: any) {
+  getProfile(req.body.id, function (response: any) {
     console.log(
       "getProfile RESPONSE\n==================================",
       response
