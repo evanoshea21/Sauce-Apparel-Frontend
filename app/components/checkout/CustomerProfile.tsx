@@ -7,11 +7,26 @@ import { useSession } from "next-auth/react";
 interface Props {
   userId: string;
 }
+interface CustomerProfile {
+  customerProfileId: string;
+  description: string;
+  email: string;
+  merchantCustomerId: string;
+  paymentProfiles: PaymentProfile[];
+  profileType: string;
+}
+interface PaymentProfile {
+  billTo: {}[];
+  customerPaymentProfileId: string;
+  customerType: string;
+  payment: { creditCard: { cardNumber: string } };
+}
 
 export default function CustomerProfile() {
   const { data: session } = useSession();
   const [customerProfileId, setCustomerProfileId] = React.useState<string>();
-  const [customerProfile, setCustomerProfile] = React.useState();
+  const [customerProfile, setCustomerProfile] =
+    React.useState<CustomerProfile>();
   const [chosenCard, setChosenCard] = React.useState<string>();
   const [errorMessage, setErrorMessage] = React.useState<string>();
   // Form fields (state)
@@ -61,7 +76,7 @@ export default function CustomerProfile() {
         data: { id: customerProfileId },
       })
         .then((res) => {
-          console.log("Customer Profile Recieved: ", res.data.profile);
+          // console.log("Customer Profile Recieved: ", res.data.profile);
           setCustomerProfile(res.data.profile);
           setChosenCard(
             res.data.profile.paymentProfiles[0].customerPaymentProfileId
@@ -100,7 +115,7 @@ export default function CustomerProfile() {
       data: formData,
     })
       .then((res) => {
-        console.log("created profile axios?", res.data);
+        // console.log("created profile axios?", res.data);
         const { customerProfileId } = res.data;
         // send this to endpoint where you prisma.customerProfile.create({userid, customerProfileId});
         axios({
@@ -214,7 +229,7 @@ export default function CustomerProfile() {
       <h1>Customer Profile Info:</h1>
       {/* instead of stringifying it, you should display a card for every payment
       option */}
-      {customerProfile.paymentProfiles && (
+      {customerProfile && (
         <>
           {customerProfile.paymentProfiles.map((card, i) => {
             return (
@@ -234,7 +249,6 @@ export default function CustomerProfile() {
           })}
         </>
       )}
-      {/* <p>{JSON.stringify(customerProfile)}</p> */}
     </div>
   );
 }

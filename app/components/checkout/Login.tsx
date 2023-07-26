@@ -6,7 +6,7 @@ import { useSession, signIn, signOut } from "next-auth/react";
 
 export default function LoginReg() {
   const { data: session, status } = useSession();
-  console.log("Session, status: \n", session, status);
+  // console.log("Session, status: \n", session, status);
 
   function Login() {
     // how to login with github......

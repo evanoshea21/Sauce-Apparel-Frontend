@@ -19,7 +19,7 @@ export default function Cart() {
   }
 
   React.useEffect(() => {
-    console.log("cart sum updating...");
+    // console.log("cart sum updating...");
     if (cartItems.length !== 0) {
       let sum: number = 0;
       cartItems.forEach((item) => (sum += item.unitPrice));
