@@ -12,6 +12,7 @@ export default function CustomerProfile() {
   const { data: session } = useSession();
   const [customerProfileId, setCustomerProfileId] = React.useState<string>();
   const [customerProfile, setCustomerProfile] = React.useState();
+  const [chosenCard, setChosenCard] = React.useState<string>();
   const [errorMessage, setErrorMessage] = React.useState<string>();
   // Form fields (state)
   const [card_number, setCreditCardNum] = React.useState<string>();
@@ -44,6 +45,15 @@ export default function CustomerProfile() {
   }, [session]);
 
   React.useEffect(() => {
+    console.log(
+      "chosen card: ",
+      chosenCard,
+      "customerProfileId: ",
+      customerProfileId
+    );
+  }, [chosenCard]);
+
+  React.useEffect(() => {
     if (customerProfileId) {
       axios({
         url: "http://localhost:1400/getprofile",
@@ -53,6 +63,9 @@ export default function CustomerProfile() {
         .then((res) => {
           console.log("Customer Profile Recieved: ", res.data.profile);
           setCustomerProfile(res.data.profile);
+          setChosenCard(
+            res.data.profile.paymentProfiles[0].customerPaymentProfileId
+          );
         })
         .catch((e) => console.error("issue getting profile..", e));
     }
@@ -204,7 +217,20 @@ export default function CustomerProfile() {
       {customerProfile.paymentProfiles && (
         <>
           {customerProfile.paymentProfiles.map((card, i) => {
-            return <div key={i}>{card.payment.creditCard.cardNumber}</div>;
+            return (
+              <div
+                onClick={() => setChosenCard(card.customerPaymentProfileId)}
+                style={{
+                  backgroundColor:
+                    card.customerPaymentProfileId === chosenCard
+                      ? "pink"
+                      : "white",
+                }}
+                key={i}
+              >
+                {card.payment.creditCard.cardNumber}
+              </div>
+            );
           })}
         </>
       )}
