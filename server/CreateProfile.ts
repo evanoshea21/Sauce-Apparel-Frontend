@@ -1,13 +1,35 @@
 "use strict";
 //working
 
+interface CreateProfileData {
+  creditCard?: {
+    card_number: string;
+    expData: string;
+  };
+  address?: {
+    firstName: string;
+    lastName: string;
+    address: string;
+    city: string;
+    state: string;
+    zip_code: string;
+    country: string;
+    phone: string;
+  };
+  merchantCustomerId?: string;
+  description?: string;
+  email?: string;
+
+  // respond with customerProfileId --> response.getCustomerProfileId()
+}
+
 var ApiContracts = require("authorizenet").APIContracts;
 var ApiControllers = require("authorizenet").APIControllers;
 var utils = require("../scripts/utils.js");
 // var constants = require('../constants.js');
 require("dotenv").config();
 
-function createCustomerProfile(callback: any) {
+function createCustomerProfile(data: CreateProfileData, callback: any) {
   var merchantAuthenticationType =
     new ApiContracts.MerchantAuthenticationType();
   merchantAuthenticationType.setName(process.env.AUTHORIZENET_API_LOGIN_ID);
@@ -16,21 +38,21 @@ function createCustomerProfile(callback: any) {
   );
 
   var creditCard = new ApiContracts.CreditCardType();
-  creditCard.setCardNumber("4242424242424242");
-  creditCard.setExpirationDate("0825");
+  creditCard.setCardNumber("4494538643332715");
+  creditCard.setExpirationDate("0328");
 
   var paymentType = new ApiContracts.PaymentType();
   paymentType.setCreditCard(creditCard);
 
   var customerAddress = new ApiContracts.CustomerAddressType();
-  customerAddress.setFirstName("test first name");
-  customerAddress.setLastName("test last name");
-  customerAddress.setAddress("123 Main Street");
+  customerAddress.setFirstName("bob");
+  customerAddress.setLastName("dean");
+  customerAddress.setAddress("1223 Main Street");
   customerAddress.setCity("Bellevue");
   customerAddress.setState("WA");
   customerAddress.setZip("98004");
   customerAddress.setCountry("USA");
-  customerAddress.setPhoneNumber("425-555-1429");
+  customerAddress.setPhoneNumber("425-123-1229");
 
   var customerPaymentProfileType =
     new ApiContracts.CustomerPaymentProfileType();
@@ -45,10 +67,11 @@ function createCustomerProfile(callback: any) {
 
   var customerProfileType = new ApiContracts.CustomerProfileType();
   customerProfileType.setMerchantCustomerId(
-    "M_" + utils.getRandomString("cust")
+    "M_1" + "cust67224"
+    // utils.getRandomString("cust")
   );
-  customerProfileType.setDescription("Profile description here");
-  customerProfileType.setEmail(utils.getRandomString("cust") + "@anet.net");
+  customerProfileType.setDescription("Profile descriptio313n here12");
+  customerProfileType.setEmail(utils.getRandomString("cus1tt") + "@anet.net");
   customerProfileType.setPaymentProfiles(paymentProfilesList);
 
   var createRequest = new ApiContracts.CreateCustomerProfileRequest();

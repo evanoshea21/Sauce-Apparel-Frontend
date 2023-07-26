@@ -26,6 +26,35 @@ app.use(cors());
 //ROUTES
 //
 
+app.get("/createprofile", (req: any, res: any) => {
+  // create customer profile
+  createProfile({}, function (response: any) {
+    console.log(
+      "createCustomerProfile RESPONSE\n==================================",
+      response
+    );
+    res.send(response);
+  });
+  // res.send("server pong");
+});
+app.get("/getprofile", (req: any, res: any) => {
+  // create customer profile
+  getProfile("512824681", function (response: any) {
+    console.log(
+      "getProfile RESPONSE\n==================================",
+      response
+    );
+    res.send(response);
+  });
+  // res.send("server pong");
+});
+app.get("/chargeProfile", (req: any, res: any) => {
+  // create customer profile
+  chargeProfile(req.body, function (response: any) {
+    res.send(response);
+  });
+});
+
 app.get("/chargeCard", (req: any, res: any) => {
   // charge credit card
   chargeCard(function (response: any) {
@@ -37,28 +66,7 @@ app.get("/chargeCard", (req: any, res: any) => {
   });
   // res.send("server pong");
 });
-app.get("/chargeProfile", (req: any, res: any) => {
-  // create customer profile
-  chargeProfile("512663510", "519371888", function (response: any) {
-    console.log(
-      "chargeProfile RESPONSE\n==================================",
-      response
-    );
-    res.send(response);
-  });
-  // res.send("server pong");
-});
-app.get("/createprofile", (req: any, res: any) => {
-  // create customer profile
-  createProfile(function (response: any) {
-    console.log(
-      "createCustomerProfile RESPONSE\n==================================",
-      response
-    );
-    res.send("created profile ?");
-  });
-  // res.send("server pong");
-});
+
 app.get("/addCard", (req: any, res: any) => {
   // create customer profile
   addCard("512663510", function (response: any) {
@@ -69,20 +77,10 @@ app.get("/addCard", (req: any, res: any) => {
     res.send(response);
   });
 });
-app.get("/getprofile", (req: any, res: any) => {
-  // create customer profile
-  getProfile("512663510", function (response: any) {
-    console.log(
-      "getProfile RESPONSE\n==================================",
-      response
-    );
-    res.send(response);
-  });
-  // res.send("server pong");
-});
+
 app.get("/getpaymentprofile", (req: any, res: any) => {
   // create customer profile
-  getPaymentProfile("512663510", "519371888", function (response: any) {
+  getPaymentProfile("512824681", "519647191", function (response: any) {
     console.log(
       "getPaymentProfile RESPONSE\n==================================",
       response

@@ -1,8 +1,23 @@
 "use client";
+/*
+
+Purpose of this component:
+- purely to test all the SDK enpoints, like createProfile, chargeProfile, getProfile
+
+*/
 import axios from "axios";
 import React from "react";
 
 export default function TransactionButton() {
+  function createProfile() {
+    axios({
+      url: "http://localhost:1400/createProfile",
+      method: "GET",
+    }).then((res) => {
+      console.log("response from getProfile:\n ", res.data);
+    });
+  }
+
   function getProfile() {
     axios({
       url: "http://localhost:1400/getprofile",
@@ -38,6 +53,7 @@ export default function TransactionButton() {
   }
   return (
     <div>
+      <button onClick={createProfile}>CREATE Profile</button>
       <button onClick={getProfile}>Get Profile</button>
       <button onClick={getPaymentProfile}>Get Payment Profile</button>
       <button onClick={chargePaymentProfile}>Charge Profile $1</button>

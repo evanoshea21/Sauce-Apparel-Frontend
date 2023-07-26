@@ -1,5 +1,34 @@
 "use strict";
 
+interface ProductItem {
+  itemId: string;
+  name: string;
+  description: string;
+  quantity: string;
+  unitPrice: number;
+}
+interface Address {
+  firstName: string;
+  lastName: string;
+  Company: string;
+  address: string;
+  city: string;
+  state: string;
+  zip: string;
+  country: string;
+}
+interface ChargeProfileData {
+  customerProfileId: string;
+  customerPaymentProfileId: string;
+  order: {
+    invoiceNumber: string; // INV-??
+    description?: string; // online order
+  };
+  ordered_items: ProductItem[];
+  shipTo?: Address;
+  amountToCharge: number;
+}
+
 var ApiContracts = require("authorizenet").APIContracts;
 var ApiControllers = require("authorizenet").APIControllers;
 var utils = require("../scripts/utils.js");
@@ -7,8 +36,7 @@ var utils = require("../scripts/utils.js");
 require("dotenv").config();
 
 function chargeCustomerProfile(
-  customerProfileId: string,
-  customerPaymentProfileId: string,
+  data: ChargeProfileData,
   callback: (res: {}) => {}
 ) {
   var merchantAuthenticationType =
@@ -19,15 +47,17 @@ function chargeCustomerProfile(
   );
 
   var profileToCharge = new ApiContracts.CustomerProfilePaymentType();
-  profileToCharge.setCustomerProfileId(customerProfileId);
+  profileToCharge.setCustomerProfileId(data.customerProfileId);
 
   var paymentProfile = new ApiContracts.PaymentProfile();
-  paymentProfile.setPaymentProfileId(customerPaymentProfileId);
+  paymentProfile.setPaymentProfileId(data.customerPaymentProfileId);
   profileToCharge.setPaymentProfile(paymentProfile);
 
   var orderDetails = new ApiContracts.OrderType();
   orderDetails.setInvoiceNumber("INV-12345");
   orderDetails.setDescription("Product Description");
+
+  // for loop through all items
 
   var lineItem_id1 = new ApiContracts.LineItemType();
   lineItem_id1.setItemId("1");
