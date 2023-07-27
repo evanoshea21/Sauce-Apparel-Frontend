@@ -22,7 +22,7 @@ export default function LoginReg() {
   if (status === "authenticated") {
     return (
       <div className={classes.mainLoggedIn}>
-        <h3>Logged In!</h3>
+        <h1>OAuth</h1>
         <p>User name: {session.user?.name}</p>
         <img width="80px" alt="profile image" src={session.user?.image!} />
         <p>User email: {session.user?.email}</p>
@@ -32,7 +32,8 @@ export default function LoginReg() {
   } else {
     return (
       <div className={classes.mainLoggedOut}>
-        <h3>Logged Out..</h3>
+        <h1>OAuth</h1>
+        <p>logged out...</p>
         <button onClick={Login}>Login</button>
         {/* <button onClick={Logout}>LOGOUT CONFIRM</button> */}
       </div>

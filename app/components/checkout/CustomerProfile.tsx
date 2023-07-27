@@ -4,25 +4,10 @@ import axios from "axios";
 // import classes from "@/styles/Checkout.module.css";
 import { useSession } from "next-auth/react";
 
-interface Props {
-  userId: string;
-}
-interface CustomerProfile {
-  customerProfileId: string;
-  description: string;
-  email: string;
-  merchantCustomerId: string;
-  paymentProfiles: PaymentProfile[];
-  profileType: string;
-}
-interface PaymentProfile {
-  billTo: {}[];
-  customerPaymentProfileId: string;
-  customerType: string;
-  payment: { creditCard: { cardNumber: string } };
-}
-
-export default function CustomerProfile() {
+export default function CustomerProfile({
+  setPaymentProfileId,
+  setProfileId,
+}: Props) {
   const { data: session } = useSession();
   const [customerProfileId, setCustomerProfileId] = React.useState<string>();
   const [customerProfile, setCustomerProfile] =
@@ -52,14 +37,23 @@ export default function CustomerProfile() {
         url: "/api/get-profile-by-userid",
         method: "POST",
         data: { userId: session.user.id },
-      }).then((res) =>
-        // console.log("axios get-user-by-id response: ", res.data);
-        setCustomerProfileId(res.data.customerProfileId)
-      );
+      })
+        .then((res) => {
+          // console.log("axios get-user-by-id response: ", res.data);
+          setCustomerProfileId(res.data.customerProfileId);
+
+          setProfileId(res.data.customerProfileId);
+        })
+        .catch((e) =>
+          console.error(
+            "couldn't find customer profile from Account Logged in.."
+          )
+        );
     }
   }, [session]);
 
   React.useEffect(() => {
+    setPaymentProfileId(chosenCard || "");
     console.log(
       "chosen card: ",
       chosenCard,
@@ -251,4 +245,23 @@ export default function CustomerProfile() {
       )}
     </div>
   );
+}
+
+interface Props {
+  setPaymentProfileId: React.Dispatch<React.SetStateAction<string>>;
+  setProfileId: React.Dispatch<React.SetStateAction<string>>;
+}
+interface CustomerProfile {
+  customerProfileId: string;
+  description: string;
+  email: string;
+  merchantCustomerId: string;
+  paymentProfiles: PaymentProfile[];
+  profileType: string;
+}
+interface PaymentProfile {
+  billTo: {}[];
+  customerPaymentProfileId: string;
+  customerType: string;
+  payment: { creditCard: { cardNumber: string } };
 }

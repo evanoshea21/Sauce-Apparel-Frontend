@@ -54,41 +54,52 @@ function chargeCustomerProfile(
   profileToCharge.setPaymentProfile(paymentProfile);
 
   var orderDetails = new ApiContracts.OrderType();
-  orderDetails.setInvoiceNumber("INV-12345");
-  orderDetails.setDescription("Product Description");
+  orderDetails.setInvoiceNumber(data.order.invoiceNumber);
+  orderDetails.setDescription(data.order.description);
 
   // for loop through all items
+  var lineItemList: any[] = [];
+  data.ordered_items.forEach((item) => {
+    var lineItem = new ApiContracts.LineItemType();
+    lineItem.setItemId(item.itemId);
+    lineItem.setName(item.name);
+    lineItem.setDescription(item.description);
+    lineItem.setQuantity(item.quantity);
+    lineItem.setUnitPrice(item.unitPrice);
 
-  var lineItem_id1 = new ApiContracts.LineItemType();
-  lineItem_id1.setItemId("1");
-  lineItem_id1.setName("vase");
-  lineItem_id1.setDescription("cannes logo");
-  lineItem_id1.setQuantity("18");
-  lineItem_id1.setUnitPrice(45.0);
+    lineItemList.push(lineItem);
+  });
 
-  var lineItem_id2 = new ApiContracts.LineItemType();
-  lineItem_id2.setItemId("2");
-  lineItem_id2.setName("vase2");
-  lineItem_id2.setDescription("cannes logo2");
-  lineItem_id2.setQuantity("28");
-  lineItem_id2.setUnitPrice("25.00");
+  // var lineItem_id1 = new ApiContracts.LineItemType();
+  // lineItem_id1.setItemId("1");
+  // lineItem_id1.setName("vase");
+  // lineItem_id1.setDescription("cannes logo");
+  // lineItem_id1.setQuantity("18");
+  // lineItem_id1.setUnitPrice(45.0);
 
-  var lineItemList = [];
-  lineItemList.push(lineItem_id1);
-  lineItemList.push(lineItem_id2);
+  // var lineItem_id2 = new ApiContracts.LineItemType();
+  // lineItem_id2.setItemId("2");
+  // lineItem_id2.setName("vase2");
+  // lineItem_id2.setDescription("cannes logo2");
+  // lineItem_id2.setQuantity("28");
+  // lineItem_id2.setUnitPrice("25.00");
+
+  // var lineItemList = [];
+  // lineItemList.push(lineItem_id1);
+  // lineItemList.push(lineItem_id2);
 
   var lineItems = new ApiContracts.ArrayOfLineItem();
   lineItems.setLineItem(lineItemList);
 
-  var shipTo = new ApiContracts.CustomerAddressType();
-  shipTo.setFirstName("China");
-  shipTo.setLastName("Bayles");
-  shipTo.setCompany("Thyme for Tea");
-  shipTo.setAddress("12 Main Street");
-  shipTo.setCity("Pecan Springs");
-  shipTo.setState("TX");
-  shipTo.setZip("44628");
-  shipTo.setCountry("USA");
+  // var shipTo = new ApiContracts.CustomerAddressType();
+  // shipTo.setFirstName("China");
+  // shipTo.setLastName("Bayles");
+  // shipTo.setCompany("Thyme for Tea");
+  // shipTo.setAddress("12 Main Street");
+  // shipTo.setCity("Pecan Springs");
+  // shipTo.setState("TX");
+  // shipTo.setZip("44628");
+  // shipTo.setCountry("USA");
 
   var transactionRequestType = new ApiContracts.TransactionRequestType();
   transactionRequestType.setTransactionType(
@@ -96,10 +107,10 @@ function chargeCustomerProfile(
   );
   transactionRequestType.setProfile(profileToCharge);
   // transactionRequestType.setAmount(utils.getRandomAmount());
-  transactionRequestType.setAmount(1.0);
+  transactionRequestType.setAmount(data.amountToCharge);
   transactionRequestType.setLineItems(lineItems);
   transactionRequestType.setOrder(orderDetails);
-  transactionRequestType.setShipTo(shipTo);
+  // transactionRequestType.setShipTo(shipTo);
 
   var createRequest = new ApiContracts.CreateTransactionRequest();
   createRequest.setMerchantAuthentication(merchantAuthenticationType);

@@ -18,8 +18,8 @@ export default function Cart() {
     setCartItems(cartItems);
   }
 
+  //set SUM price of cart items
   React.useEffect(() => {
-    // console.log("cart sum updating...");
     if (cartItems.length !== 0) {
       let sum: number = 0;
       cartItems.forEach((item) => (sum += item.unitPrice));
@@ -29,7 +29,7 @@ export default function Cart() {
     }
   }, [cartItems]);
 
-  function removeFromCart(productId: string) {
+  function removeFromCart(itemId: string) {
     // get local storage
     const cartItemsJSON = localStorage.getItem("cart_items") || "[]";
     // parse it
@@ -37,7 +37,7 @@ export default function Cart() {
 
     // filter out the productId
     const newCartItems = cartItems.filter(
-      (item: Product) => item.itemId !== productId
+      (item: Product) => item.itemId !== itemId
     );
     // set new
     localStorage.setItem("cart_items", JSON.stringify(newCartItems));
@@ -48,9 +48,12 @@ export default function Cart() {
   return (
     <div className={classes.cart}>
       <h1>Cart Items</h1>
+
       {cartItems.length === 0 && <div>Looks like your cart is empty...</div>}
+
       {cartItems.length !== 0 &&
         cartItems.map((item, i) => {
+          //
           return (
             <div key={i}>
               <h3>{item.name}</h3>

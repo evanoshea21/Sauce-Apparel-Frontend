@@ -57,10 +57,14 @@ app.post("/getprofile", (req: any, res: any) => {
   });
   // res.send("server pong");
 });
-app.get("/chargeProfile", (req: any, res: any) => {
+app.post("/chargeProfile", (req: any, res: any) => {
   // create customer profile
   chargeProfile(req.body, function (response: any) {
-    res.send(response);
+    if (response.messages.resultCode === "Error") {
+      res.status(500).send(response);
+    } else {
+      res.send(response);
+    }
   });
 });
 
