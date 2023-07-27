@@ -8,15 +8,10 @@ The backend is a node-express server written in typescript.
 1. First run `npm i` to install dependencies
 2. To spin up front-end, run `npm run dev`.
 3. To spin up backend, first fill in `.env` values based on the `.env.sample` file. Then run `npx nodemon server/index.ts`
+4. Need to migrate your prisma schema to your local SQL database. First edit the `database_url` and `shadow_database_url` inside your `.env` file. Then run `npx prisma migrate dev --name <nameYourMigration>`. Finally, check run a sql command to see that your local MySQL is showing your database with apt tables.
+5. You should be ready to go. Go to `/products` page, add products to cart. Then go to `/checkout` page and you should see cart items. Login via Github, then fill out form and submit to create a customerProfile with Authorize.net. Then it should present your available credit cards (will just be 1) highlighted in pink as the selected card.
+6. You can now click the `Checkout Button` and see if the transaction goes through (UI message, and check authorize.net dashboard under `CIM>User>History>Invoices`)
 
 Now you can call API by clicking UI button on localhost server in browser.
-
-## Tasks to get Done
-
-1. Implement [Charge Credit Card](https://developer.authorize.net/api/reference/index.html#payment-transactions-charge-a-credit-card:~:text=Payment%20Transactions%20page.-,Charge%20a%20Credit%20Card,-Use%20this%20method) [DONE]
-2. Implement [Create Customer Profile](https://developer.authorize.net/api/reference/index.html#customer-profiles-create-customer-profile:~:text=Create%20Customer%20Profile) - Dev [Guide](https://developer.authorize.net/api/reference/features/customer-profiles.html)
-3. Add/Delete [Payment Profile](https://developer.authorize.net/api/reference/index.html#customer-profiles-create-customer-payment-profile:~:text=RESPONSE%20FIELD%20DESCRIPTION-,Create%20Customer%20Payment%20Profile,-Use%20this%20function) to CustomerProfile
-4. Add/Delete [Shipping Profile](https://developer.authorize.net/api/reference/index.html#customer-profiles-create-customer-shipping-address:~:text=RESPONSE%20FIELD%20DESCRIPTION-,Create%20Customer%20Shipping%20Address,-Use%20this%20function) to CustomerProfile
-5. Implement [CHARGE A CUSTOMER PROFILE](https://developer.authorize.net/api/reference/index.html#payment-transactions-charge-a-customer-profile:~:text=RESPONSE%20FIELD%20DESCRIPTION-,Charge%20a%20Customer%20Profile,-Use%20this%20method) to use secured PCI Customer-Info-Manager by authorize to issue a transaction by retrieving credit card info from their servers
 
 ![Graphic](/public/customerProfile.jpg)
