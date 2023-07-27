@@ -66,7 +66,6 @@ export default function CustomerProfile({
     React.useState<DisplayStates>("loggedOut");
   // SELECT CREDIT CARD
   const [chosenCardId, setChosenCard] = React.useState<string>();
-  const [errorMessage, setErrorMessage] = React.useState<string>();
   // Form fields (state)
   // card
   const [card_number, setCreditCardNum] = React.useState<string>();
@@ -183,16 +182,14 @@ export default function CustomerProfile({
       data: formData,
     })
       .then((res) => {
-        // console.log("created profile axios?", res.data);
         const custProfileId = res.data.customerProfileId;
-        // send this to endpoint where you prisma.customerProfile.create({userid, customerProfileId});
+        // save CustomerProfile to User Account
         axios({
           url: "/api/save-customer-profile",
           method: "POST",
           data: { userId: session.user.id, customerProfileId: custProfileId },
         })
           .then((res) => {
-            console.log("response saving profile: ", res.data);
             setCustomerProfileId(custProfileId);
           })
           .catch((e) => console.error("error saving profile to DB"));
@@ -209,8 +206,11 @@ export default function CustomerProfile({
         });
       })
       .catch((e) => {
-        console.log("ERROR:\n ", e.response.data.messages.message[0]);
-        setErrorMessage(JSON.stringify(e.response.data.messages.message[0]));
+        console.log(
+          "ERROR creating profile:\n ",
+          e.response.data.messages.message[0]
+        );
+        setDisplayState("networkError");
       });
   }
 
@@ -291,7 +291,6 @@ export default function CustomerProfile({
 
           <button type="submit">Submit</button>
         </form>
-        {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
       </div>
     );
   }
