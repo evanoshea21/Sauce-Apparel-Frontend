@@ -1,4 +1,7 @@
 "use strict";
+// Server utils
+
+/////////////////////// For SDK ///////////////////////
 
 function getRandomString(text) {
   return text + Math.floor(Math.random() * 100000 + 1);

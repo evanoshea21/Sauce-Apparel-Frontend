@@ -11,5 +11,9 @@ export async function POST(req: NextRequest) {
     },
   });
 
+  if (!user) {
+    return NextResponse.json("user DNE", { status: 500 });
+  }
+
   return NextResponse.json(user);
 }

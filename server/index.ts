@@ -48,12 +48,22 @@ app.post("/createprofile", (req: any, res: any) => {
 });
 app.post("/getprofile", (req: any, res: any) => {
   // create customer profile
-  getProfile(req.body.id, function (response: any) {
+  let customerId: string = req.body.id;
+  // let customerId: string = req.body.id.slice(0, -3) + "921";
+  getProfile(customerId, function (response: any) {
     console.log(
       "getProfile RESPONSE\n==================================",
-      response
+      response.messages.message[0].text
     );
-    res.send(response);
+    if (response.messages.resultCode === "Ok") {
+      res.send(response);
+    } else if (
+      response.messages.message[0].text === "The record cannot be found."
+    ) {
+      res.status(500).send("user DNE");
+    } else {
+      res.status(500).send(response);
+    }
   });
   // res.send("server pong");
 });

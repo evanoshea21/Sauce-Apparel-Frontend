@@ -1,48 +1,46 @@
 "use client";
 import React from "react";
-import type { Product } from "@/scripts/Types";
 import classes from "@/styles/Checkout.module.css";
+import { getCartItems, getCartSum } from "@/app/utils";
+import type { Product } from "@/scripts/Types";
+/*
+Sole purpose: GET/EDIT cart items from localStorage
 
-export default function Cart() {
-  const [cartItems, setCartItems] = React.useState<Product[]>([]);
+CLEAN
+
+Left to do:
+- ui (styling table)
+- add quantity controls (that MUST edit localStorage)
+
+*/
+
+interface Props {
+  cartItems: Product[];
+  setCartItems: React.Dispatch<React.SetStateAction<Product[]>>;
+}
+
+export default function Cart({ cartItems, setCartItems }: Props) {
   const [totalPrice, setTotalPrice] = React.useState<number>();
 
   React.useEffect(() => {
     // get localStorage, set cart items
-    getSetCartItems();
+    const cart_items = getCartItems();
+    setCartItems(cart_items);
   }, []);
-
-  function getSetCartItems() {
-    const cartItemsJSON = localStorage.getItem("cart_items") || "[]";
-    const cartItems = JSON.parse(cartItemsJSON);
-    setCartItems(cartItems);
-  }
 
   //set SUM price of cart items
   React.useEffect(() => {
-    if (cartItems.length !== 0) {
-      let sum: number = 0;
-      cartItems.forEach((item) => (sum += item.unitPrice));
-      setTotalPrice(sum);
-    } else {
-      setTotalPrice(0);
-    }
+    setTotalPrice(getCartSum());
   }, [cartItems]);
 
   function removeFromCart(itemId: string) {
-    // get local storage
-    const cartItemsJSON = localStorage.getItem("cart_items") || "[]";
-    // parse it
-    const cartItems = JSON.parse(cartItemsJSON);
-
-    // filter out the productId
+    // filter out the itemId
     const newCartItems = cartItems.filter(
       (item: Product) => item.itemId !== itemId
     );
+    setCartItems(newCartItems);
     // set new
     localStorage.setItem("cart_items", JSON.stringify(newCartItems));
-
-    getSetCartItems();
   }
 
   return (

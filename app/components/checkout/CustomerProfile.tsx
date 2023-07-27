@@ -4,20 +4,74 @@ import axios from "axios";
 // import classes from "@/styles/Checkout.module.css";
 import { useSession } from "next-auth/react";
 
+/*
+Sole purpose: [Show CustomerProfile or Form] & [send CustomerId/PaymentId up via props]
+FLOW
+- Check if User Logged in
+  -Y: Check if User has CustomerProfile
+    -Y: [done] Show their cards
+    -N: [done]Show form to fill out
+  -[done]N: Don't show Profile Section until User Logged in
+
+  STATES
+  - Logged out (authenticated, DONE)
+  - Logged in, no CustomerProfile yet
+  - Logged in, CustomerProfile
+  - Logged in, CustomerProfileDNE
+
+- Pass profileId and paymentProfileId up to Props
+
+NOT CLEAN
+
+Left to do:
+-
+*/
+interface Props {
+  setPaymentProfileId: React.Dispatch<React.SetStateAction<string>>;
+  setCustomerProfileId: React.Dispatch<React.SetStateAction<string>>;
+  customerProfileId: string;
+}
+interface CustomerProfile {
+  customerProfileId: string;
+  description: string;
+  email: string;
+  merchantCustomerId: string;
+  paymentProfiles: PaymentProfile[];
+  profileType: string;
+}
+interface PaymentProfile {
+  billTo: {}[];
+  customerPaymentProfileId: string;
+  customerType: string;
+  payment: { creditCard: { cardNumber: string } };
+}
+type DisplayStates =
+  | "loggedOut"
+  | "loadingCP"
+  | "foundCP"
+  | "noCP"
+  | "networkError";
+
 export default function CustomerProfile({
   setPaymentProfileId,
-  setProfileId,
+  setCustomerProfileId,
+  customerProfileId,
 }: Props) {
-  const { data: session } = useSession();
-  const [customerProfileId, setCustomerProfileId] = React.useState<string>();
+  //session updates on refresh
+  const { data: session, status } = useSession();
+  // local state for Payment Cards
   const [customerProfile, setCustomerProfile] =
     React.useState<CustomerProfile>();
-  const [chosenCard, setChosenCard] = React.useState<string>();
+  const [displayState, setDisplayState] =
+    React.useState<DisplayStates>("loggedOut");
+  // SELECT CREDIT CARD
+  const [chosenCardId, setChosenCard] = React.useState<string>();
   const [errorMessage, setErrorMessage] = React.useState<string>();
   // Form fields (state)
+  // card
   const [card_number, setCreditCardNum] = React.useState<string>();
   const [expDate, setExpDate] = React.useState<string>();
-
+  // address
   const [firstName, setFirstName] = React.useState<string>();
   const [lastName, setLastName] = React.useState<string>();
   const [address, setAddress] = React.useState<string>();
@@ -25,43 +79,35 @@ export default function CustomerProfile({
   const [state, setState] = React.useState<string>();
   const [zip_code, setZipCode] = React.useState<string>();
   const [country, setCountry] = React.useState<string>();
+  // more details
   const [phone, setPhone] = React.useState<string>();
   const [merchantCustomerId, setMerchantCustomerId] = React.useState<string>();
   const [description, setDescription] = React.useState<string>();
-  const [email, setEmail] = React.useState<string>();
 
+  // GET [CP-id] AFTER LOG IN, or set to [noCP] or [networkError]
   React.useEffect(() => {
-    // GOAL: set customer profile if exists from Oauth account
     if (session) {
+      setDisplayState("loadingCP");
       axios({
         url: "/api/get-profile-by-userid",
         method: "POST",
         data: { userId: session.user.id },
       })
         .then((res) => {
-          // console.log("axios get-user-by-id response: ", res.data);
           setCustomerProfileId(res.data.customerProfileId);
-
-          setProfileId(res.data.customerProfileId);
         })
-        .catch((e) =>
-          console.error(
-            "couldn't find customer profile from Account Logged in.."
-          )
-        );
+        .catch((e) => {
+          //2 types of errors: DNE(accounted for), or Network Error
+          if (e.response.data === "user DNE") {
+            setDisplayState("noCP");
+          } else {
+            setDisplayState("networkError");
+          }
+        });
     }
   }, [session]);
 
-  React.useEffect(() => {
-    setPaymentProfileId(chosenCard || "");
-    console.log(
-      "chosen card: ",
-      chosenCard,
-      "customerProfileId: ",
-      customerProfileId
-    );
-  }, [chosenCard]);
-
+  // get profile from ID
   React.useEffect(() => {
     if (customerProfileId) {
       axios({
@@ -70,18 +116,46 @@ export default function CustomerProfile({
         data: { id: customerProfileId },
       })
         .then((res) => {
-          // console.log("Customer Profile Recieved: ", res.data.profile);
+          // set profile for access to cards (and other data)
           setCustomerProfile(res.data.profile);
+          // set chosen card to First
           setChosenCard(
             res.data.profile.paymentProfiles[0].customerPaymentProfileId
           );
         })
-        .catch((e) => console.error("issue getting profile..", e));
+        .catch((e) => {
+          // 2 possible errors, profile DNE, or network error
+          if (e.response.data === "user DNE") {
+            setDisplayState("noCP");
+          } else {
+            setDisplayState("networkError");
+          }
+          console.error("issue getting profile..", e);
+        });
     }
   }, [customerProfileId]);
 
+  React.useEffect(() => {
+    if (customerProfile) {
+      setDisplayState("foundCP");
+    }
+  }, [customerProfile]);
+
+  // choose card
+  React.useEffect(() => {
+    setPaymentProfileId(chosenCardId || "");
+    console.log(
+      "chosen card: ",
+      chosenCardId,
+      "customerProfileId: ",
+      customerProfileId
+    );
+  }, [chosenCardId]);
+
   function handleForm(e: any) {
     e.preventDefault();
+    if (!session) return;
+
     const formData = {
       creditCard: {
         card_number,
@@ -99,7 +173,7 @@ export default function CustomerProfile({
       },
       merchantCustomerId,
       description,
-      email,
+      email: session?.user.email,
     };
 
     // send form data to SDK create profile
@@ -110,13 +184,18 @@ export default function CustomerProfile({
     })
       .then((res) => {
         // console.log("created profile axios?", res.data);
-        const { customerProfileId } = res.data;
+        const custProfileId = res.data.customerProfileId;
         // send this to endpoint where you prisma.customerProfile.create({userid, customerProfileId});
         axios({
           url: "/api/save-customer-profile",
           method: "POST",
-          data: { userId: session?.user.id, customerProfileId },
-        }).then((res) => console.log("response saving profile?", res.data));
+          data: { userId: session.user.id, customerProfileId: custProfileId },
+        })
+          .then((res) => {
+            console.log("response saving profile: ", res.data);
+            setCustomerProfileId(custProfileId);
+          })
+          .catch((e) => console.error("error saving profile to DB"));
 
         //get customerProfileById, via SDK
         axios({
@@ -133,15 +212,19 @@ export default function CustomerProfile({
         console.log("ERROR:\n ", e.response.data.messages.message[0]);
         setErrorMessage(JSON.stringify(e.response.data.messages.message[0]));
       });
-
-    // console.log("form data CIM: \n", formData);
   }
 
-  if (!session) {
-    return <>loading or unauthenticated..</>;
+  if (displayState === "loggedOut") {
+    return <>Not Logged In</>;
   }
-
-  if (!customerProfile && session) {
+  if (displayState === "loadingCP") {
+    return <>Loading Customer Profile</>;
+  }
+  if (displayState === "networkError") {
+    return <>Network Error: Couldn't retrieve your profile. Try again later.</>;
+  }
+  // ok we're authenticated, have loading state for GETTING CustomerProfile though
+  if (displayState === "noCP") {
     return (
       <div>
         <h3>Customer Profile DNE. Time to make one:</h3>
@@ -205,11 +288,6 @@ export default function CustomerProfile({
             placeholder="description (of customer?)"
             onChange={(e) => setDescription(e.target.value)}
           />
-          <input
-            required
-            placeholder="email"
-            onChange={(e) => setEmail(e.target.value)}
-          />
 
           <button type="submit">Submit</button>
         </form>
@@ -217,13 +295,13 @@ export default function CustomerProfile({
       </div>
     );
   }
-
+  // else if (displayState === 'foundCP')
   return (
     <div>
       <h1>Customer Profile Info:</h1>
       {/* instead of stringifying it, you should display a card for every payment
       option */}
-      {customerProfile && (
+      {customerProfile && Array.isArray(customerProfile.paymentProfiles) && (
         <>
           {customerProfile.paymentProfiles.map((card, i) => {
             return (
@@ -231,7 +309,7 @@ export default function CustomerProfile({
                 onClick={() => setChosenCard(card.customerPaymentProfileId)}
                 style={{
                   backgroundColor:
-                    card.customerPaymentProfileId === chosenCard
+                    card.customerPaymentProfileId === chosenCardId
                       ? "pink"
                       : "white",
                 }}
@@ -245,23 +323,4 @@ export default function CustomerProfile({
       )}
     </div>
   );
-}
-
-interface Props {
-  setPaymentProfileId: React.Dispatch<React.SetStateAction<string>>;
-  setProfileId: React.Dispatch<React.SetStateAction<string>>;
-}
-interface CustomerProfile {
-  customerProfileId: string;
-  description: string;
-  email: string;
-  merchantCustomerId: string;
-  paymentProfiles: PaymentProfile[];
-  profileType: string;
-}
-interface PaymentProfile {
-  billTo: {}[];
-  customerPaymentProfileId: string;
-  customerType: string;
-  payment: { creditCard: { cardNumber: string } };
 }
