@@ -9,10 +9,10 @@ Function of this component:
   - If it does exist, JSON.parse it, push into array, then JSON.stringify to set new "cart_items"
 */
 import React from "react";
-import type { Product } from "../../scripts/Types";
+import type { CartItem } from "../../scripts/Types";
 
 interface Props {
-  productData: Product;
+  productData: CartItem;
 }
 
 export default function AddCartBtn({ productData }: Props) {

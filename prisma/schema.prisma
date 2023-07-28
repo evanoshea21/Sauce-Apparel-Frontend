@@ -63,3 +63,21 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
+
+model Products {
+  id        String @id @default(cuid())
+  itemId    String
+  name      String @unique
+  flavor    String
+  unitPrice Int
+  inStock   Int
+  imageUrl  String
+
+  description String?
+  salesPrice  Int?
+  category    String  @default("uncategorized")
+  isFeatured  Boolean @default(false)
+
+  @@unique([itemId, name])
+  @@index([name])
+}

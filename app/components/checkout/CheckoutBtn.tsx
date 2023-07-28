@@ -2,7 +2,7 @@
 import React from "react";
 import axios from "axios";
 import classes from "@/styles/Checkout.module.css";
-import type { Product } from "@/scripts/Types";
+import type { CartItem } from "@/scripts/Types";
 import { getCartItems, getCartSum } from "../../utils";
 
 /*
@@ -21,7 +21,7 @@ Left to do:
 interface Props {
   customerProfileId: string;
   paymentProfileId: string;
-  cartItems: Product[];
+  cartItems: CartItem[];
 }
 interface ChargeProfileDataToSend {
   customerProfileId: string;
@@ -30,7 +30,7 @@ interface ChargeProfileDataToSend {
     invoiceNumber: string; // INV-??
     description?: string; // online order
   };
-  ordered_items: Product[];
+  ordered_items: CartItem[];
   amountToCharge: number;
 }
 

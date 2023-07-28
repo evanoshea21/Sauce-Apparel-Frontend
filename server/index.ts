@@ -7,7 +7,6 @@ const bodyParser = require("body-parser"); //parses json
 const cors = require("cors"); // sets CORS headers
 
 //UTILS imported (functions to charge credit card)
-const chargeCard = require("./ChargeCard");
 const chargeProfile = require("./ChargeProfile");
 const createProfile = require("./CreateProfile");
 const addCard = require("./AddCard");
@@ -77,18 +76,6 @@ app.post("/chargeProfile", (req: any, res: any) => {
       res.send(response);
     }
   });
-});
-
-app.get("/chargeCard", (req: any, res: any) => {
-  // charge credit card
-  chargeCard(function (response: any) {
-    console.log(
-      "chargeCreditCard RESPONSE\n==================================",
-      response
-    );
-    res.send("charged card ?");
-  });
-  // res.send("server pong");
 });
 
 app.post("/addCard", (req: any, res: any) => {

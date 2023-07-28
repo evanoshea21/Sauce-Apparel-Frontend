@@ -1,6 +1,6 @@
 // import React from 'react'
 import classes from "@/styles/Products.module.css";
-import type { Product } from "../../scripts/Types";
+import type { CartItem } from "../../scripts/Types";
 import ProductItem from "../components/ProductItem";
 
 const productsFromDb: ProductsList = {
@@ -41,7 +41,7 @@ const productsFromDb: ProductsList = {
 };
 
 interface ProductsList {
-  inventory: Product[];
+  inventory: CartItem[];
 }
 
 export default async function ProductsPage() {

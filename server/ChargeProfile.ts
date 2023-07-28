@@ -1,6 +1,6 @@
 "use strict";
 
-interface ProductItem {
+interface CartItem {
   itemId: string;
   name: string;
   description: string;
@@ -24,7 +24,7 @@ interface ChargeProfileData {
     invoiceNumber: string; // INV-??
     description?: string; // online order
   };
-  ordered_items: ProductItem[];
+  ordered_items: CartItem[];
   shipTo?: Address;
   amountToCharge: number;
 }

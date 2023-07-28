@@ -1,4 +1,4 @@
-import type { Product } from "@/scripts/Types";
+import type { CartItem } from "@/scripts/Types";
 
 export function getCartItems() {
   const cart_itemsJSON = localStorage.getItem("cart_items") || "[]";
@@ -9,7 +9,7 @@ export function getCartSum(): number {
   if (cart_items.length === 0) return 0;
   let sum: number = 0;
   cart_items.forEach(
-    (item: Product) => (sum += item.unitPrice * Number(item.quantity))
+    (item: CartItem) => (sum += item.unitPrice * Number(item.quantity))
   );
   return sum;
 }

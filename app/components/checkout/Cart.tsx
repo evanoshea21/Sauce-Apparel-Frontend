@@ -2,7 +2,7 @@
 import React from "react";
 import classes from "@/styles/Checkout.module.css";
 import { getCartItems, getCartSum } from "@/app/utils";
-import type { Product } from "@/scripts/Types";
+import type { CartItem } from "@/scripts/Types";
 /*
 Sole purpose: GET/EDIT cart items from localStorage
 
@@ -15,8 +15,8 @@ Left to do:
 */
 
 interface Props {
-  cartItems: Product[];
-  setCartItems: React.Dispatch<React.SetStateAction<Product[]>>;
+  cartItems: CartItem[];
+  setCartItems: React.Dispatch<React.SetStateAction<CartItem[]>>;
 }
 
 export default function Cart({ cartItems, setCartItems }: Props) {
@@ -36,7 +36,7 @@ export default function Cart({ cartItems, setCartItems }: Props) {
   function removeFromCart(itemId: string) {
     // filter out the itemId
     const newCartItems = cartItems.filter(
-      (item: Product) => item.itemId !== itemId
+      (item: CartItem) => item.itemId !== itemId
     );
     setCartItems(newCartItems);
     // set new

@@ -7,12 +7,12 @@ Purpose of this component:
 
 */
 
-import type { Product } from "../../scripts/Types";
+import type { CartItem } from "../../scripts/Types";
 import classes from "@/styles/Products.module.css";
 import AddCartBtn from "./AddCartBtn";
 
 interface Props {
-  productData: Product;
+  productData: CartItem;
 }
 
 export default function ProductItem({ productData }: Props) {

@@ -2,7 +2,7 @@
 import React from "react";
 
 import { getCartItems } from "../../utils";
-import type { Product } from "@/scripts/Types";
+import type { CartItem } from "@/scripts/Types";
 
 import Cart from "./Cart";
 import Login from "./Login";
@@ -12,7 +12,7 @@ import CheckoutBtn from "./CheckoutBtn";
 export default function CheckoutPage() {
   const [customerProfileId, setCustomerProfileId] = React.useState<string>("");
   const [paymentProfileId, setPaymentProfileId] = React.useState<string>("");
-  const [cartItems, setCartItems] = React.useState<Product[]>([]);
+  const [cartItems, setCartItems] = React.useState<CartItem[]>([]);
 
   return (
     <div>
