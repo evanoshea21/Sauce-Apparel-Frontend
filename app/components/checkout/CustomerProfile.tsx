@@ -21,10 +21,16 @@ FLOW
 
 - Pass profileId and paymentProfileId up to Props
 
-NOT CLEAN
+CLEAN
 
 Left to do:
--
+- error handling for "create profile", "save to personal DB", "get profile"
+  - create profile (issue creating means try again, open up form)
+  - issue saving to db means try again, open up form
+  - issue getting after creation successful means network issue.
+
+  - add card to profile
+  - delete my customer profile [DONE], but also delete row with this customerId
 */
 interface Props {
   setPaymentProfileId: React.Dispatch<React.SetStateAction<string>>;
@@ -85,7 +91,9 @@ export default function CustomerProfile({
 
   // GET [CP-id] AFTER LOG IN, or set to [noCP] or [networkError]
   React.useEffect(() => {
-    if (session) {
+    // this running everytime you leave TAB. how to change this? ... thinking
+    if (status === "authenticated") {
+      console.log("running api..");
       setDisplayState("loadingCP");
       axios({
         url: "/api/get-profile-by-userid",
@@ -104,9 +112,9 @@ export default function CustomerProfile({
           }
         });
     }
-  }, [session]);
+  }, [status]);
 
-  // get profile from ID
+  // get CustomerProfile from ID
   React.useEffect(() => {
     if (customerProfileId) {
       axios({
@@ -153,6 +161,7 @@ export default function CustomerProfile({
 
   function handleForm(e: any) {
     e.preventDefault();
+    setDisplayState("loadingCP");
     if (!session) return;
 
     const formData = {
@@ -183,7 +192,7 @@ export default function CustomerProfile({
     })
       .then((res) => {
         const custProfileId = res.data.customerProfileId;
-        // save CustomerProfile to User Account
+        // then, save CustomerProfile to User Account
         axios({
           url: "/api/save-customer-profile",
           method: "POST",
@@ -192,18 +201,10 @@ export default function CustomerProfile({
           .then((res) => {
             setCustomerProfileId(custProfileId);
           })
-          .catch((e) => console.error("error saving profile to DB"));
-
-        //get customerProfileById, via SDK
-        axios({
-          url: "http://localhost:1400/getprofile",
-          method: "POST",
-          data: { id: customerProfileId },
-        }).then((res) => {
-          console.log("GET customer profile after creation: ", res.data);
-
-          setCustomerProfile(res.data);
-        });
+          .catch((e) => {
+            console.error("error saving profile to DB");
+            setDisplayState("networkError");
+          });
       })
       .catch((e) => {
         console.log(
@@ -211,6 +212,113 @@ export default function CustomerProfile({
           e.response.data.messages.message[0]
         );
         setDisplayState("networkError");
+      });
+  } // handle form
+
+  function deleteProfile() {
+    axios({
+      url: "http://localhost:1400/deleteprofile",
+      method: "DELETE",
+      data: { customerId: customerProfileId },
+    })
+      .then((res) => {
+        console.log("deleted?: ", res.data);
+        // set display
+        setDisplayState("noCP");
+
+        // delete from saved table (cascade)
+        axios({
+          url: "/api/save-customer-profile",
+          method: "DELETE",
+          data: { customerProfileId },
+        })
+          .then((res) => {
+            setCustomerProfileId("");
+          })
+          .catch((e) => {
+            console.error("error deleting saved profile from personal DB");
+          });
+      })
+      .catch((e) => {
+        console.error("error deleting: ", e);
+      });
+  }
+
+  interface Address {
+    firstName: string;
+    lastName: string;
+    address: string;
+    city: string;
+    state: string;
+    zip: string;
+    country: string;
+    phone: string;
+  }
+  interface AddCardData {
+    customerProfileId: string;
+    cardNumber: string;
+    expDate: string;
+    billTo: Address;
+  }
+
+  interface AddCardRequest {
+    url: string;
+    method: "POST";
+    data: AddCardData;
+  }
+  function addCard() {
+    let cardNum = "4539830555056060";
+    let expDate = "0925";
+    let fName = "Brother";
+    let lName = "Oshay";
+
+    let addCardReqConfig: AddCardRequest = {
+      url: "http://localhost:1400/addCard",
+      method: "POST",
+      data: {
+        customerProfileId: customerProfileId,
+        cardNumber: cardNum,
+        expDate: expDate,
+        billTo: {
+          firstName: fName,
+          lastName: lName,
+          address: "123 main lane",
+          city: "bothell",
+          state: "WA",
+          zip: "98208",
+          country: "USA",
+          phone: "9165559344",
+        },
+      },
+    };
+    axios(addCardReqConfig)
+      .then((res) => {
+        console.log("added Card Response: ", res.data);
+        setChosenCard(res.data.customerPaymentProfileId);
+        // get profile again
+        console.log(
+          "updating profile state... retrieving new payments on file.."
+        );
+        axios({
+          url: "http://localhost:1400/getprofile",
+          method: "POST",
+          data: { id: customerProfileId },
+        })
+          .then((res) => {
+            console.log("GET customer profile after creation: ", res.data);
+
+            setCustomerProfile(res.data.profile);
+          })
+          .catch((e) => {
+            console.log("error getting profile");
+            setDisplayState("networkError");
+          });
+      })
+      .catch((e) => {
+        console.error(
+          "error adding card: ",
+          e.response.data.messages.message[0]
+        );
       });
   }
 
@@ -223,7 +331,7 @@ export default function CustomerProfile({
   if (displayState === "networkError") {
     return <>Network Error: Couldn't retrieve your profile. Try again later.</>;
   }
-  // ok we're authenticated, have loading state for GETTING CustomerProfile though
+
   if (displayState === "noCP") {
     return (
       <div>
@@ -298,6 +406,7 @@ export default function CustomerProfile({
   return (
     <div>
       <h1>Customer Profile Info:</h1>
+      <button onClick={() => deleteProfile()}>DELETE MY PROFILE</button>
       {/* instead of stringifying it, you should display a card for every payment
       option */}
       {customerProfile && Array.isArray(customerProfile.paymentProfiles) && (
@@ -320,6 +429,7 @@ export default function CustomerProfile({
           })}
         </>
       )}
+      <button onClick={() => addCard()}>Add Card</button>
     </div>
   );
 }

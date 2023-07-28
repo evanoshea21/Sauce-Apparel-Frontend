@@ -11,6 +11,7 @@ const chargeCard = require("./ChargeCard");
 const chargeProfile = require("./ChargeProfile");
 const createProfile = require("./CreateProfile");
 const addCard = require("./AddCard");
+const deleteProfile = require("./DeleteProfile");
 const getProfile = require("./GetProfile");
 const getPaymentProfile = require("./GetPaymentProfile");
 
@@ -90,11 +91,29 @@ app.get("/chargeCard", (req: any, res: any) => {
   // res.send("server pong");
 });
 
-app.get("/addCard", (req: any, res: any) => {
+app.post("/addCard", (req: any, res: any) => {
+  console.log("req.body ADD CARD: ", req.body);
   // create customer profile
-  addCard("512663510", function (response: any) {
+  addCard(req.body, function (response: any) {
     console.log(
       "addCard RESPONSE\n==================================",
+      response.messages
+    );
+    if (response.messages.resultCode === "Error") {
+      res.status(500).send(response);
+    } else {
+      res.send(response);
+    }
+  });
+});
+
+app.delete("/deleteprofile", (req: any, res: any) => {
+  console.log("======delete profile BODY: ", req.body);
+  let { customerId } = req.body;
+  // create customer profile
+  deleteProfile(customerId, function (response: any) {
+    console.log(
+      "deleteProfile RESPONSE\n==================================",
       response
     );
     res.send(response);

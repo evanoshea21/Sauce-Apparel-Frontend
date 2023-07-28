@@ -6,8 +6,25 @@ var ApiControllers = require("authorizenet").APIControllers;
 require("dotenv").config();
 var randomStreetNumber = Math.round(Math.random() * 1000);
 
+interface Address {
+  firstName: string;
+  lastName: string;
+  address: string;
+  city: string;
+  state: string;
+  zip: string;
+  country: string;
+  phone: string;
+}
+interface AddCardData {
+  customerProfileId: string;
+  cardNumber: string;
+  expDate: string;
+  billTo: Address;
+}
+
 function createCustomerPaymentProfile(
-  customerProfileId: string,
+  data: AddCardData,
   callback: (res: {}) => {}
 ) {
   var merchantAuthenticationType =
@@ -18,31 +35,31 @@ function createCustomerPaymentProfile(
   );
 
   var creditCard = new ApiContracts.CreditCardType();
-  creditCard.setCardNumber("4242424242422323");
-  creditCard.setExpirationDate("0829");
+  creditCard.setCardNumber(data.cardNumber);
+  creditCard.setExpirationDate(data.expDate);
 
   var paymentType = new ApiContracts.PaymentType();
   paymentType.setCreditCard(creditCard);
 
   var customerAddress = new ApiContracts.CustomerAddressType();
-  customerAddress.setFirstName("fathers");
-  customerAddress.setLastName("credit card");
-  customerAddress.setAddress(randomStreetNumber + " Main Street");
-  customerAddress.setCity("Bellevue");
-  customerAddress.setState("WA");
-  customerAddress.setZip("98004");
-  customerAddress.setCountry("USA");
-  customerAddress.setPhoneNumber("000-000-0000");
+  customerAddress.setFirstName(data.billTo.firstName);
+  customerAddress.setLastName(data.billTo.lastName);
+  customerAddress.setAddress(data.billTo.address);
+  customerAddress.setCity(data.billTo.city);
+  customerAddress.setState(data.billTo.state);
+  customerAddress.setZip(data.billTo.zip);
+  customerAddress.setCountry(data.billTo.country);
+  customerAddress.setPhoneNumber(data.billTo.phone);
 
   var profile = new ApiContracts.CustomerPaymentProfileType();
   profile.setBillTo(customerAddress);
   profile.setPayment(paymentType);
-  // profile.setDefaultPaymentProfile(true);
+  profile.setDefaultPaymentProfile(true);
 
   var createRequest = new ApiContracts.CreateCustomerPaymentProfileRequest();
 
   createRequest.setMerchantAuthentication(merchantAuthenticationType);
-  createRequest.setCustomerProfileId(customerProfileId);
+  createRequest.setCustomerProfileId(data.customerProfileId);
   createRequest.setPaymentProfile(profile);
 
   //pretty print request

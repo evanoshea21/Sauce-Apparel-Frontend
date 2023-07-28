@@ -1,8 +1,7 @@
 //inside api/auth/[...nextauth]/routes.ts
 import NextAuth from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { PrismaClient } from "@prisma/client";
-export const prisma = new PrismaClient();
+import prisma from "@/lib/prismaClient";
 import type { NextAuthOptions } from "next-auth";
 //import providers
 import GithubProvider from "next-auth/providers/github";
@@ -26,19 +25,6 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async signIn({ user, account, profile, email, credentials }) {
-      // console.log(
-      //   "USER=======\n",
-      //   user,
-      //   "\n\n\nACCOUNT========\n",
-      //   account,
-      //   "\n\n\nPROFILE=======\n",
-      //   profile
-      // );
-
-      fetch("http://localhost:1400/test");
-      return true;
-    },
     async session({ session, token, user }) {
       // Send properties to the client, like an access_token and user id from a provider.
       // console.log(

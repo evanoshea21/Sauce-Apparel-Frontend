@@ -1,11 +1,8 @@
 import { NextResponse, NextRequest } from "next/server";
-import { PrismaClient } from "@prisma/client";
-export const prisma = new PrismaClient();
+import prisma from "@/lib/prismaClient";
 
 export async function POST(req: NextRequest) {
   const data = await req.json();
-
-  console.log("data from save-customer-profile:\n", data);
 
   const user = await prisma.customerProfile.create({
     data: {
@@ -15,4 +12,18 @@ export async function POST(req: NextRequest) {
   });
 
   return NextResponse.json({ prismaRowCreateResponse: user });
+}
+
+export async function DELETE(req: NextRequest) {
+  const data = await req.json();
+
+  console.log("data from save-customer-profile DELETE:\n", data);
+
+  const deleteUser = await prisma.customerProfile.delete({
+    where: {
+      customerProfileId: data.customerProfileId,
+    },
+  });
+
+  return NextResponse.json({ prismaRowCreateResponse: deleteUser });
 }
