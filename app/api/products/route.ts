@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import type { ProductStock } from "@/scripts/Types";
 import prisma from "@/lib/prismaClient";
+import ProductItem from "@/app/components/ProductItem";
 
 interface CreatePayload {
   method: "create";
@@ -21,9 +22,33 @@ export async function POST(req: NextRequest) {
   let response;
 
   if (reqBody.method === "read") {
+    const uniqueProducts: { [key: string]: any } = {};
+
     try {
       response = await prisma.products.findMany();
-      return NextResponse.json({ data: response });
+
+      response.forEach((product) => {
+        if (uniqueProducts[product.name] === undefined) {
+          //add the product by name
+          uniqueProducts[product.name] = product;
+          // grab flavor, push in array under propName flavors
+          uniqueProducts[product.name].itemIds = [
+            uniqueProducts[product.name].itemId,
+          ];
+          uniqueProducts[product.name].flavors = [
+            uniqueProducts[product.name].flavor,
+          ];
+          // delete old single property Flavor, and itemId
+          delete uniqueProducts[product.name].itemId;
+          delete uniqueProducts[product.name].flavor;
+        } else {
+          //push in the flavor, and itemId
+          uniqueProducts[product.name].itemIds.push(product.itemId);
+          uniqueProducts[product.name].flavors.push(product.flavor);
+        }
+      });
+
+      return NextResponse.json({ data: Object.values(uniqueProducts) });
     } catch (err) {
       console.log("error read: ", err);
       return NextResponse.json({ err }, { status: 500 });

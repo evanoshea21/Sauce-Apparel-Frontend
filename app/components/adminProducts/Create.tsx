@@ -3,9 +3,9 @@ import React from "react";
 import type { ProductStock } from "@/scripts/Types";
 import axios from "axios";
 
-export default function Create() {
+export default function Create({ formValues }: { formValues?: ProductStock }) {
   // Form inputs
-  const [itemId, setItemId] = React.useState<string>("");
+  const [itemId, setItemId] = React.useState<string>(formValues?.itemId ?? "");
   const [name, setName] = React.useState<string>("");
   const [flavor, setFlavor] = React.useState<string>("");
   const [unitPrice, setUnitPrice] = React.useState<number>(0);
@@ -32,6 +32,8 @@ export default function Create() {
       category,
       isFeatured,
     };
+
+    // DONT ALLOW CREATION OF PRODUCT WITH SAME NAME. Do read first, make sure results are empty
 
     console.log("Data Payload (create product): \n", dataPayload);
 

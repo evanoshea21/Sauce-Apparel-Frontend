@@ -67,7 +67,7 @@ model VerificationToken {
 model Products {
   id        String @id @default(cuid())
   itemId    String
-  name      String @unique
+  name      String
   flavor    String
   unitPrice Int
   stock     Int
@@ -79,5 +79,6 @@ model Products {
   isFeatured  Boolean @default(false)
 
   @@unique([itemId, name])
+  @@unique([name, flavor])
   @@index([name])
 }
