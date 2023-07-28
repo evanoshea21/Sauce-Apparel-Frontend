@@ -118,7 +118,11 @@ interface FlavorsProps {
 }
 
 function FlavorsCrud({ product }: FlavorsProps) {
-  function addFlavor(newFlavor: string) {
+  const [flavorsString, setFlavorsString] = React.useState<string>("");
+  function addFlavors() {
+    if (flavorsString.length === 0) return;
+
+    let flavorsToAdd = flavorsString.split(",");
     // use {...product}
     let payload = {
       ...product,
@@ -126,7 +130,9 @@ function FlavorsCrud({ product }: FlavorsProps) {
     // delete flavors
     delete payload.flavors;
     // add flavor: newFlavor
-    payload.flavor = newFlavor;
+    payload.flavors = flavorsToAdd;
+
+    console.log("Add Flavor Payload: ", payload);
 
     //CREATE
     axios({
@@ -142,12 +148,13 @@ function FlavorsCrud({ product }: FlavorsProps) {
       });
   }
 
-  function deleteFlavor(flavor: string) {
+  function deleteFlavor(skuIndex: number) {
     // use product.NAME and FLAVOR to delete row
+    const id = product.itemIds[skuIndex];
     axios({
       url: "api/flavor",
       method: "DELETE",
-      data: { name: product.name, flavor },
+      data: { itemId: id },
     })
       .then((res) => {
         console.log("deleted flavor: ", res);
@@ -189,15 +196,25 @@ function FlavorsCrud({ product }: FlavorsProps) {
             key={i}
           >
             <div> f: {flavor}</div>
-            <button
-              onClick={() => deleteFlavor(flavor)}
-              style={{ color: "red" }}
-            >
+            <button onClick={() => deleteFlavor(i)} style={{ color: "red" }}>
               X
             </button>
           </div>
         );
       })}
+      {/* OUTSIDE MAP NOW */}
+
+      <div>
+        <label htmlFor="add-flavor">Add Flavor</label>
+        <input
+          id="add-flavor"
+          name="add-flavor"
+          type="text"
+          placeholder="separate by commas (ie: Peach,Apple,Orange...)"
+          onChange={(e) => setFlavorsString(e.target.value)}
+        />
+        <button onClick={addFlavors}>Add Flavor(s)</button>
+      </div>
     </div>
   );
 }
