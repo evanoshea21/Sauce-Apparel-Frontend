@@ -70,7 +70,7 @@ model Products {
   name      String @unique
   flavor    String
   unitPrice Int
-  inStock   Int
+  stock     Int
   imageUrl  String
 
   description String?

@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import type { ProductStock } from "@/scripts/Types";
+import axios from "axios";
 
 export default function Create() {
   // Form inputs
@@ -17,7 +18,8 @@ export default function Create() {
   const [category, setCategory] = React.useState<string | undefined>(undefined);
   const [isFeatured, setIsFeatured] = React.useState<boolean>(false);
 
-  function handleForm() {
+  function handleForm(e: any) {
+    e.preventDefault();
     const dataPayload: ProductStock = {
       itemId,
       name,
@@ -32,13 +34,25 @@ export default function Create() {
     };
 
     console.log("Data Payload (create product): \n", dataPayload);
+
+    axios({
+      url: "/api/products",
+      method: "POST",
+      data: {
+        method: "create",
+        data: dataPayload,
+      },
+    })
+      .then((res) => console.log("Create Res: ", res.data))
+      .catch((e) => console.error("Error Create: ", e));
   }
   return (
     <div>
       <h1>Create Product</h1>
       <form onSubmit={handleForm}>
-        <label htmlFor="adminProductCreate_itemId" />
+        <label htmlFor="adminProductCreate_itemId">ItemId</label>
         <input
+          required
           id="adminProductCreate_itemId"
           placeholder="Item Id"
           name="itemId"
@@ -46,8 +60,9 @@ export default function Create() {
           onChange={(e) => setItemId(e.target.value)}
         />
 
-        <label htmlFor="adminProductCreate_name" />
+        <label htmlFor="adminProductCreate_name">Name</label>
         <input
+          required
           id="adminProductCreate_name"
           placeholder="name"
           name="name"
@@ -55,8 +70,9 @@ export default function Create() {
           onChange={(e) => setName(e.target.value)}
         />
 
-        <label htmlFor="adminProductCreate_flavor" />
+        <label htmlFor="adminProductCreate_flavor">Flavor</label>
         <input
+          required
           id="adminProductCreate_flavor"
           placeholder="flavor"
           name="flavor"
@@ -64,8 +80,9 @@ export default function Create() {
           onChange={(e) => setFlavor(e.target.value)}
         />
 
-        <label htmlFor="adminProductCreate_unitPrice" />
+        <label htmlFor="adminProductCreate_unitPrice">UnitPrice</label>
         <input
+          required
           id="adminProductCreate_unitPrice"
           placeholder="unitPrice"
           name="unitPrice"
@@ -73,8 +90,9 @@ export default function Create() {
           onChange={(e) => setUnitPrice(Number(e.target.value))}
         />
 
-        <label htmlFor="adminProductCreate_stock" />
+        <label htmlFor="adminProductCreate_stock">Stock</label>
         <input
+          required
           id="adminProductCreate_stock"
           placeholder="stock"
           name="stock"
@@ -82,8 +100,9 @@ export default function Create() {
           onChange={(e) => setStock(Number(e.target.value))}
         />
 
-        <label htmlFor="adminProductCreate_imageUrl" />
+        <label htmlFor="adminProductCreate_imageUrl">ImageUrl</label>
         <input
+          required
           id="adminProductCreate_imageUrl"
           placeholder="imageUrl"
           name="imageUrl"
@@ -91,7 +110,7 @@ export default function Create() {
           onChange={(e) => setImageUrl(e.target.value)}
         />
 
-        <label htmlFor="adminProductCreate_description" />
+        <label htmlFor="adminProductCreate_description">Desccription?</label>
         <input
           id="adminProductCreate_description"
           placeholder="description"
@@ -100,7 +119,7 @@ export default function Create() {
           onChange={(e) => setDescription(e.target.value)}
         />
 
-        <label htmlFor="adminProductCreate_salesPrice" />
+        <label htmlFor="adminProductCreate_salesPrice">Sales Price?</label>
         <input
           id="adminProductCreate_salesPrice"
           placeholder="salesPrice"
@@ -109,7 +128,7 @@ export default function Create() {
           onChange={(e) => setSalesPrice(Number(e.target.value))}
         />
 
-        <label htmlFor="adminProductCreate_category" />
+        <label htmlFor="adminProductCreate_category">Category?</label>
         <input
           id="adminProductCreate_category"
           placeholder="category"
@@ -118,7 +137,7 @@ export default function Create() {
           onChange={(e) => setCategory(e.target.value)}
         />
 
-        <label htmlFor="adminProductCreate_isFeatured" />
+        <label htmlFor="adminProductCreate_isFeatured">Is Featured?</label>
         <input
           id="adminProductCreate_isFeatured"
           placeholder="isFeatured"
