@@ -32,18 +32,16 @@ export async function POST(req: NextRequest) {
           //add the product by name
           uniqueProducts[product.name] = product;
           // grab flavor, push in array under propName flavors
-          uniqueProducts[product.name].itemIds = [
-            uniqueProducts[product.name].itemId,
-          ];
+          uniqueProducts[product.name].ids = [uniqueProducts[product.name].id];
           uniqueProducts[product.name].flavors = [
             uniqueProducts[product.name].flavor,
           ];
           // delete old single property Flavor, and itemId
-          delete uniqueProducts[product.name].itemId;
+          delete uniqueProducts[product.name].id;
           delete uniqueProducts[product.name].flavor;
         } else {
           //push in the flavor, and itemId
-          uniqueProducts[product.name].itemIds.push(product.itemId);
+          uniqueProducts[product.name].ids.push(product.id);
           uniqueProducts[product.name].flavors.push(product.flavor);
         }
       });
@@ -64,7 +62,7 @@ export async function POST(req: NextRequest) {
   } else if (reqBody.method === "update") {
     try {
       response = await prisma.products.updateMany({
-        where: { itemId: reqBody.data.itemId },
+        where: { id: reqBody.data.id },
         data: { name: "Updated Name" },
       });
       return NextResponse.json({ data: response });
@@ -76,8 +74,17 @@ export async function POST(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  const data = await req.json();
-  console.log("data /products/POST: ", data);
+  const reqBody = await req.json();
+  try {
+    const response = await prisma.products.deleteMany({
+      where: {
+        name: reqBody.name,
+      },
+    });
+    console.log("delete response: ", response);
 
-  return NextResponse.json({ server: "Pong" });
+    return NextResponse.json({ data: response }, { status: 200 });
+  } catch (e) {
+    return NextResponse.json({ error: e }, { status: 500 });
+  }
 }

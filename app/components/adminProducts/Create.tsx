@@ -5,7 +5,6 @@ import axios from "axios";
 
 export default function Create({ formValues }: { formValues?: ProductStock }) {
   // Form inputs
-  const [itemId, setItemId] = React.useState<string>(formValues?.itemId ?? "");
   const [name, setName] = React.useState<string>("");
   const [flavor, setFlavor] = React.useState<string>("");
   const [unitPrice, setUnitPrice] = React.useState<number>(0);
@@ -21,12 +20,12 @@ export default function Create({ formValues }: { formValues?: ProductStock }) {
   function handleForm(e: any) {
     e.preventDefault();
     const dataPayload: ProductStock = {
-      itemId,
       name,
       flavor,
       unitPrice,
       stock,
       imageUrl,
+
       description,
       salesPrice,
       category,
@@ -52,16 +51,6 @@ export default function Create({ formValues }: { formValues?: ProductStock }) {
     <div>
       <h1>Create Product</h1>
       <form onSubmit={handleForm}>
-        <label htmlFor="adminProductCreate_itemId">ItemId</label>
-        <input
-          required
-          id="adminProductCreate_itemId"
-          placeholder="Item Id"
-          name="itemId"
-          type="text"
-          onChange={(e) => setItemId(e.target.value)}
-        />
-
         <label htmlFor="adminProductCreate_name">Name</label>
         <input
           required
