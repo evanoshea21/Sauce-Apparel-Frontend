@@ -3,7 +3,12 @@ import React from "react";
 import type { ProductStock } from "@/scripts/Types";
 import axios from "axios";
 
-export default function Create({ formValues }: { formValues?: ProductStock }) {
+interface CreateProps {
+  formValues?: ProductStock;
+  setRefreshList: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export default function Create({ formValues, setRefreshList }: CreateProps) {
   // Form inputs
   const [name, setName] = React.useState<string>("");
   const [flavor, setFlavor] = React.useState<string>("");
@@ -44,7 +49,10 @@ export default function Create({ formValues }: { formValues?: ProductStock }) {
         data: dataPayload,
       },
     })
-      .then((res) => console.log("Create Res: ", res.data))
+      .then((res) => {
+        console.log("Create Res: ", res.data);
+        setRefreshList((prev) => !prev);
+      })
       .catch((e) => console.error("Error Create: ", e));
   }
   return (

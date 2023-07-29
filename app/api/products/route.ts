@@ -22,11 +22,17 @@ export async function POST(req: NextRequest) {
   let response;
 
   if (reqBody.method === "read") {
-    const uniqueProducts: { [key: string]: any } = {};
-
     try {
-      response = await prisma.products.findMany();
+      if (reqBody.name) {
+        response = await prisma.products.findMany({
+          where: { name: reqBody.name },
+        });
+      } else {
+        response = await prisma.products.findMany();
+      }
 
+      // Combine rows into single PRODUCT, where flavors and SKUs are listed
+      const uniqueProducts: { [key: string]: any } = {};
       response.forEach((product) => {
         if (uniqueProducts[product.name] === undefined) {
           //add the product by name
