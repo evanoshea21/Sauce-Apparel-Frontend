@@ -67,12 +67,12 @@ model VerificationToken {
 model Products {
   id        String @id @default(cuid())
   name      String @unique
-  unitPrice Int
-  stock     Int
+  unitPrice String
   imageUrl  String
 
+  inventory     Int? // for if no flavors
   description   String?
-  salesPrice    Int?
+  salesPrice    String?
   category      String              @default("uncategorized")
   isFeatured    Boolean             @default(false)
   Flavors_Stock Flavors_Inventory[]
@@ -81,10 +81,11 @@ model Products {
 }
 
 model Flavors_Inventory {
-  sku        String @id @default(cuid())
+  sku        String  @id @default(cuid())
   flavor     String
-  stockCount Int
+  inventory  Int
   productId  String
+  salesPrice String?
 
   product Products @relation(fields: [productId], references: [id])
 

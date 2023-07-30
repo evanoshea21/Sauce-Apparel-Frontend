@@ -1,22 +1,35 @@
 "use client";
 import React from "react";
-import type { ProductStock } from "@/scripts/Types";
 import axios from "axios";
 
+interface CreateProductPayload {
+  product: {
+    name: string;
+    unitPrice: string;
+    imageUrl: string;
+
+    description?: string;
+    salesPrice?: string;
+    category?: string;
+    isFeatured: boolean;
+    inventory: number;
+  };
+  flavors_stock: { flavor: string; inventory: number; salesPrice?: string }[];
+}
+
 interface CreateProps {
-  formValues?: ProductStock;
+  formValues?: CreateProductPayload;
   setRefreshList: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function Create({ formValues, setRefreshList }: CreateProps) {
   // Form inputs
   const [name, setName] = React.useState<string>("");
-  const [flavor, setFlavor] = React.useState<string>("");
-  const [unitPrice, setUnitPrice] = React.useState<number>(0);
-  const [stock, setStock] = React.useState<number>(0);
+  const [unitPrice, setUnitPrice] = React.useState<string>("");
   const [imageUrl, setImageUrl] = React.useState<string>("");
+  const [inventory, setInventory] = React.useState<number>(0);
   const [description, setDescription] = React.useState<string>("");
-  const [salesPrice, setSalesPrice] = React.useState<number | undefined>(
+  const [salesPrice, setSalesPrice] = React.useState<string | undefined>(
     undefined
   );
   const [category, setCategory] = React.useState<string | undefined>(undefined);
@@ -24,22 +37,28 @@ export default function Create({ formValues, setRefreshList }: CreateProps) {
 
   function handleForm(e: any) {
     e.preventDefault();
-    const dataPayload: ProductStock = {
-      name,
-      flavor,
-      unitPrice,
-      stock,
-      imageUrl,
-
-      description,
-      salesPrice,
-      category,
-      isFeatured,
+    const dataPayload: CreateProductPayload = {
+      product: {
+        name,
+        unitPrice,
+        imageUrl,
+        description,
+        salesPrice,
+        category,
+        isFeatured,
+        inventory,
+      },
+      flavors_stock: [
+        { flavor: "peach", inventory: 24, salesPrice: "14.99" },
+        { flavor: "orange", inventory: 25, salesPrice: "14.99" },
+        { flavor: "blue", inventory: 26, salesPrice: undefined },
+      ], // make sure to map these in
     };
 
-    // DONT ALLOW CREATION OF PRODUCT WITH SAME NAME. Do read first, make sure results are empty
+    // [TODO] DONT ALLOW CREATION OF PRODUCT WITH SAME NAME. Do read first, make sure results are empty
 
-    console.log("Data Payload (create product): \n", dataPayload);
+    // console.log("Data Payload (create product): \n", dataPayload);
+    // return;
 
     axios({
       url: "/api/products",
@@ -69,16 +88,6 @@ export default function Create({ formValues, setRefreshList }: CreateProps) {
           onChange={(e) => setName(e.target.value)}
         />
 
-        <label htmlFor="adminProductCreate_flavor">Flavor</label>
-        <input
-          required
-          id="adminProductCreate_flavor"
-          placeholder="flavor"
-          name="flavor"
-          type="text"
-          onChange={(e) => setFlavor(e.target.value)}
-        />
-
         <label htmlFor="adminProductCreate_unitPrice">UnitPrice</label>
         <input
           required
@@ -86,7 +95,7 @@ export default function Create({ formValues, setRefreshList }: CreateProps) {
           placeholder="unitPrice"
           name="unitPrice"
           type="text"
-          onChange={(e) => setUnitPrice(Number(e.target.value))}
+          onChange={(e) => setUnitPrice(e.target.value)}
         />
 
         <label htmlFor="adminProductCreate_stock">Stock</label>
@@ -96,7 +105,7 @@ export default function Create({ formValues, setRefreshList }: CreateProps) {
           placeholder="stock"
           name="stock"
           type="text"
-          onChange={(e) => setStock(Number(e.target.value))}
+          onChange={(e) => setInventory(Number(e.target.value))}
         />
 
         <label htmlFor="adminProductCreate_imageUrl">ImageUrl</label>
@@ -124,7 +133,7 @@ export default function Create({ formValues, setRefreshList }: CreateProps) {
           placeholder="salesPrice"
           name="salesPrice"
           type="text"
-          onChange={(e) => setSalesPrice(Number(e.target.value))}
+          onChange={(e) => setSalesPrice(e.target.value)}
         />
 
         <label htmlFor="adminProductCreate_category">Category?</label>
