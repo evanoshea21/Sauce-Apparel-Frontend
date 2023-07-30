@@ -66,17 +66,28 @@ model VerificationToken {
 
 model Products {
   id        String @id @default(cuid())
-  name      String
-  flavor    String
+  name      String @unique
   unitPrice Int
   stock     Int
   imageUrl  String
 
-  description String?
-  salesPrice  Int?
-  category    String  @default("uncategorized")
-  isFeatured  Boolean @default(false)
+  description   String?
+  salesPrice    Int?
+  category      String              @default("uncategorized")
+  isFeatured    Boolean             @default(false)
+  Flavors_Stock Flavors_Inventory[]
 
-  @@unique([name, flavor])
-  @@index([name])
+  @@index([id])
+}
+
+model Flavors_Inventory {
+  sku        String @id @default(cuid())
+  flavor     String
+  stockCount Int
+  productId  String
+
+  product Products @relation(fields: [productId], references: [id])
+
+  @@unique([productId, flavor]) // cant have 2 identical flavors under 1 product
+  @@index([productId])
 }

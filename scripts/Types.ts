@@ -2,21 +2,21 @@ export interface CartItem {
   itemId: string;
   name: string;
   quantity: string;
-  unitPrice: number;
+  unitPrice: number; // account for sales price
 
   description: string; // flavor/configs for SDK invoice
   img: string;
 }
 export interface ProductStock {
-  id?: string;
-  name: string;
-  flavor: string;
-  unitPrice: number;
+  id?: string; //cart item (itemId)
+  name: string; //cart item
+  flavor: string; //cart item (description)
+  unitPrice: number; //cart item
   stock: number; // inventory available
-  imageUrl: string;
+  imageUrl: string; // cart item
 
-  description?: string;
-  salesPrice?: number;
-  category?: string;
-  isFeatured: boolean;
+  description?: string; // don't need for cart
+  salesPrice?: number; //veto cart item unitPrice if applicable
+  category?: string; // dont need for cart
+  isFeatured: boolean; // dont need for cart
 }
