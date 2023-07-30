@@ -3,19 +3,19 @@ import type { ProductStock } from "@/scripts/Types";
 import prisma from "@/lib/prismaClient";
 import ProductItem from "@/app/components/ProductItem";
 
-interface CreatePayload {
-  method: "create";
-  data: ProductStock;
-}
-interface ReadPayload {
-  method: "read";
-  data: { category: string };
-}
-interface UpdatePayload {
-  method: "update";
-  data: { [key: string]: any };
-}
-type PostBody = CreatePayload | ReadPayload | UpdatePayload;
+// interface CreatePayload {
+//   method: "create";
+//   data: ProductStock;
+// }
+// interface ReadPayload {
+//   method: "read";
+//   data: { category: string };
+// }
+// interface UpdatePayload {
+//   method: "update";
+//   data: { [key: string]: any };
+// }
+// type PostBody = CreatePayload | ReadPayload | UpdatePayload;
 
 export async function POST(req: NextRequest) {
   const reqBody = await req.json();
@@ -42,13 +42,18 @@ export async function POST(req: NextRequest) {
           uniqueProducts[product.name].flavors = [
             uniqueProducts[product.name].flavor,
           ];
+          uniqueProducts[product.name].stocks = [
+            uniqueProducts[product.name].stock,
+          ];
           // delete old single property Flavor, and itemId
           delete uniqueProducts[product.name].id;
           delete uniqueProducts[product.name].flavor;
+          delete uniqueProducts[product.name].stock;
         } else {
           //push in the flavor, and itemId
           uniqueProducts[product.name].ids.push(product.id);
           uniqueProducts[product.name].flavors.push(product.flavor);
+          uniqueProducts[product.name].stocks.push(product.stock);
         }
       });
 
