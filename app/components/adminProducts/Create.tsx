@@ -1,24 +1,10 @@
 "use client";
 import React from "react";
 import axios from "axios";
-
-interface CreateProductPayload {
-  product: {
-    name: string;
-    unitPrice: string;
-    imageUrl: string;
-
-    description?: string;
-    salesPrice?: string;
-    category?: string;
-    isFeatured: boolean;
-    inventory: number;
-  };
-  flavors_stock: { flavor: string; inventory: number; salesPrice?: string }[];
-}
+import type { Product } from "@/scripts/Types";
 
 interface CreateProps {
-  formValues?: CreateProductPayload;
+  formValues?: Product;
   setRefreshList: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -29,29 +15,27 @@ export default function Create({ formValues, setRefreshList }: CreateProps) {
   const [imageUrl, setImageUrl] = React.useState<string>("");
   const [inventory, setInventory] = React.useState<number>(0);
   const [description, setDescription] = React.useState<string>("");
-  const [salesPrice, setSalesPrice] = React.useState<string | undefined>(
-    undefined
-  );
-  const [category, setCategory] = React.useState<string | undefined>(undefined);
+  const [salesPrice, setSalesPrice] = React.useState<string | null>(null);
+  const [category, setCategory] = React.useState<string | null>(null);
   const [isFeatured, setIsFeatured] = React.useState<boolean>(false);
 
   function handleForm(e: any) {
     e.preventDefault();
-    const dataPayload: CreateProductPayload = {
+    const dataPayload: Product = {
       product: {
         name,
         unitPrice,
         imageUrl,
         description,
+        inventory,
         salesPrice,
         category,
         isFeatured,
-        inventory,
       },
-      flavors_stock: [
-        { flavor: "peach", inventory: 24, salesPrice: "14.99" },
-        { flavor: "orange", inventory: 25, salesPrice: "14.99" },
-        { flavor: "blue", inventory: 26, salesPrice: undefined },
+      flavors_inventory: [
+        { flavor: "peach", inventory: 24, salesPrice: "14.99", productId: "" },
+        { flavor: "orange", inventory: 25, salesPrice: "14.99", productId: "" },
+        { flavor: "blue", inventory: 26, salesPrice: null, productId: "" },
       ], // make sure to map these in
     };
 

@@ -70,12 +70,12 @@ model Products {
   unitPrice String
   imageUrl  String
 
-  inventory     Int? // for if no flavors
-  description   String?
-  salesPrice    String?
-  category      String              @default("uncategorized")
-  isFeatured    Boolean             @default(false)
-  Flavors_Stock Flavors_Inventory[]
+  inventory         Int? // for if no flavors
+  description       String?
+  salesPrice        String?
+  category          String?
+  isFeatured        Boolean             @default(false)
+  Flavors_Inventory Flavors_Inventory[]
 
   @@index([id])
 }

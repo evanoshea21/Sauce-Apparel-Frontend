@@ -7,16 +7,25 @@ export interface CartItem {
   description: string; // flavor/configs for SDK invoice
   img: string;
 }
-export interface ProductStock {
-  id?: string; //cart item (itemId)
-  name: string; //cart item
-  flavor: string; //cart item (description)
-  unitPrice: number; //cart item
-  stock: number; // inventory available
-  imageUrl: string; // cart item
 
-  description?: string; // don't need for cart
-  salesPrice?: number; //veto cart item unitPrice if applicable
-  category?: string; // dont need for cart
-  isFeatured: boolean; // dont need for cart
+export interface Product {
+  product: {
+    id?: string; //optional bc CREATE payload doesn't need it
+    name: string;
+    unitPrice: string;
+    imageUrl: string;
+
+    description: string | null;
+    inventory: number | null; //if no flavors
+    salesPrice: string | null; // if no flavors
+    category: string | null;
+    isFeatured?: boolean;
+  };
+  flavors_inventory: {
+    sku?: string; // don't need for CREATE
+    flavor: string;
+    inventory: number;
+    salesPrice: string | null;
+    productId: string; // returns for READ; for CREATE, pass empty string
+  }[];
 }
