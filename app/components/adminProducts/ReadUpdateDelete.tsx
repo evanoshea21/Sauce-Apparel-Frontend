@@ -177,10 +177,10 @@ function FlavorsCrud({
 }: FlavorsProps) {
   const [flavorsString, setFlavorsString] = React.useState<string>("");
   const [inventoryString, setInventoryString] = React.useState<string>("");
-  const [updatedFlavor, setUpdatedFlavor] = React.useState<string>("");
   const [updatedStock, setUpdatedStock] = React.useState<string>("");
-  const [stockToEdit, setStockToEdit] = React.useState<string | undefined>();
-  const [flavorToEdit, setFlavorToEdit] = React.useState<string | undefined>();
+  const [stockToEditByFlavor, setStockToEditByFlavor] = React.useState<
+    string | undefined
+  >();
 
   function addFlavorsAndInventories(e: any) {
     e.preventDefault();
@@ -247,7 +247,7 @@ function FlavorsCrud({
 
   function updateStock() {
     if (updatedStock === "" || !updatedStock) {
-      setStockToEdit(undefined);
+      setStockToEditByFlavor(undefined);
       setUpdatedStock("");
       return;
     }
@@ -258,13 +258,13 @@ function FlavorsCrud({
       data: {
         method: "update_inventory",
         productId: productData.id,
-        flavor: stockToEdit,
+        flavor: stockToEditByFlavor,
         newInventory: Number(updatedStock),
       },
     })
       .then((res) => {
         console.log("updated stock: ", res);
-        setStockToEdit(undefined);
+        setStockToEditByFlavor(undefined);
         setUpdatedStock("");
         refreshRow(false, productData.id || "");
       })
@@ -286,7 +286,7 @@ function FlavorsCrud({
               key={i}
             >
               <div>Flavor: {item.flavor}</div>
-              {stockToEdit === item.flavor ? (
+              {stockToEditByFlavor === item.flavor ? (
                 <>
                   <input
                     type="text"
@@ -299,7 +299,7 @@ function FlavorsCrud({
                 </>
               ) : (
                 <>
-                  <div onClick={() => setStockToEdit(item.flavor)}>
+                  <div onClick={() => setStockToEditByFlavor(item.flavor)}>
                     {" "}
                     Inventory: {flavors_inventory[i].inventory}
                   </div>
