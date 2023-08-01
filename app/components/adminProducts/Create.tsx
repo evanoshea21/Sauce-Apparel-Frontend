@@ -27,6 +27,12 @@ export default function Create({ formValues, setRefreshList }: CreateProps) {
   >([]);
 
   function handleForms() {
+    /* To account for errors:
+
+    - must have the 3 required fields (name, price, image)
+    - stop if flavor exists but NOT inventory, and vice-versa ("Form error: make sure for every flavor, there's a corresponding inventory count, and vice-versa")
+    - filter out array where inventory && flavorName are empty strings; and skip over null values (in fact, just valid options into NEW array)
+    */
     // Check for necessary inputs first
     if (!name.length || !unitPrice.length || !imageUrl.length) {
       //handle error message UI for required fields
@@ -44,7 +50,7 @@ export default function Create({ formValues, setRefreshList }: CreateProps) {
         category,
         isFeatured,
       },
-      flavors_inventory: flavorsInvSalesPriceArr, // make sure to map these in
+      flavors_inventory: flavorsInvSalesPriceArr,
     };
 
     // [TODO] DONT ALLOW CREATION OF PRODUCT WITH SAME NAME. Do read first, make sure results are empty

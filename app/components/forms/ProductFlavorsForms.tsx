@@ -25,12 +25,6 @@ interface ProductFormProps {
   setIsFeatured: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-interface FlavorsInventoryProps {
-  setFlavorsInvSalesPriceArr: React.Dispatch<
-    React.SetStateAction<FlavorsInventoryObj[]>
-  >;
-}
-
 export function ProductForm(props: ProductFormProps) {
   return (
     <div>
@@ -130,14 +124,28 @@ export function ProductForm(props: ProductFormProps) {
     </div>
   );
 }
+
+interface FlavorsInventoryProps {
+  productId?: string;
+  setFlavorsInvSalesPriceArr: React.Dispatch<
+    React.SetStateAction<FlavorsInventoryObj[]>
+  >;
+}
+
 export function FlavorsInventoryForm(props: FlavorsInventoryProps) {
   const [rowsCount, setRowsCount] = React.useState(4);
 
   function handleChange(rowIndex: number) {
     // get the i-th input with name flavor/inventory/salesPrice
-    let flavorElem: any = document.querySelector(`#flavor-${rowIndex}`);
-    let inventoryElem: any = document.querySelector(`#inventory-${rowIndex}`);
-    let salesPriceElem: any = document.querySelector(`#salesPrice-${rowIndex}`);
+    let flavorElem: any = document.querySelector(
+      `#flavor-${rowIndex}-${props.productId ?? "create"}`
+    );
+    let inventoryElem: any = document.querySelector(
+      `#inventory-${rowIndex}-${props.productId ?? "create"}`
+    );
+    let salesPriceElem: any = document.querySelector(
+      `#salesPrice-${rowIndex}-${props.productId ?? "create"}`
+    );
 
     let obj = {
       flavor: flavorElem.value,
@@ -165,21 +173,21 @@ export function FlavorsInventoryForm(props: FlavorsInventoryProps) {
           return (
             <div key={i}>
               <input
-                id={`flavor-${i}`}
+                id={`flavor-${i}-${props.productId ?? "create"}`}
                 type="text"
                 name="flavor"
                 placeholder={`flavor-${i}`}
                 onChange={() => handleChange(i)}
               />
               <input
-                id={`inventory-${i}`}
+                id={`inventory-${i}-${props.productId ?? "create"}`}
                 type="text"
                 name="inventory"
                 placeholder={`inventory-${i}`}
                 onChange={() => handleChange(i)}
               />
               <input
-                id={`salesPrice-${i}`}
+                id={`salesPrice-${i}-${props.productId ?? "create"}`}
                 type="text"
                 name="salesPrice"
                 placeholder={`salesPrice-${i}`}

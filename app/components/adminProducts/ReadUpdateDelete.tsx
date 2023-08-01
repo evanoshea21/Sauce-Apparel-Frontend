@@ -3,6 +3,9 @@ import React from "react";
 import type { Product } from "@/scripts/Types";
 import axios from "axios";
 import classes from "@/styles/Admin.module.css";
+import { Flavors } from "next/font/google";
+import { FlavorsInventoryForm } from "../forms/ProductFlavorsForms";
+import type { FlavorsInventoryObj } from "@/scripts/Types";
 
 //Product (everything) vs ProductData (only the product's data)
 
@@ -113,7 +116,6 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
 
   if (!product) return <></>;
 
-  // DISPLAY MODE
   return (
     <div
       style={{
@@ -156,17 +158,9 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
   );
 }
 
-interface Flavor_Inventory {
-  sku?: string; // don't need for CREATE
-  flavor: string;
-  inventory: number;
-  salesPrice: string | null;
-  productId: string; // returns for READ; for CREATE, pass empty string
-}
-
 interface FlavorsProps {
   productData: ProductData;
-  flavors_inventory: Flavor_Inventory[];
+  flavors_inventory: FlavorsInventoryObj[];
   refreshRow: (isDelete: boolean, productId: string) => Promise<void>;
 }
 
@@ -175,37 +169,22 @@ function FlavorsCrud({
   flavors_inventory,
   refreshRow,
 }: FlavorsProps) {
-  const [flavorsString, setFlavorsString] = React.useState<string>("");
-  const [inventoryString, setInventoryString] = React.useState<string>("");
+  const [showFlavorForm, setShowFlavorForm] = React.useState<boolean>(false);
   const [updatedStock, setUpdatedStock] = React.useState<string>("");
   const [stockToEditByFlavor, setStockToEditByFlavor] = React.useState<
     string | undefined
   >();
+  const [flavorsInvSalesPriceArr, setFlavorsInvSalesPriceArr] = React.useState<
+    FlavorsInventoryObj[]
+  >([]);
 
-  function addFlavorsAndInventories(e: any) {
-    e.preventDefault();
-
-    if (flavorsString.length === 0 || inventoryString.length === 0) return;
-
-    const flavors = flavorsString.split(",");
-    const inventories = inventoryString.split(",");
-
-    const payload: Flavor_Inventory[] = [];
-
-    flavors.forEach((flavor: string, i: number) => {
-      // create obj
-      const obj: Flavor_Inventory = {
-        productId: productData.id || "", //bc it's optional
-        flavor: flavor,
-        inventory: Number(inventories[i]),
-        salesPrice: null,
-      };
-      // push in relevant properties
-      // push obj into payload
-      payload.push(obj);
+  function addFlavorsInv() {
+    console.log("Payload add FlavorsInv: \n", flavorsInvSalesPriceArr);
+    const payload = flavorsInvSalesPriceArr;
+    payload.forEach((row) => {
+      row.productId = productData.id || "";
     });
 
-    console.log("Add Flavor-Inventory Payload: ", payload);
     //CREATE
     axios({
       url: "api/flavor",
@@ -268,7 +247,7 @@ function FlavorsCrud({
   return (
     <div style={{ border: "1px solid yellow" }} className={classes.flavors}>
       {Array.isArray(flavors_inventory) &&
-        flavors_inventory.map((item: Flavor_Inventory, i: number) => {
+        flavors_inventory.map((item: FlavorsInventoryObj, i: number) => {
           return (
             <div
               style={{
@@ -307,36 +286,18 @@ function FlavorsCrud({
           );
         })}
       {/* OUTSIDE MAP NOW */}
-
-      <form onSubmit={addFlavorsAndInventories}>
-        <div>
-          <input
-            style={{ width: "300px" }}
-            required
-            id="add-flavor"
-            name="add-flavor"
-            type="text"
-            placeholder="separate by commas (ie: Peach,Apple,Orange...)"
-            onChange={(e) => setFlavorsString(e.target.value)}
+      {showFlavorForm && (
+        <>
+          <FlavorsInventoryForm
+            productId={productData.id}
+            setFlavorsInvSalesPriceArr={setFlavorsInvSalesPriceArr}
           />
-          <label htmlFor="add-flavor">Add Flavor</label>
-        </div>
-        <div>
-          <input
-            style={{ width: "300px" }}
-            required
-            id="add-stock"
-            name="add-stocks"
-            type="text"
-            placeholder="separate by commas (ie: 12,14,23...)"
-            onChange={(e) => setInventoryString(e.target.value)}
-          />
-          <label htmlFor="add-stocks">
-            Add Inventories, respective to the order for Flavors
-          </label>
-        </div>
-        <button type="submit">Add Flavor(s) and Inventorie(s)</button>
-      </form>
+          <button onClick={addFlavorsInv}>Submit</button>
+        </>
+      )}
+      <button onClick={() => setShowFlavorForm((prev) => !prev)}>
+        {showFlavorForm ? "Cancel adding" : "Add Flavors"}
+      </button>
     </div>
   );
 }
