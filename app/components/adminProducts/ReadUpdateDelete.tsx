@@ -203,6 +203,7 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
       }}
     >
       <h2>Product name: "{product.product.name}"</h2>
+      <p>Product id: {product.product.id}</p>
       <p>Unit Price: ${product.product.unitPrice}</p>
       <div>
         <img

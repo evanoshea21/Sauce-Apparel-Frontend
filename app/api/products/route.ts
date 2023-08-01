@@ -57,8 +57,6 @@ export async function POST(req: NextRequest) {
   }
   // READ
   if (reqBody.method === "read") {
-    // IF name, category, isFeatured
-    // const response = await prisma.products.findMany();
     const productResponse = await prisma.products.findMany({
       where: {
         id: reqBody.id,
@@ -67,7 +65,6 @@ export async function POST(req: NextRequest) {
         isFeatured: reqBody.isFeatured,
       },
     });
-    // productResponse =
     let products: Product[] = [];
     // for each of these products, run a query to tack on the flavors_inventories
     for (let i = 0; i < productResponse.length; i++) {
