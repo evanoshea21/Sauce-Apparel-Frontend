@@ -187,14 +187,6 @@ function FlavorsCrud({
 
     if (flavorsString.length === 0 || inventoryString.length === 0) return;
 
-    // build payload of type Product
-    /*
-    array of...
-    - flavors
-    - inventories
-    - salesPrice
-    - productId
-    */
     const flavors = flavorsString.split(",");
     const inventories = inventoryString.split(",");
 
@@ -203,7 +195,7 @@ function FlavorsCrud({
     flavors.forEach((flavor: string, i: number) => {
       // create obj
       const obj: Flavor_Inventory = {
-        productId: productData.id || "", //optional
+        productId: productData.id || "", //bc it's optional
         flavor: flavor,
         inventory: Number(inventories[i]),
         salesPrice: null,

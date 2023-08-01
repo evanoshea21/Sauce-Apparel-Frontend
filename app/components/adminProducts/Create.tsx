@@ -2,7 +2,11 @@
 import React from "react";
 import axios from "axios";
 import type { Product } from "@/scripts/Types";
-
+import type { FlavorsInventoryObj } from "@/scripts/Types";
+import {
+  ProductForm,
+  FlavorsInventoryForm,
+} from "../forms/ProductFlavorsForms";
 interface CreateProps {
   formValues?: Product;
   setRefreshList: React.Dispatch<React.SetStateAction<boolean>>;
@@ -13,14 +17,22 @@ export default function Create({ formValues, setRefreshList }: CreateProps) {
   const [name, setName] = React.useState<string>("");
   const [unitPrice, setUnitPrice] = React.useState<string>("");
   const [imageUrl, setImageUrl] = React.useState<string>("");
-  const [inventory, setInventory] = React.useState<number>(0);
-  const [description, setDescription] = React.useState<string>("");
+  const [inventory, setInventory] = React.useState<number | null>(null);
+  const [description, setDescription] = React.useState<string | null>(null);
   const [salesPrice, setSalesPrice] = React.useState<string | null>(null);
   const [category, setCategory] = React.useState<string | null>(null);
   const [isFeatured, setIsFeatured] = React.useState<boolean>(false);
+  const [flavorsInvSalesPriceArr, setFlavorsInvSalesPriceArr] = React.useState<
+    FlavorsInventoryObj[]
+  >([]);
 
-  function handleForm(e: any) {
-    e.preventDefault();
+  function handleForms() {
+    // Check for necessary inputs first
+    if (!name.length || !unitPrice.length || !imageUrl.length) {
+      //handle error message UI for required fields
+      return;
+    }
+
     const dataPayload: Product = {
       product: {
         name,
@@ -32,17 +44,10 @@ export default function Create({ formValues, setRefreshList }: CreateProps) {
         category,
         isFeatured,
       },
-      flavors_inventory: [
-        { flavor: "peach", inventory: 24, salesPrice: "14.99", productId: "" },
-        { flavor: "orange", inventory: 25, salesPrice: "14.99", productId: "" },
-        { flavor: "blue", inventory: 26, salesPrice: null, productId: "" },
-      ], // make sure to map these in
+      flavors_inventory: flavorsInvSalesPriceArr, // make sure to map these in
     };
 
     // [TODO] DONT ALLOW CREATION OF PRODUCT WITH SAME NAME. Do read first, make sure results are empty
-
-    // console.log("Data Payload (create product): \n", dataPayload);
-    // return;
 
     axios({
       url: "/api/products",
@@ -61,84 +66,20 @@ export default function Create({ formValues, setRefreshList }: CreateProps) {
   return (
     <div>
       <h1>Create Product</h1>
-      <form onSubmit={handleForm}>
-        <label htmlFor="adminProductCreate_name">Name</label>
-        <input
-          required
-          id="adminProductCreate_name"
-          placeholder="name"
-          name="name"
-          type="text"
-          onChange={(e) => setName(e.target.value)}
-        />
-
-        <label htmlFor="adminProductCreate_unitPrice">UnitPrice</label>
-        <input
-          required
-          id="adminProductCreate_unitPrice"
-          placeholder="unitPrice"
-          name="unitPrice"
-          type="text"
-          onChange={(e) => setUnitPrice(e.target.value)}
-        />
-
-        <label htmlFor="adminProductCreate_stock">Stock</label>
-        <input
-          required
-          id="adminProductCreate_stock"
-          placeholder="stock"
-          name="stock"
-          type="text"
-          onChange={(e) => setInventory(Number(e.target.value))}
-        />
-
-        <label htmlFor="adminProductCreate_imageUrl">ImageUrl</label>
-        <input
-          required
-          id="adminProductCreate_imageUrl"
-          placeholder="imageUrl"
-          name="imageUrl"
-          type="text"
-          onChange={(e) => setImageUrl(e.target.value)}
-        />
-
-        <label htmlFor="adminProductCreate_description">Desccription?</label>
-        <input
-          id="adminProductCreate_description"
-          placeholder="description"
-          name="description"
-          type="text"
-          onChange={(e) => setDescription(e.target.value)}
-        />
-
-        <label htmlFor="adminProductCreate_salesPrice">Sales Price?</label>
-        <input
-          id="adminProductCreate_salesPrice"
-          placeholder="salesPrice"
-          name="salesPrice"
-          type="text"
-          onChange={(e) => setSalesPrice(e.target.value)}
-        />
-
-        <label htmlFor="adminProductCreate_category">Category?</label>
-        <input
-          id="adminProductCreate_category"
-          placeholder="category"
-          name="category"
-          type="text"
-          onChange={(e) => setCategory(e.target.value)}
-        />
-
-        <label htmlFor="adminProductCreate_isFeatured">Is Featured?</label>
-        <input
-          id="adminProductCreate_isFeatured"
-          placeholder="isFeatured"
-          name="isFeatured"
-          type="number"
-          onChange={(e) => setIsFeatured(!!e.target.value)}
-        />
-        <button type="submit">Submit</button>
-      </form>
+      <ProductForm
+        setName={setName}
+        setUnitPrice={setUnitPrice}
+        setImageUrl={setImageUrl}
+        setInventory={setInventory}
+        setDescription={setDescription}
+        setSalesPrice={setSalesPrice}
+        setCategory={setCategory}
+        setIsFeatured={setIsFeatured}
+      />
+      <FlavorsInventoryForm
+        setFlavorsInvSalesPriceArr={setFlavorsInvSalesPriceArr}
+      />
+      <button onClick={handleForms}>CREATE PRODUCT</button>
     </div>
   );
 }

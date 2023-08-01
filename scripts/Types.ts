@@ -29,3 +29,10 @@ export interface Product {
     productId: string; // returns for READ; for CREATE, pass empty string
   }[];
 }
+
+export interface FlavorsInventoryObj {
+  flavor: string;
+  inventory: number;
+  salesPrice: string | null;
+  productId: string;
+}
