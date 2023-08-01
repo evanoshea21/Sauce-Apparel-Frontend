@@ -1,26 +1,15 @@
 "use client";
 import React from "react";
-import type { Product } from "@/scripts/Types";
+import type { Product, ProductData } from "@/scripts/Types";
 import axios from "axios";
 import classes from "@/styles/Admin.module.css";
-import { Flavors } from "next/font/google";
-import { FlavorsInventoryForm } from "../forms/ProductFlavorsForms";
+import {
+  FlavorsInventoryForm,
+  ProductForm,
+} from "../forms/ProductFlavorsForms";
 import type { FlavorsInventoryObj } from "@/scripts/Types";
 
 //Product (everything) vs ProductData (only the product's data)
-
-interface ProductData {
-  id?: string; //optional bc CREATE payload doesn't need it
-  name: string;
-  unitPrice: string;
-  imageUrl: string;
-
-  description: string | null;
-  inventory: number | null; //if no flavors
-  salesPrice: string | null; // if no flavors
-  category: string | null;
-  isFeatured?: boolean;
-}
 
 export default function Read({ refreshList }: { refreshList: boolean }) {
   const [update, setUpdate] = React.useState<boolean>(false);
@@ -96,6 +85,28 @@ interface ProductRowProps {
 
 function ProductRow({ product, refreshRow }: ProductRowProps) {
   const [isEditMode, setIsEditMode] = React.useState(false);
+  const [name, setName] = React.useState<string>(product.product.name);
+  const [unitPrice, setUnitPrice] = React.useState<string>(
+    product.product.unitPrice
+  );
+  const [imageUrl, setImageUrl] = React.useState<string>(
+    product.product.imageUrl
+  );
+  const [inventory, setInventory] = React.useState<number | null>(
+    product.product.inventory
+  );
+  const [description, setDescription] = React.useState<string | null>(
+    product.product.description
+  );
+  const [salesPrice, setSalesPrice] = React.useState<string | null>(
+    product.product.salesPrice
+  );
+  const [category, setCategory] = React.useState<string | null>(
+    product.product.category
+  );
+  const [isFeatured, setIsFeatured] = React.useState<boolean>(
+    product.product.isFeatured || false
+  );
 
   function deleteEntireProduct() {
     axios({
@@ -114,7 +125,74 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
       });
   }
 
+  function updateProduct() {
+    const payload: ProductData = {
+      name,
+      unitPrice,
+      imageUrl,
+      inventory,
+      description,
+      salesPrice,
+      category,
+      isFeatured,
+    };
+
+    axios({
+      url: "api/products",
+      method: "POST",
+      data: {
+        method: "update",
+        productId: product.product.id || "",
+        data: payload,
+      },
+    })
+      .then((res) => {
+        console.log("Updated Product");
+        console.log(res.data);
+        // SPLICE row
+        refreshRow(false, product.product.id || "");
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+    setIsEditMode(false);
+  }
+
   if (!product) return <></>;
+
+  if (isEditMode) {
+    return (
+      <div
+        style={{
+          border: "1px solid green",
+          padding: "20px",
+        }}
+      >
+        <ProductForm
+          defaultValues={{
+            name: product.product.name,
+            unitPrice: product.product.unitPrice,
+            imageUrl: product.product.imageUrl,
+
+            description: product.product.description,
+            inventory: product.product.inventory, //if no flavors
+            salesPrice: product.product.salesPrice, // if no flavors
+            category: product.product.category,
+            isFeatured: product.product.isFeatured,
+          }}
+          setName={setName}
+          setUnitPrice={setUnitPrice}
+          setImageUrl={setImageUrl}
+          setInventory={setInventory}
+          setDescription={setDescription}
+          setSalesPrice={setSalesPrice}
+          setCategory={setCategory}
+          setIsFeatured={setIsFeatured}
+        />
+        <button onClick={updateProduct}>UPDATE PRODUCT</button>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -124,24 +202,8 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
         margin: "3px",
       }}
     >
-      <p>SKU#:</p>
-      {Array.isArray(product.flavors_inventory) &&
-        product.flavors_inventory.map((item) => (
-          <span key={item.sku}>{item.sku}, </span>
-        ))}
-      <p>
-        Product: <strong>{product.product.name}</strong>
-      </p>
-      <p>Price: ${product.product.unitPrice}</p>
-      {product.product.salesPrice && (
-        <p style={{ color: "red" }}>Sale: ${product.product.salesPrice}</p>
-      )}
-      <p>Flavors:</p>
-      <FlavorsCrud
-        refreshRow={refreshRow}
-        productData={product.product}
-        flavors_inventory={product.flavors_inventory}
-      />
+      <h2>Product name: "{product.product.name}"</h2>
+      <p>Unit Price: ${product.product.unitPrice}</p>
       <div>
         <img
           src={product.product.imageUrl}
@@ -150,6 +212,27 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
           alt="image"
         />
       </div>
+      <p>Description: {product.product.description || "none"}</p>
+      {product.flavors_inventory.length === 0 && (
+        <p>Inventory: {product.product.inventory}</p>
+      )}
+      <p style={{ color: "red" }}>
+        Sale
+        {product.product.salesPrice
+          ? ` Price: $${product.product.salesPrice}`
+          : ": none"}
+      </p>
+      <p>Category: {product.product.category || "uncategorized"}</p>
+      <p>Is Featured: {product.product.isFeatured ? "Yes" : "Nope"}</p>
+      <button onClick={() => setIsEditMode((prev) => !prev)}>
+        EDIT PRODUCT
+      </button>
+      <h3>Flavors:</h3>
+      <FlavorsCrud
+        refreshRow={refreshRow}
+        productData={product.product}
+        flavors_inventory={product.flavors_inventory}
+      />
 
       <button onClick={deleteEntireProduct} style={{ color: "red" }}>
         Delete ENTIRE PRODUCT
@@ -192,6 +275,11 @@ function FlavorsCrud({
       data: { method: "create", data: payload },
     })
       .then((res) => {
+        const elems: NodeListOf<HTMLInputElement> = document.querySelectorAll(
+          ".flavorInventoryInput"
+        );
+        elems.forEach((elem) => (elem.value = ""));
+
         console.log("added flavor: ", res);
         refreshRow(false, productData.id || "");
       })
@@ -276,6 +364,7 @@ function FlavorsCrud({
                   </div>
                 </>
               )}
+              <p>SKU: {item.sku}</p>
               <button
                 onClick={() => deleteFlavor(item.flavor)}
                 style={{ color: "red" }}

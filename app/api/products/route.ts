@@ -1,17 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import type { Product } from "@/scripts/Types";
+import type { Product, ProductData } from "@/scripts/Types";
 import prisma from "@/lib/prismaClient";
 
 interface CreateProduct {
   method: "create";
   data: Product;
 }
-interface ProductOnlyUpdate extends Omit<Product, "flavors_inventory"> {
-  //does NOT update flavors_inventory, only Product itself (image, name, unit price, salesPrice)
-}
 interface UpdateProduct {
   method: "update";
-  data: ProductOnlyUpdate;
+  productId: string;
+  data: ProductData;
 }
 interface ReadProduct {
   method: "read";
@@ -92,8 +90,16 @@ export async function POST(req: NextRequest) {
   }
   // UPDATE
   if (reqBody.method === "update") {
-    //do LATER (form for ADVANCED product update)
-    return NextResponse.json({ response: "" });
+    try {
+      const response = await prisma.products.update({
+        where: { id: reqBody.productId },
+        data: reqBody.data,
+      });
+      return NextResponse.json({ response });
+    } catch (e) {
+      console.log("error updating product: \n", e);
+      return NextResponse.json({ error: e }, { status: 500 });
+    }
   }
 }
 

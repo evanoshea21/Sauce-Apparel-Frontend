@@ -36,6 +36,7 @@ export function ProductForm(props: ProductFormProps) {
             placeholder="name"
             name="name"
             type="text"
+            defaultValue={props.defaultValues?.name ?? ""}
             onChange={(e) => props.setName(e.target.value)}
           />
           <label htmlFor="adminProductCreate_name">Name</label>
@@ -48,6 +49,7 @@ export function ProductForm(props: ProductFormProps) {
             placeholder="unitPrice"
             name="unitPrice"
             type="text"
+            defaultValue={props.defaultValues?.unitPrice ?? ""}
             onChange={(e) => props.setUnitPrice(e.target.value)}
           />
           <label htmlFor="adminProductCreate_unitPrice">UnitPrice</label>
@@ -56,13 +58,14 @@ export function ProductForm(props: ProductFormProps) {
         <div>
           <input
             required
-            id="adminProductCreate_stock"
-            placeholder="stock"
-            name="stock"
+            id="adminProductCreate_inventory"
+            placeholder="inventory"
+            name="inventory"
             type="text"
+            defaultValue={props.defaultValues?.inventory ?? ""}
             onChange={(e) => props.setInventory(Number(e.target.value))}
           />
-          <label htmlFor="adminProductCreate_stock">Stock</label>
+          <label htmlFor="adminProductCreate_inventory">Stock</label>
         </div>
 
         <div>
@@ -72,6 +75,7 @@ export function ProductForm(props: ProductFormProps) {
             placeholder="imageUrl"
             name="imageUrl"
             type="text"
+            defaultValue={props.defaultValues?.imageUrl ?? ""}
             onChange={(e) => props.setImageUrl(e.target.value)}
           />
           <label htmlFor="adminProductCreate_imageUrl">ImageUrl</label>
@@ -83,6 +87,7 @@ export function ProductForm(props: ProductFormProps) {
             placeholder="description"
             name="description"
             type="text"
+            defaultValue={props.defaultValues?.description ?? ""}
             onChange={(e) => props.setDescription(e.target.value)}
           />
           <label htmlFor="adminProductCreate_description">Desccription?</label>
@@ -94,6 +99,7 @@ export function ProductForm(props: ProductFormProps) {
             placeholder="salesPrice"
             name="salesPrice"
             type="text"
+            defaultValue={props.defaultValues?.salesPrice ?? ""}
             onChange={(e) => props.setSalesPrice(e.target.value)}
           />
           <label htmlFor="adminProductCreate_salesPrice">Sales Price?</label>
@@ -105,6 +111,7 @@ export function ProductForm(props: ProductFormProps) {
             placeholder="category"
             name="category"
             type="text"
+            defaultValue={props.defaultValues?.category ?? ""}
             onChange={(e) => props.setCategory(e.target.value)}
           />
           <label htmlFor="adminProductCreate_category">Category?</label>
@@ -116,6 +123,7 @@ export function ProductForm(props: ProductFormProps) {
             placeholder="isFeatured"
             name="isFeatured"
             type="number"
+            defaultValue={props.defaultValues?.isFeatured ? "1" : ""}
             onChange={(e) => props.setIsFeatured(!!Number(e.target.value))}
           />
           <label htmlFor="adminProductCreate_isFeatured">Is Featured?</label>
@@ -173,6 +181,7 @@ export function FlavorsInventoryForm(props: FlavorsInventoryProps) {
           return (
             <div key={i}>
               <input
+                className="flavorInventoryInput"
                 id={`flavor-${i}-${props.productId ?? "create"}`}
                 type="text"
                 name="flavor"
@@ -180,6 +189,7 @@ export function FlavorsInventoryForm(props: FlavorsInventoryProps) {
                 onChange={() => handleChange(i)}
               />
               <input
+                className="flavorInventoryInput"
                 id={`inventory-${i}-${props.productId ?? "create"}`}
                 type="text"
                 name="inventory"
@@ -187,6 +197,7 @@ export function FlavorsInventoryForm(props: FlavorsInventoryProps) {
                 onChange={() => handleChange(i)}
               />
               <input
+                className="flavorInventoryInput"
                 id={`salesPrice-${i}-${props.productId ?? "create"}`}
                 type="text"
                 name="salesPrice"
