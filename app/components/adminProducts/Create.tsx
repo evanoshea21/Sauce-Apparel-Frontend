@@ -69,6 +69,7 @@ export default function Create({ formValues, setRefreshList }: CreateProps) {
       })
       .catch((e) => console.error("Error Create: ", e));
   }
+
   return (
     <div>
       <h1>Create Product</h1>

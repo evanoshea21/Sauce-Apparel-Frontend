@@ -1,6 +1,13 @@
 "use client";
 import React from "react";
 import type { FlavorsInventoryObj } from "@/scripts/Types";
+import classes from "@/styles/Admin.module.css";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import Checkbox from "@mui/material/Checkbox";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 
 interface ProductFormProps {
   defaultValues?: {
@@ -26,107 +33,130 @@ interface ProductFormProps {
 }
 
 export function ProductForm(props: ProductFormProps) {
+  const [toggleValue, setToggleValue] = React.useState(
+    props.defaultValues?.isFeatured !== undefined
+      ? props.defaultValues.isFeatured
+        ? "true"
+        : "false"
+      : "false"
+  );
+
   return (
-    <div>
+    <div className={classes.main}>
+      <h1>Add Product</h1>
       <form>
-        <div>
+        <div className={classes.required}>
+          {/* required fields go here */}
+          <label htmlFor="adminProductCreate_name">Product Name</label>
           <input
             required
             id="adminProductCreate_name"
-            placeholder="name"
+            placeholder="Flum.."
             name="name"
             type="text"
             defaultValue={props.defaultValues?.name ?? ""}
             onChange={(e) => props.setName(e.target.value)}
           />
-          <label htmlFor="adminProductCreate_name">Name</label>
-        </div>
+          <div className={classes.unitPriceBox}>
+            <label htmlFor="adminProductCreate_unitPrice">UnitPrice</label>
+            <input
+              className={classes.priceInput}
+              required
+              id="adminProductCreate_unitPrice"
+              placeholder="Unit Price"
+              name="unitPrice"
+              type="number"
+              min="1"
+              defaultValue={props.defaultValues?.unitPrice ?? ""}
+              onChange={(e) => props.setUnitPrice(e.target.value)}
+            />
+            <span>$</span>
+          </div>
 
-        <div>
-          <input
-            required
-            id="adminProductCreate_unitPrice"
-            placeholder="unitPrice"
-            name="unitPrice"
-            type="text"
-            defaultValue={props.defaultValues?.unitPrice ?? ""}
-            onChange={(e) => props.setUnitPrice(e.target.value)}
-          />
-          <label htmlFor="adminProductCreate_unitPrice">UnitPrice</label>
-        </div>
-
-        <div>
-          <input
-            required
-            id="adminProductCreate_inventory"
-            placeholder="inventory"
-            name="inventory"
-            type="text"
-            defaultValue={props.defaultValues?.inventory ?? ""}
-            onChange={(e) => props.setInventory(Number(e.target.value))}
-          />
-          <label htmlFor="adminProductCreate_inventory">Stock</label>
-        </div>
-
-        <div>
+          <label htmlFor="adminProductCreate_imageUrl">Image URL</label>
           <input
             required
             id="adminProductCreate_imageUrl"
-            placeholder="imageUrl"
+            placeholder="http://...."
             name="imageUrl"
             type="text"
             defaultValue={props.defaultValues?.imageUrl ?? ""}
             onChange={(e) => props.setImageUrl(e.target.value)}
           />
-          <label htmlFor="adminProductCreate_imageUrl">ImageUrl</label>
-        </div>
-
-        <div>
-          <input
-            id="adminProductCreate_description"
-            placeholder="description"
-            name="description"
-            type="text"
-            defaultValue={props.defaultValues?.description ?? ""}
-            onChange={(e) => props.setDescription(e.target.value)}
-          />
-          <label htmlFor="adminProductCreate_description">Desccription?</label>
-        </div>
-
-        <div>
-          <input
-            id="adminProductCreate_salesPrice"
-            placeholder="salesPrice"
-            name="salesPrice"
-            type="text"
-            defaultValue={props.defaultValues?.salesPrice ?? ""}
-            onChange={(e) => props.setSalesPrice(e.target.value)}
-          />
-          <label htmlFor="adminProductCreate_salesPrice">Sales Price?</label>
-        </div>
-
-        <div>
-          <input
-            id="adminProductCreate_category"
-            placeholder="category"
-            name="category"
-            type="text"
-            defaultValue={props.defaultValues?.category ?? ""}
-            onChange={(e) => props.setCategory(e.target.value)}
-          />
-          <label htmlFor="adminProductCreate_category">Category?</label>
-        </div>
-
-        <div>
-          <input
+          <label htmlFor="adminProductCreate_isFeatured">Featured</label>
+          <div className={classes.toggle}>
+            <ToggleButtonGroup
+              value={toggleValue}
+              exclusive
+              onChange={(e: any) => {
+                setToggleValue(e.target.value);
+                props.setIsFeatured(e.target.value);
+                console.log("Toggle: ", e.target.value);
+              }}
+            >
+              <ToggleButton value="false">No</ToggleButton>
+              <ToggleButton value="true">Yes</ToggleButton>
+            </ToggleButtonGroup>
+          </div>
+          {/* <input
             id="adminProductCreate_isFeatured"
             placeholder="isFeatured"
             name="isFeatured"
             type="number"
             defaultValue={props.defaultValues?.isFeatured ? "1" : ""}
             onChange={(e) => props.setIsFeatured(!!Number(e.target.value))}
+          /> */}
+        </div>
+        <div className={classes.optional}>
+          {/* optional fields go here */}
+          <label htmlFor="adminProductCreate_inventory">Inventory</label>
+          <input
+            className={classes.invInput}
+            id="adminProductCreate_inventory"
+            placeholder="Inventory"
+            name="inventory"
+            type="number"
+            min="1"
+            step="1"
+            defaultValue={props.defaultValues?.inventory ?? ""}
+            onChange={(e) => props.setInventory(Number(e.target.value))}
           />
-          <label htmlFor="adminProductCreate_isFeatured">Is Featured?</label>
+
+          <div className={classes.unitPriceBox}>
+            <label htmlFor="adminProductCreate_salesPrice">Sales Price</label>
+            <input
+              id="adminProductCreate_salesPrice"
+              placeholder="Sales Price"
+              name="salesPrice"
+              type="text"
+              defaultValue={props.defaultValues?.salesPrice ?? ""}
+              onChange={(e) => props.setSalesPrice(e.target.value)}
+            />
+            <span>$</span>
+          </div>
+          <label htmlFor="adminProductCreate_description">Description</label>
+          <input
+            id="adminProductCreate_description"
+            placeholder="Fast-charging and ..."
+            name="description"
+            type="text"
+            defaultValue={props.defaultValues?.description ?? ""}
+            onChange={(e) => props.setDescription(e.target.value)}
+          />
+          {/* Category dropdown here */}
+          <InputLabel id="adminProductCreate_category">Category</InputLabel>
+          <Select
+            labelId="adminProductCreate_category"
+            id="adminProductCreate_category"
+            defaultValue={props.defaultValues?.category ?? "Non-Disposable"}
+            label="CategoryLabel"
+            onChange={(e: any) => props.setCategory(e.target.value)}
+          >
+            <MenuItem value={"Non-Disposable"}>Non-Disposable</MenuItem>
+            <MenuItem value={"Disposable"}>Disposable</MenuItem>
+            <MenuItem value={"Vape"}>Vape</MenuItem>
+            <MenuItem value={"Other Vapes"}>Other Vapes</MenuItem>
+          </Select>
         </div>
       </form>
     </div>
