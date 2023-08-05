@@ -265,7 +265,9 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
               )
             }
           >
-            Configure Flavors
+            {display === "configure flavors"
+              ? "Hide Flavors"
+              : "Configure Flavors"}
           </Button>
         </div>
 

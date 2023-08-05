@@ -76,27 +76,43 @@ export default function Create({ formValues, setRefreshList }: CreateProps) {
   }
 
   return (
-    <div>
-      <ProductForm
-        setName={setName}
-        setUnitPrice={setUnitPrice}
-        setImageUrl={setImageUrl}
-        setInventory={setInventory}
-        setDescription={setDescription}
-        setSalesPrice={setSalesPrice}
-        setCategory={setCategory}
-        setIsFeatured={setIsFeatured}
-      />
-      <FlavorsInventoryForm
-        setFlavorsInvSalesPriceArr={setFlavorsInvSalesPriceArr}
-      />
-      <Button
-        variant="contained"
-        onClick={handleForms}
-        style={{ marginLeft: "20px" }}
+    <div
+      style={{
+        border: "1px solid grey",
+        borderRadius: "20px",
+        paddingTop: "20px",
+        paddingBottom: "40px",
+      }}
+    >
+      <h1 style={{ marginLeft: "35px" }}>Add New Product</h1>
+      <div
+        style={{
+          display: "flex",
+        }}
       >
-        Submit Product
-      </Button>
+        <div>
+          <ProductForm
+            setName={setName}
+            setUnitPrice={setUnitPrice}
+            setImageUrl={setImageUrl}
+            setInventory={setInventory}
+            setDescription={setDescription}
+            setSalesPrice={setSalesPrice}
+            setCategory={setCategory}
+            setIsFeatured={setIsFeatured}
+          />
+          <Button
+            variant="contained"
+            onClick={handleForms}
+            style={{ marginLeft: "20px" }}
+          >
+            Submit Product
+          </Button>
+        </div>
+        <FlavorsInventoryForm
+          setFlavorsInvSalesPriceArr={setFlavorsInvSalesPriceArr}
+        />
+      </div>
     </div>
   );
 }
