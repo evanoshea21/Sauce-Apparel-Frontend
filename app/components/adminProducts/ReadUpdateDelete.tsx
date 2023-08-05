@@ -2,6 +2,7 @@
 import React from "react";
 import type { Product, ProductData } from "@/scripts/Types";
 import axios from "axios";
+import { isValidPrice, isPositiveInteger } from "@/app/utils";
 import classes from "@/styles/AdminProducts.module.css";
 import {
   FlavorsInventoryForm,
@@ -70,7 +71,9 @@ export default function Read({ refreshList }: { refreshList: boolean }) {
 
   return (
     <div>
-      <h1>Read Products Table</h1>
+      <h1 style={{ marginLeft: "10px", marginTop: "50px" }}>
+        Products & Inventory
+      </h1>
       <button onClick={() => setUpdate((prev) => !prev)}>Refresh</button>
       {productsShown.map((item, i) => (
         <ProductRow refreshRow={refreshRow} product={item} key={i} />
@@ -90,6 +93,10 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
     "product" | "edit product" | "configure flavors"
   >("product");
   const [rowHeight, setRowHeight] = React.useState<string>("");
+  const [errorMessage, setErrorMessage] = React.useState<string | undefined>();
+  const [successMessage, setSuccessMessage] = React.useState<
+    string | undefined
+  >();
   const [name, setName] = React.useState<string>(product.product.name);
   const [unitPrice, setUnitPrice] = React.useState<string>(
     product.product.unitPrice
@@ -114,8 +121,15 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
   );
 
   const [categoryColor, setCategoryColor] = React.useState("grey");
+  const [isLoadingAjax, setIsLoadingAjax] = React.useState(false);
 
-  // set category color
+  function timeoutSuccess() {
+    setTimeout(() => {
+      setSuccessMessage(undefined);
+    }, 3000);
+  }
+
+  // set category tags color
   React.useEffect(() => {
     let category = product.product.category;
     if (category === "Uncategorized") {
@@ -132,6 +146,8 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
   }, [product]);
 
   function deleteEntireProduct() {
+    if (isLoadingAjax) return;
+    setIsLoadingAjax(true);
     axios({
       url: "api/products",
       method: "DELETE",
@@ -141,14 +157,44 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
         console.log("IT WORKED! deleted");
         console.log(res.data);
         // SPLICE row
+        setDisplay("product");
+        setIsLoadingAjax(false);
         refreshRow(true, product.product.id || "");
       })
       .catch((err) => {
+        setIsLoadingAjax(false);
         console.error(err);
       });
   }
 
   function updateProduct() {
+    if (isLoadingAjax) return;
+    setIsLoadingAjax(true);
+    // Form Error Checks
+    if (!name.length || !unitPrice.length || !imageUrl.length) {
+      //handle error message UI for required fields
+      setErrorMessage(
+        "'Name', 'Unit Price', and 'Image URL' are required fields"
+      );
+      setIsLoadingAjax(false);
+      return;
+    }
+    if (!isValidPrice(unitPrice)) {
+      setErrorMessage("Not a valid Unit Price. Max 2 decimal places.");
+      setIsLoadingAjax(false);
+      return;
+    }
+    if (salesPrice && !isValidPrice(salesPrice)) {
+      setErrorMessage("Not a valid Sales Price. Max 2 decimal places.");
+      setIsLoadingAjax(false);
+      return;
+    }
+    if (inventory && !isPositiveInteger(inventory)) {
+      setErrorMessage("Inventory must be a positive integer");
+      setIsLoadingAjax(false);
+      return;
+    }
+
     const payload: ProductData = {
       name,
       unitPrice,
@@ -174,11 +220,24 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
         console.log(res.data);
         // SPLICE row
         refreshRow(false, product.product.id || "");
+        // setDisplay("product");
+        setErrorMessage(undefined);
+        setIsLoadingAjax(false);
+        setSuccessMessage("Successfully Updated!");
+        timeoutSuccess();
       })
       .catch((err) => {
-        console.error(err);
+        setIsLoadingAjax(false);
+        // account for DUPLICATE ROW
+        if (err.response.data.error.meta.target === "Products_name_key") {
+          setErrorMessage(
+            "A product by this name already exists. Try another name."
+          );
+        } else {
+          console.error(err.response.data.error.meta.target);
+          setErrorMessage("There was an Error updating your product..");
+        }
       });
-    setDisplay("product");
   }
 
   function setHeight(id: string, initial?: boolean) {
@@ -310,19 +369,32 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
             setCategory={setCategory}
             setIsFeatured={setIsFeatured}
           />
+          {errorMessage && (
+            <p style={{ marginLeft: "20px", color: "red", maxWidth: "400px" }}>
+              Error: {errorMessage}
+            </p>
+          )}
+          {successMessage && (
+            <p style={{ marginLeft: "20px", color: "green" }}>
+              Success: {successMessage}
+            </p>
+          )}
           <Button
             variant="contained"
             onClick={updateProduct}
             className={classes.btn}
+            disabled={isLoadingAjax}
           >
-            UPDATE PRODUCT
+            {isLoadingAjax ? "Sending.." : "UPDATE PRODUCT"}
           </Button>
+
           <Button
             variant="outlined"
             onClick={deleteEntireProduct}
             className={classes.btnDelete}
+            disabled={isLoadingAjax}
           >
-            Delete ENTIRE PRODUCT
+            {isLoadingAjax ? "Sending.." : "Delete ENTIRE Product"}
           </Button>
         </div>
       )}
@@ -352,17 +424,62 @@ function FlavorsCrud({
   refreshRow,
 }: FlavorsProps) {
   const [showFlavorForm, setShowFlavorForm] = React.useState<boolean>(false);
+  const [errorMessage1, setErrorMessage1] = React.useState<
+    string | undefined
+  >();
+  const [errorMessage, setErrorMessage] = React.useState<string | undefined>();
   const [flavorUpdates, setFlavorUpdates] = React.useState<{
     [key: string]: number;
   }>({});
-  const [stockResponse, setStockResponse] = React.useState<string>("");
+  const [stockResponse, setStockResponse] = React.useState<
+    string | undefined
+  >();
   const [flavorsInvSalesPriceArr, setFlavorsInvSalesPriceArr] = React.useState<
     FlavorsInventoryObj[]
   >([]);
+  const [isLoadingAjax, setIsLoadingAjax] = React.useState(false);
 
   function addFlavorsInv() {
+    if (isLoadingAjax) return;
+    setIsLoadingAjax(true);
+    // check for valid Flavor-Inventory Entries
+    const validFlavorArr: FlavorsInventoryObj[] = [];
+    const duplicateFlavors: { [key: string]: boolean } = {};
+    for (let i = 0; i < flavorsInvSalesPriceArr.length; i++) {
+      let item = flavorsInvSalesPriceArr[i];
+      if (!item) continue;
+      //if only 1..
+      if (
+        (item.flavor && !item.inventory) ||
+        (!item.flavor && item.inventory)
+      ) {
+        setErrorMessage("Every flavor must have a corresponding inventory.");
+        setIsLoadingAjax(false);
+        return;
+      }
+      // if none, skip
+      if (!item.flavor && !item.inventory) continue;
+      // if 2, but invalid inventory
+      if (!isPositiveInteger(item.inventory)) {
+        setErrorMessage("Invalid inventory found. Must be positive integer.");
+        setIsLoadingAjax(false);
+        return;
+      }
+      //if duplicate flavor
+      if (duplicateFlavors[item.flavor] !== undefined) {
+        setErrorMessage("Duplicate Flavors found.");
+        setIsLoadingAjax(false);
+        return;
+      } else {
+        duplicateFlavors[item.flavor] = true;
+      }
+      // else push
+      validFlavorArr.push(item);
+    }
+
     console.log("Payload add FlavorsInv: \n", flavorsInvSalesPriceArr);
-    const payload = flavorsInvSalesPriceArr;
+
+    const payload = validFlavorArr;
     payload.forEach((row) => {
       row.productId = productData.id || "";
     });
@@ -381,13 +498,29 @@ function FlavorsCrud({
 
         console.log("added flavor: ", res);
         refreshRow(false, productData.id || "");
+        setFlavorsInvSalesPriceArr([]);
+        setIsLoadingAjax(false);
+        setErrorMessage(undefined);
       })
       .catch((e) => {
-        console.error("Error adding flavor: ", e);
+        setIsLoadingAjax(false);
+        if (
+          e.response.data.error.meta.target ===
+          "Flavors_Inventory_productId_flavor_key"
+        ) {
+          setErrorMessage(
+            "A Flavor you're trying to add already exists. Try again."
+          );
+        } else {
+          setErrorMessage("Error adding flavors..");
+          console.error("Error adding flavor: ", e);
+        }
       });
   }
 
   function deleteFlavor(flavor: string) {
+    if (isLoadingAjax) return;
+    setIsLoadingAjax(true);
     // use product.NAME and FLAVOR to delete row
     axios({
       url: "api/flavor",
@@ -397,13 +530,30 @@ function FlavorsCrud({
       .then((res) => {
         console.log("deleted flavor: ", res.data);
         refreshRow(false, productData.id || "");
+        setIsLoadingAjax(false);
       })
       .catch((e) => {
         console.error("Error deleting flavor: ", e);
+        setIsLoadingAjax(false);
       });
   }
 
   function updateStock() {
+    if (isLoadingAjax) return;
+    setIsLoadingAjax(true);
+
+    let validInventory = true;
+    Object.values(flavorUpdates).forEach((inventory) => {
+      if (!isPositiveInteger(inventory)) {
+        validInventory = false;
+      }
+    });
+    if (!validInventory) {
+      setErrorMessage1("Invalid Inventory. Must be positive integers.");
+      setIsLoadingAjax(false);
+      return;
+    }
+
     axios({
       url: "api/flavor",
       method: "POST",
@@ -416,65 +566,88 @@ function FlavorsCrud({
       .then((res) => {
         console.log("updated stock: ", res);
         setFlavorUpdates({});
+        setErrorMessage1(undefined);
         refreshRow(false, productData.id || "");
         setStockResponse("Successfully Updated!");
+        setIsLoadingAjax(false);
+        setTimeout(() => {
+          setStockResponse(undefined);
+        }, 3000);
       })
       .catch((e) => {
         console.error("Error updating stock: ", e);
+        setIsLoadingAjax(false);
       });
   }
 
   return (
     <div className={classes.flavors}>
-      <div className={classes.flavorRows}>
-        <h3 className={classes.headerFlavor}>Flavor</h3>
-        <h3 className={classes.headerInv}>Inventory</h3>
-        {Array.isArray(flavors_inventory) &&
-          flavors_inventory.map((item: FlavorsInventoryObj, i: number) => {
-            return (
-              <div className={classes.flavorRow} key={item.sku ?? i}>
-                <div className={classes.flavorName}>{item.flavor}</div>
-                <input
-                  className={classes.inventoryInput}
-                  type="number"
-                  min="0"
-                  defaultValue={item.inventory}
-                  onChange={(e) =>
-                    setFlavorUpdates((prev) => {
-                      prev[item.flavor] = Number(e.target.value);
-                      return prev;
-                    })
-                  }
-                />
-                <Button
-                  className={classes.flavorDelete}
-                  variant="contained"
-                  onClick={() => deleteFlavor(item.flavor)}
-                >
-                  X
-                </Button>
-              </div>
-            );
-          })}
-        {/* OUTSIDE MAP NOW */}
-        <Button variant="contained" onClick={() => updateStock()}>
-          Update Stock
-        </Button>
-      </div>
-      {stockResponse.length !== 0 && (
-        <span style={{ color: "green" }}>{stockResponse}</span>
+      {flavors_inventory.length !== 0 && (
+        <div className={classes.flavorRows}>
+          <h3 className={classes.headerFlavor}>Flavor</h3>
+          <h3 className={classes.headerInv}>Inventory</h3>
+          {Array.isArray(flavors_inventory) &&
+            flavors_inventory.map((item: FlavorsInventoryObj, i: number) => {
+              return (
+                <div className={classes.flavorRow} key={item.sku ?? i}>
+                  <div className={classes.flavorName}>{item.flavor}</div>
+                  <input
+                    className={classes.inventoryInput}
+                    type="number"
+                    min="0"
+                    defaultValue={item.inventory}
+                    onChange={(e) =>
+                      setFlavorUpdates((prev) => {
+                        prev[item.flavor] = Number(e.target.value);
+                        return prev;
+                      })
+                    }
+                  />
+                  <Button
+                    className={classes.flavorDelete}
+                    variant="contained"
+                    onClick={() => deleteFlavor(item.flavor)}
+                    disabled={isLoadingAjax}
+                  >
+                    X
+                  </Button>
+                </div>
+              );
+            })}
+          {/* OUTSIDE MAP NOW */}
+          {errorMessage1 && (
+            <p style={{ color: "red", maxWidth: "400px" }}>{errorMessage1}</p>
+          )}
+          {stockResponse && (
+            <p style={{ color: "green", maxWidth: "400px" }}>{stockResponse}</p>
+          )}
+          <Button
+            variant="contained"
+            onClick={() => updateStock()}
+            disabled={isLoadingAjax}
+          >
+            {isLoadingAjax ? "Sending.." : "Update Stock"}
+          </Button>
+        </div>
       )}
+
       <div className={classes.addFlavorForm}>
         <FlavorsInventoryForm
           productId={productData.id}
           setFlavorsInvSalesPriceArr={setFlavorsInvSalesPriceArr}
         />
+        {errorMessage && (
+          <p style={{ marginLeft: "20px", color: "red", maxWidth: "400px" }}>
+            Error: {errorMessage}
+          </p>
+        )}
         <Button
           className={classes.addFlavorBtn}
           variant="contained"
           onClick={addFlavorsInv}
+          disabled={isLoadingAjax}
         >
-          Add Flavors
+          {isLoadingAjax ? "Sending.." : "Add Flavors"}
         </Button>
       </div>
     </div>

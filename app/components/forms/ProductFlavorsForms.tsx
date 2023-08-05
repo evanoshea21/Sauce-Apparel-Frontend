@@ -10,6 +10,7 @@ import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Tooltip from "@mui/material/Tooltip";
 import Button from "@mui/material/Button";
+import HelpOutlineTwoToneIcon from "@mui/icons-material/HelpOutlineTwoTone";
 
 interface ProductFormProps {
   defaultValues?: {
@@ -42,6 +43,15 @@ export function ProductForm(props: ProductFormProps) {
         : "false"
       : "false"
   );
+  const [isCreateForm, setIsCreateForm] = React.useState<boolean>();
+
+  React.useEffect(() => {
+    if (props.defaultValues) {
+      setIsCreateForm(false);
+    } else {
+      setIsCreateForm(true);
+    }
+  }, [props.defaultValues]);
 
   return (
     <div className={classes.main}>
@@ -49,10 +59,16 @@ export function ProductForm(props: ProductFormProps) {
         <div className={classes.required}>
           {/* required fields go here */}
           <h3>Required Fields</h3>
-          <label htmlFor="adminProductCreate_name">Product Name</label>
+          <label
+            htmlFor={`adminProductCreate_name-${
+              isCreateForm ? "create" : "update"
+            }`}
+          >
+            Product Name
+          </label>
           <input
             required
-            id="adminProductCreate_name"
+            id={`adminProductCreate_name-${isCreateForm ? "create" : "update"}`}
             placeholder="Flum.."
             name="name"
             type="text"
@@ -60,11 +76,19 @@ export function ProductForm(props: ProductFormProps) {
             onChange={(e) => props.setName(e.target.value)}
           />
           <div className={classes.unitPriceBox}>
-            <label htmlFor="adminProductCreate_unitPrice">UnitPrice</label>
+            <label
+              htmlFor={`adminProductCreate_unitPrice-${
+                isCreateForm ? "create" : "update"
+              }`}
+            >
+              UnitPrice
+            </label>
             <input
               className={classes.priceInput}
               required
-              id="adminProductCreate_unitPrice"
+              id={`adminProductCreate_unitPrice-${
+                isCreateForm ? "create" : "update"
+              }`}
               placeholder="Unit Price"
               name="unitPrice"
               type="number"
@@ -75,10 +99,18 @@ export function ProductForm(props: ProductFormProps) {
             <span>$</span>
           </div>
 
-          <label htmlFor="adminProductCreate_imageUrl">Image URL</label>
+          <label
+            htmlFor={`adminProductCreate_imageUrl-${
+              isCreateForm ? "create" : "update"
+            }`}
+          >
+            Image URL
+          </label>
           <input
             required
-            id="adminProductCreate_imageUrl"
+            id={`adminProductCreate_imageUrl-${
+              isCreateForm ? "create" : "update"
+            }`}
             placeholder="http://...."
             name="imageUrl"
             type="text"
@@ -87,7 +119,9 @@ export function ProductForm(props: ProductFormProps) {
           />
           <label
             className={classes.featuredLabel}
-            htmlFor="adminProductCreate_isFeatured"
+            htmlFor={`adminProductCreate_isFeatured-${
+              isCreateForm ? "create" : "update"
+            }`}
           >
             Featured
           </label>
@@ -108,12 +142,21 @@ export function ProductForm(props: ProductFormProps) {
         <div className={classes.optional}>
           {/* optional fields go here */}
           <h3>Optional Fields</h3>
-          <Tooltip title="This inventory number applies to products with NO flavor options">
-            <label htmlFor="adminProductCreate_inventory">Inventory</label>
+          <Tooltip title="For Products with no flavor options">
+            <label
+              htmlFor={`adminProductCreate_inventory-${
+                isCreateForm ? "create" : "update"
+              }`}
+            >
+              Inventory
+              <HelpOutlineTwoToneIcon style={{ fontSize: "1rem" }} />
+            </label>
           </Tooltip>
           <input
             className={classes.invInput}
-            id="adminProductCreate_inventory"
+            id={`adminProductCreate_inventory-${
+              isCreateForm ? "create" : "update"
+            }`}
             placeholder="Inventory"
             name="inventory"
             type="number"
@@ -124,20 +167,36 @@ export function ProductForm(props: ProductFormProps) {
           />
 
           <div className={classes.unitPriceBox}>
-            <label htmlFor="adminProductCreate_salesPrice">Sales Price</label>
+            <label
+              htmlFor={`adminProductCreate_salesPrice-${
+                isCreateForm ? "create" : "update"
+              }`}
+            >
+              Sales Price
+            </label>
             <input
-              id="adminProductCreate_salesPrice"
+              id={`adminProductCreate_salesPrice-${
+                isCreateForm ? "create" : "update"
+              }`}
               placeholder="Sales Price"
               name="salesPrice"
-              type="text"
+              type="number"
               defaultValue={props.defaultValues?.salesPrice ?? ""}
               onChange={(e) => props.setSalesPrice(e.target.value)}
             />
             <span>$</span>
           </div>
-          <label htmlFor="adminProductCreate_description">Description</label>
+          <label
+            htmlFor={`adminProductCreate_description-${
+              isCreateForm ? "create" : "update"
+            }`}
+          >
+            Description
+          </label>
           <input
-            id="adminProductCreate_description"
+            id={`adminProductCreate_description-${
+              isCreateForm ? "create" : "update"
+            }`}
             placeholder="Fast-charging and ..."
             name="description"
             type="text"
@@ -145,10 +204,20 @@ export function ProductForm(props: ProductFormProps) {
             onChange={(e) => props.setDescription(e.target.value)}
           />
           {/* Category dropdown here */}
-          <InputLabel id="adminProductCreate_category">Category</InputLabel>
+          <InputLabel
+            id={`adminProductCreate_category-${
+              isCreateForm ? "create" : "update"
+            }`}
+          >
+            Category
+          </InputLabel>
           <Select
-            labelId="adminProductCreate_category"
-            id="adminProductCreate_category"
+            labelId={`adminProductCreate_category-${
+              isCreateForm ? "create" : "update"
+            }`}
+            id={`adminProductCreate_category-${
+              isCreateForm ? "create" : "update"
+            }`}
             defaultValue={props.defaultValues?.category ?? "Uncategorized"}
             label="CategoryLabel"
             onChange={(e: any) => props.setCategory(e.target.value)}

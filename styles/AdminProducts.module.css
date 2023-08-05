@@ -116,6 +116,9 @@
 }
 
 /* FLAVOR ROW (CRUD) */
+.flavors {
+  display: flex;
+}
 .flavorRows {
   padding: 20px;
 }

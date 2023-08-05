@@ -13,3 +13,24 @@ export function getCartSum(): number {
   );
   return sum;
 }
+
+export function isPositiveInteger(input: string | number): boolean {
+  let num = Number(input);
+  return Number.isInteger(num) && num >= 0;
+}
+
+export function isValidPrice(input: string | number): boolean {
+  let num = Number(input);
+  //must be positive
+  if (num < 0) return false;
+  let numString = String(input);
+  let split = numString.split(".");
+  // have max 1 decimal
+  if (split.length > 2) return false;
+  //digits be only
+  if (split.length > 1 && split[split.length - 1].length > 2) {
+    return false;
+  }
+
+  return true;
+}
