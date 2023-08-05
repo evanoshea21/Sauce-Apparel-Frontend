@@ -2,13 +2,14 @@
 import React from "react";
 import type { Product, ProductData } from "@/scripts/Types";
 import axios from "axios";
-import classes from "@/styles/Admin.module.css";
+import classes from "@/styles/AdminProducts.module.css";
 import {
   FlavorsInventoryForm,
   ProductForm,
 } from "../forms/ProductFlavorsForms";
 import type { FlavorsInventoryObj } from "@/scripts/Types";
-
+import Button from "@mui/material/Button";
+import EditTwoToneIcon from "@mui/icons-material/EditTwoTone";
 //Product (everything) vs ProductData (only the product's data)
 
 export default function Read({ refreshList }: { refreshList: boolean }) {
@@ -74,6 +75,7 @@ export default function Read({ refreshList }: { refreshList: boolean }) {
       {productsShown.map((item, i) => (
         <ProductRow refreshRow={refreshRow} product={item} key={i} />
       ))}
+      <div style={{ height: "600px" }}></div>
     </div>
   );
 }
@@ -84,7 +86,10 @@ interface ProductRowProps {
 }
 
 function ProductRow({ product, refreshRow }: ProductRowProps) {
-  const [isEditMode, setIsEditMode] = React.useState(false);
+  const [display, setDisplay] = React.useState<
+    "product" | "edit product" | "configure flavors"
+  >("product");
+  const [rowHeight, setRowHeight] = React.useState<string>("");
   const [name, setName] = React.useState<string>(product.product.name);
   const [unitPrice, setUnitPrice] = React.useState<string>(
     product.product.unitPrice
@@ -107,6 +112,24 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
   const [isFeatured, setIsFeatured] = React.useState<boolean>(
     product.product.isFeatured || false
   );
+
+  const [categoryColor, setCategoryColor] = React.useState("grey");
+
+  // set category color
+  React.useEffect(() => {
+    let category = product.product.category;
+    if (category === "Uncategorized") {
+      setCategoryColor("grey");
+    } else if (category === "Disposable") {
+      setCategoryColor("grey");
+    } else if (category === "60ml") {
+      setCategoryColor("grey");
+    } else if (category === "120ml") {
+      setCategoryColor("grey");
+    } else {
+      setCategoryColor("grey");
+    }
+  }, [product]);
 
   function deleteEntireProduct() {
     axios({
@@ -155,89 +178,162 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
       .catch((err) => {
         console.error(err);
       });
-    setIsEditMode(false);
+    setDisplay("product");
   }
+
+  function setHeight(id: string, initial?: boolean) {
+    let flavorCRUD: HTMLElement | null = document.querySelector(
+      `.flavorsCRUD-${id}`
+    );
+    let productRow: HTMLElement | null = document.querySelector(`.productRow`);
+    if (initial && productRow) {
+      setRowHeight(`${productRow.offsetHeight}px`);
+    } else {
+      if (flavorCRUD && productRow) {
+        console.log("Flavors(pid) Height: \n", flavorCRUD.offsetHeight);
+        console.log("ProductRow Height: \n", productRow.offsetHeight);
+        setRowHeight(`${flavorCRUD.offsetHeight + productRow.offsetHeight}px`);
+      } else {
+        console.log("oops, couldnt find elements for height");
+      }
+    }
+  }
+
+  // React.useEffect(() => {
+  //   setHeight(product.product.id ?? "", true);
+  // }, []);
 
   if (!product) return <></>;
 
-  if (isEditMode) {
-    return (
-      <div
-        style={{
-          border: "1px solid green",
-          padding: "20px",
-        }}
-      >
-        <ProductForm
-          defaultValues={{
-            name: product.product.name,
-            unitPrice: product.product.unitPrice,
-            imageUrl: product.product.imageUrl,
-
-            description: product.product.description,
-            inventory: product.product.inventory, //if no flavors
-            salesPrice: product.product.salesPrice, // if no flavors
-            category: product.product.category,
-            isFeatured: product.product.isFeatured,
-          }}
-          setName={setName}
-          setUnitPrice={setUnitPrice}
-          setImageUrl={setImageUrl}
-          setInventory={setInventory}
-          setDescription={setDescription}
-          setSalesPrice={setSalesPrice}
-          setCategory={setCategory}
-          setIsFeatured={setIsFeatured}
-        />
-        <button onClick={updateProduct}>UPDATE PRODUCT</button>
-      </div>
-    );
-  }
-
   return (
-    <div
-      style={{
-        border: "1px solid green",
-        padding: "20px",
-        margin: "3px",
-      }}
-    >
-      <h2>Product name: "{product.product.name}"</h2>
-      <p>Product id: {product.product.id}</p>
-      <p>Unit Price: ${product.product.unitPrice}</p>
-      <div>
-        <img
-          src={product.product.imageUrl}
-          width="60"
-          height="60"
-          alt="image"
-        />
-      </div>
-      <p>Description: {product.product.description || "none"}</p>
-      {product.flavors_inventory.length === 0 && (
-        <p>Inventory: {product.product.inventory}</p>
-      )}
-      <p style={{ color: "red" }}>
-        Sale
-        {product.product.salesPrice
-          ? ` Price: $${product.product.salesPrice}`
-          : ": none"}
-      </p>
-      <p>Category: {product.product.category || "uncategorized"}</p>
-      <p>Is Featured: {product.product.isFeatured ? "Yes" : "Nope"}</p>
-      <button onClick={() => setIsEditMode((prev) => !prev)}>
-        EDIT PRODUCT
-      </button>
-      <h3>Flavors:</h3>
-      <FlavorsCrud
-        refreshRow={refreshRow}
-        productData={product.product}
-        flavors_inventory={product.flavors_inventory}
-      />
+    <div>
+      <div
+        className={`${classes.main} productRow-${product.product.id}`}
+        style={
+          {
+            // height: rowHeight,
+            // transition: "all 2s ease",
+            // overflow: "hidden",
+          }
+        }
+      >
+        {/* PIC */}
+        <div className={classes.picLeft}>
+          <div className={classes.imgBox}>
+            <img src={product.product.imageUrl} alt="product-image" />
+          </div>
+        </div>
 
-      <button onClick={deleteEntireProduct} style={{ color: "red" }}>
-        Delete ENTIRE PRODUCT
-      </button>
+        {/* INFO */}
+        <div className={classes.info}>
+          <p className={classes.id}>id: {product.product.id}</p>
+          <div className={classes.title}>
+            <h2>{product.product.name}</h2>
+            <EditTwoToneIcon
+              sx={{ fontSize: "2rem" }}
+              className={classes.editIcon}
+              onClick={() => {
+                setDisplay(
+                  display === "edit product" ? "product" : "edit product"
+                );
+                // setHeight(product.product.id ?? "");
+              }}
+            />
+          </div>
+          <div className={classes.tags}>
+            <div
+              style={{ backgroundColor: categoryColor }}
+              className={classes.category}
+            >
+              {product.product.category}
+            </div>
+            {product.product.isFeatured && (
+              <div className={classes.featured}>Featured</div>
+            )}
+          </div>
+        </div>
+
+        {/* CONFIG */}
+        <div className={classes.config}>
+          <Button
+            variant="outlined"
+            onClick={() =>
+              setDisplay(
+                display === "configure flavors"
+                  ? "product"
+                  : "configure flavors"
+              )
+            }
+          >
+            Configure Flavors
+          </Button>
+        </div>
+
+        {/* PRICE */}
+        <div className={classes.price}>
+          <h3>
+            $ {product.product.unitPrice}
+            {product.product.unitPrice.length === 2 ? ".00" : ""}
+          </h3>
+          {product.product.salesPrice && (
+            <div className={classes.salesPrice}>
+              $ {product.product.salesPrice}{" "}
+              {product.product.salesPrice.length === 2 ? ".00" : ""}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* SHOW EDIT PRODUCT */}
+      {display === "edit product" && (
+        <div style={{ margin: "0px 0 40px 0" }}>
+          <ProductForm
+            defaultValues={{
+              name: product.product.name,
+              unitPrice: product.product.unitPrice,
+              imageUrl: product.product.imageUrl,
+
+              description: product.product.description,
+              inventory: product.product.inventory, //if no flavors
+              salesPrice: product.product.salesPrice, // if no flavors
+              category: product.product.category,
+              isFeatured: product.product.isFeatured,
+            }}
+            setName={setName}
+            setUnitPrice={setUnitPrice}
+            setImageUrl={setImageUrl}
+            setInventory={setInventory}
+            setDescription={setDescription}
+            setSalesPrice={setSalesPrice}
+            setCategory={setCategory}
+            setIsFeatured={setIsFeatured}
+          />
+          <Button
+            variant="contained"
+            onClick={updateProduct}
+            className={classes.btn}
+          >
+            UPDATE PRODUCT
+          </Button>
+          <Button
+            variant="outlined"
+            onClick={deleteEntireProduct}
+            className={classes.btnDelete}
+          >
+            Delete ENTIRE PRODUCT
+          </Button>
+        </div>
+      )}
+      {/* SHOW CONFIG FLAVORS */}
+      {display === "configure flavors" && (
+        <div className={`flavorsCRUD-${product.product.id}`}>
+          <FlavorsCrud
+            refreshRow={refreshRow}
+            productData={product.product}
+            flavors_inventory={product.flavors_inventory}
+          />
+        </div>
+      )}
     </div>
   );
 }
@@ -254,10 +350,10 @@ function FlavorsCrud({
   refreshRow,
 }: FlavorsProps) {
   const [showFlavorForm, setShowFlavorForm] = React.useState<boolean>(false);
-  const [updatedStock, setUpdatedStock] = React.useState<string>("");
-  const [stockToEditByFlavor, setStockToEditByFlavor] = React.useState<
-    string | undefined
-  >();
+  const [flavorUpdates, setFlavorUpdates] = React.useState<{
+    [key: string]: number;
+  }>({});
+  const [stockResponse, setStockResponse] = React.useState<string>("");
   const [flavorsInvSalesPriceArr, setFlavorsInvSalesPriceArr] = React.useState<
     FlavorsInventoryObj[]
   >([]);
@@ -306,27 +402,20 @@ function FlavorsCrud({
   }
 
   function updateStock() {
-    if (updatedStock === "" || !updatedStock) {
-      setStockToEditByFlavor(undefined);
-      setUpdatedStock("");
-      return;
-    }
-
     axios({
       url: "api/flavor",
       method: "POST",
       data: {
         method: "update_inventory",
         productId: productData.id,
-        flavor: stockToEditByFlavor,
-        newInventory: Number(updatedStock),
+        flavorUpdates,
       },
     })
       .then((res) => {
         console.log("updated stock: ", res);
-        setStockToEditByFlavor(undefined);
-        setUpdatedStock("");
+        setFlavorUpdates({});
         refreshRow(false, productData.id || "");
+        setStockResponse("Successfully Updated!");
       })
       .catch((e) => {
         console.error("Error updating stock: ", e);
@@ -334,60 +423,58 @@ function FlavorsCrud({
   }
 
   return (
-    <div style={{ border: "1px solid yellow" }} className={classes.flavors}>
-      {Array.isArray(flavors_inventory) &&
-        flavors_inventory.map((item: FlavorsInventoryObj, i: number) => {
-          return (
-            <div
-              style={{
-                border: "1px solid red",
-                padding: "12px",
-              }}
-              key={i}
-            >
-              <div>Flavor: {item.flavor}</div>
-              {stockToEditByFlavor === item.flavor ? (
-                <>
-                  <input
-                    type="text"
-                    onChange={(e) => setUpdatedStock(e.target.value)}
-                    defaultValue={flavors_inventory[i].inventory}
-                  />
-                  <button onClick={updateStock} style={{ color: "green" }}>
-                    ✔️
-                  </button>
-                </>
-              ) : (
-                <>
-                  <div onClick={() => setStockToEditByFlavor(item.flavor)}>
-                    {" "}
-                    Inventory: {flavors_inventory[i].inventory}
-                  </div>
-                </>
-              )}
-              <p>SKU: {item.sku}</p>
-              <button
-                onClick={() => deleteFlavor(item.flavor)}
-                style={{ color: "red" }}
-              >
-                X
-              </button>
-            </div>
-          );
-        })}
-      {/* OUTSIDE MAP NOW */}
-      {showFlavorForm && (
-        <>
-          <FlavorsInventoryForm
-            productId={productData.id}
-            setFlavorsInvSalesPriceArr={setFlavorsInvSalesPriceArr}
-          />
-          <button onClick={addFlavorsInv}>Submit</button>
-        </>
+    <div className={classes.flavors}>
+      <div className={classes.flavorRows}>
+        <h3 className={classes.headerFlavor}>Flavor</h3>
+        <h3 className={classes.headerInv}>Inventory</h3>
+        {Array.isArray(flavors_inventory) &&
+          flavors_inventory.map((item: FlavorsInventoryObj, i: number) => {
+            return (
+              <div className={classes.flavorRow} key={item.sku ?? i}>
+                <div className={classes.flavorName}>{item.flavor}</div>
+                <input
+                  className={classes.inventoryInput}
+                  type="number"
+                  min="0"
+                  defaultValue={item.inventory}
+                  onChange={(e) =>
+                    setFlavorUpdates((prev) => {
+                      prev[item.flavor] = Number(e.target.value);
+                      return prev;
+                    })
+                  }
+                />
+                <Button
+                  className={classes.flavorDelete}
+                  variant="contained"
+                  onClick={() => deleteFlavor(item.flavor)}
+                >
+                  X
+                </Button>
+              </div>
+            );
+          })}
+        {/* OUTSIDE MAP NOW */}
+        <Button variant="contained" onClick={() => updateStock()}>
+          Update Stock
+        </Button>
+      </div>
+      {stockResponse.length !== 0 && (
+        <span style={{ color: "green" }}>{stockResponse}</span>
       )}
-      <button onClick={() => setShowFlavorForm((prev) => !prev)}>
-        {showFlavorForm ? "Cancel adding" : "Add Flavors"}
-      </button>
+      <div className={classes.addFlavorForm}>
+        <FlavorsInventoryForm
+          productId={productData.id}
+          setFlavorsInvSalesPriceArr={setFlavorsInvSalesPriceArr}
+        />
+        <Button
+          className={classes.addFlavorBtn}
+          variant="contained"
+          onClick={addFlavorsInv}
+        >
+          Add Flavors
+        </Button>
+      </div>
     </div>
   );
 }

@@ -2,6 +2,8 @@
 import React from "react";
 import axios from "axios";
 import type { Product } from "@/scripts/Types";
+import Button from "@mui/material/Button";
+
 import type { FlavorsInventoryObj } from "@/scripts/Types";
 import {
   ProductForm,
@@ -53,6 +55,9 @@ export default function Create({ formValues, setRefreshList }: CreateProps) {
       flavors_inventory: flavorsInvSalesPriceArr,
     };
 
+    // console.log("Data payload: \n", dataPayload);
+    // return;
+
     // [TODO] DONT ALLOW CREATION OF PRODUCT WITH SAME NAME. Do read first, make sure results are empty
 
     axios({
@@ -72,7 +77,6 @@ export default function Create({ formValues, setRefreshList }: CreateProps) {
 
   return (
     <div>
-      <h1>Create Product</h1>
       <ProductForm
         setName={setName}
         setUnitPrice={setUnitPrice}
@@ -86,7 +90,13 @@ export default function Create({ formValues, setRefreshList }: CreateProps) {
       <FlavorsInventoryForm
         setFlavorsInvSalesPriceArr={setFlavorsInvSalesPriceArr}
       />
-      <button onClick={handleForms}>CREATE PRODUCT</button>
+      <Button
+        variant="contained"
+        onClick={handleForms}
+        style={{ marginLeft: "20px" }}
+      >
+        Submit Product
+      </Button>
     </div>
   );
 }

@@ -19,8 +19,7 @@ interface ReadFlavorsAndInventory {
 interface UpdateInventory {
   method: "update_inventory";
   productId: string;
-  flavor: string;
-  newInventory: number;
+  flavorUpdates: { [key: string]: number };
 }
 interface DeleteFlavor {
   productId: string;
@@ -60,18 +59,24 @@ export async function POST(req: NextRequest) {
   }
   if (reqBody.method === "update_inventory") {
     try {
-      const response = await prisma.flavors_Inventory.update({
-        where: {
-          productId_flavor: {
-            productId: reqBody.productId,
-            flavor: reqBody.flavor,
+      // cycle through all flavorUpdates
+      const flavorUpdates = reqBody.flavorUpdates;
+      let responseArr = [];
+      for (let flavor in flavorUpdates) {
+        const response = await prisma.flavors_Inventory.update({
+          where: {
+            productId_flavor: {
+              productId: reqBody.productId,
+              flavor,
+            },
           },
-        },
-        data: {
-          inventory: reqBody.newInventory,
-        },
-      });
-      return NextResponse.json(response);
+          data: {
+            inventory: flavorUpdates[flavor],
+          },
+        });
+        responseArr.push(response);
+      }
+      return NextResponse.json({ response: responseArr });
     } catch (e) {
       console.log("Error updating flavor's inventory: \n", e);
       return NextResponse.json({ error: e }, { status: 500 });

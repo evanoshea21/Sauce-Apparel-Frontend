@@ -1,11 +1,20 @@
 .main {
   /* border: 1px solid blue; */
-  background-color: var(--lightgrey);
-  border-radius: 20px;
+  /* border-radius: 20px; */
   padding: 20px;
 }
-.main form {
+.main .productForm {
   display: flex;
+}
+.flavorForm input {
+  width: 120px;
+}
+.flavorForm h3 {
+  text-align: left !important;
+}
+
+.main input::placeholder {
+  color: rgba(167, 165, 165, 0.886);
 }
 
 .main input {
@@ -34,7 +43,7 @@
 .unitPriceBox span {
   position: absolute;
   color: grey;
-  top: 62%;
+  top: 64%;
   left: 20px;
   transform: translate(-50%, -50%);
 }
@@ -43,7 +52,16 @@
   padding-left: 30px;
   width: 211px;
 }
+.featuredLabel {
+  padding-top: 4px;
+}
 .toggle {
   margin-top: 4px;
   margin-left: 10px;
+}
+.main h3 {
+  text-align: center;
+  font-weight: 600;
+  color: grey;
+  margin: 10px;
 }

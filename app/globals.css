@@ -84,7 +84,7 @@
 }
 
 body {
-  background-color: var(--bluegrey);
+  /* background-color: var(--bluegrey); */
 }
 
 .MuiSelect-select {
@@ -107,5 +107,9 @@ body {
 }
 
 .MuiToggleButton-root {
-  padding: 7px;
+  padding: 6px;
+}
+
+.MuiTooltip-tooltip {
+  font-size: 1rem;
 }

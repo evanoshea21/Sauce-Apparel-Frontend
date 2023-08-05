@@ -8,6 +8,8 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Checkbox from "@mui/material/Checkbox";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import Tooltip from "@mui/material/Tooltip";
+import Button from "@mui/material/Button";
 
 interface ProductFormProps {
   defaultValues?: {
@@ -43,10 +45,10 @@ export function ProductForm(props: ProductFormProps) {
 
   return (
     <div className={classes.main}>
-      <h1>Add Product</h1>
-      <form>
+      <form className={classes.productForm}>
         <div className={classes.required}>
           {/* required fields go here */}
+          <h3>Required Fields</h3>
           <label htmlFor="adminProductCreate_name">Product Name</label>
           <input
             required
@@ -83,33 +85,32 @@ export function ProductForm(props: ProductFormProps) {
             defaultValue={props.defaultValues?.imageUrl ?? ""}
             onChange={(e) => props.setImageUrl(e.target.value)}
           />
-          <label htmlFor="adminProductCreate_isFeatured">Featured</label>
+          <label
+            className={classes.featuredLabel}
+            htmlFor="adminProductCreate_isFeatured"
+          >
+            Featured
+          </label>
           <div className={classes.toggle}>
             <ToggleButtonGroup
               value={toggleValue}
               exclusive
               onChange={(e: any) => {
                 setToggleValue(e.target.value);
-                props.setIsFeatured(e.target.value);
-                console.log("Toggle: ", e.target.value);
+                props.setIsFeatured(e.target.value === "true" ? true : false);
               }}
             >
               <ToggleButton value="false">No</ToggleButton>
               <ToggleButton value="true">Yes</ToggleButton>
             </ToggleButtonGroup>
           </div>
-          {/* <input
-            id="adminProductCreate_isFeatured"
-            placeholder="isFeatured"
-            name="isFeatured"
-            type="number"
-            defaultValue={props.defaultValues?.isFeatured ? "1" : ""}
-            onChange={(e) => props.setIsFeatured(!!Number(e.target.value))}
-          /> */}
         </div>
         <div className={classes.optional}>
           {/* optional fields go here */}
-          <label htmlFor="adminProductCreate_inventory">Inventory</label>
+          <h3>Optional Fields</h3>
+          <Tooltip title="This inventory number applies to products with NO flavor options">
+            <label htmlFor="adminProductCreate_inventory">Inventory</label>
+          </Tooltip>
           <input
             className={classes.invInput}
             id="adminProductCreate_inventory"
@@ -148,10 +149,11 @@ export function ProductForm(props: ProductFormProps) {
           <Select
             labelId="adminProductCreate_category"
             id="adminProductCreate_category"
-            defaultValue={props.defaultValues?.category ?? "Non-Disposable"}
+            defaultValue={props.defaultValues?.category ?? "Uncategorized"}
             label="CategoryLabel"
             onChange={(e: any) => props.setCategory(e.target.value)}
           >
+            <MenuItem value={"Uncategorized"}>Uncategorized</MenuItem>
             <MenuItem value={"Non-Disposable"}>Non-Disposable</MenuItem>
             <MenuItem value={"Disposable"}>Disposable</MenuItem>
             <MenuItem value={"Vape"}>Vape</MenuItem>
@@ -199,14 +201,11 @@ export function FlavorsInventoryForm(props: FlavorsInventoryProps) {
       return arr;
     });
   }
+
   return (
-    <div
-      style={{
-        border: "3px solid green",
-      }}
-    >
-      <form>
-        <h3>Input Flavors & Inventories</h3>
+    <div className={classes.main}>
+      <form className={classes.flavorForm}>
+        <h3>Add Flavors & Inventories</h3>
         {Array.apply(null, Array(rowsCount)).map((_x, i: number) => {
           return (
             <div key={i}>
@@ -215,15 +214,16 @@ export function FlavorsInventoryForm(props: FlavorsInventoryProps) {
                 id={`flavor-${i}-${props.productId ?? "create"}`}
                 type="text"
                 name="flavor"
-                placeholder={`flavor-${i}`}
+                placeholder={`Flavor #${i + 1}`}
                 onChange={() => handleChange(i)}
               />
               <input
                 className="flavorInventoryInput"
                 id={`inventory-${i}-${props.productId ?? "create"}`}
-                type="text"
+                type="number"
+                min="0"
                 name="inventory"
-                placeholder={`inventory-${i}`}
+                placeholder={`Inventory #${i + 1}`}
                 onChange={() => handleChange(i)}
               />
               <input
@@ -231,19 +231,20 @@ export function FlavorsInventoryForm(props: FlavorsInventoryProps) {
                 id={`salesPrice-${i}-${props.productId ?? "create"}`}
                 type="text"
                 name="salesPrice"
-                placeholder={`salesPrice-${i}`}
+                placeholder={`Sales Price #${i + 1}`}
                 onChange={() => handleChange(i)}
               />
             </div>
           );
         })}
       </form>
-      <button
-        disabled={rowsCount >= 12}
+      <Button
+        variant="outlined"
+        disabled={rowsCount >= 40}
         onClick={() => setRowsCount((prev) => prev + 4)}
       >
         Add more Flavors
-      </button>
+      </Button>
     </div>
   );
 }
