@@ -457,7 +457,7 @@ function FlavorsCrud({
         setIsLoadingAjax(false);
         return;
       }
-      // if none, skip
+      // if none, skip //
       if (!item.flavor && !item.inventory) continue;
       // if 2, but invalid inventory
       if (!isPositiveInteger(item.inventory)) {
