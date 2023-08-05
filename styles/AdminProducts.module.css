@@ -31,6 +31,11 @@
 .tags {
   display: flex;
 }
+.title h2 {
+  /* border: 1px solid green; */
+  inline-size: 200px;
+  overflow-wrap: break-word;
+}
 
 /* CONFIG */
 .config {
