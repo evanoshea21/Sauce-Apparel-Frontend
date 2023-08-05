@@ -370,12 +370,12 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
             setIsFeatured={setIsFeatured}
           />
           {errorMessage && (
-            <p style={{ marginLeft: "20px", color: "red", maxWidth: "400px" }}>
+            <p style={{ marginLeft: "30px", color: "red", maxWidth: "400px" }}>
               Error: {errorMessage}
             </p>
           )}
           {successMessage && (
-            <p style={{ marginLeft: "20px", color: "green" }}>
+            <p style={{ marginLeft: "30px", color: "green" }}>
               Success: {successMessage}
             </p>
           )}
@@ -637,7 +637,7 @@ function FlavorsCrud({
           setFlavorsInvSalesPriceArr={setFlavorsInvSalesPriceArr}
         />
         {errorMessage && (
-          <p style={{ marginLeft: "20px", color: "red", maxWidth: "400px" }}>
+          <p style={{ marginLeft: "30px", color: "red", maxWidth: "400px" }}>
             Error: {errorMessage}
           </p>
         )}

@@ -189,7 +189,7 @@ export default function Create({ formValues, setRefreshList }: CreateProps) {
             <p
               style={{ marginLeft: "20px", color: "green", maxWidth: "400px" }}
             >
-              Success: {successMessage}
+              {successMessage}
             </p>
           )}
           <Button
