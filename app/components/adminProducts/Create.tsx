@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import axios from "axios";
+import classes from "@/styles/Admin.module.css";
 import type { Product } from "@/scripts/Types";
 import Button from "@mui/material/Button";
 import { isValidPrice, isPositiveInteger } from "@/app/utils";
@@ -16,11 +17,12 @@ interface CreateProps {
 }
 
 export default function Create({ formValues, setRefreshList }: CreateProps) {
-  // Form inputs
   const [errorMessage, setErrorMessage] = React.useState<string | undefined>();
   const [successMessage, setSuccessMessage] = React.useState<
     string | undefined
   >();
+  const [isLoadingAjax, setIsLoadingAjax] = React.useState(false);
+  // Form inputs
   const [name, setName] = React.useState<string>("");
   const [unitPrice, setUnitPrice] = React.useState<string>("");
   const [imageUrl, setImageUrl] = React.useState<string>("");
@@ -32,7 +34,6 @@ export default function Create({ formValues, setRefreshList }: CreateProps) {
   const [flavorsInvSalesPriceArr, setFlavorsInvSalesPriceArr] = React.useState<
     FlavorsInventoryObj[]
   >([]);
-  const [isLoadingAjax, setIsLoadingAjax] = React.useState(false);
 
   function timeoutSuccess() {
     setTimeout(() => {
@@ -164,11 +165,7 @@ export default function Create({ formValues, setRefreshList }: CreateProps) {
       }}
     >
       <h1 style={{ marginLeft: "35px" }}>Add New Product</h1>
-      <div
-        style={{
-          display: "flex",
-        }}
-      >
+      <div className={classes.createForms}>
         <div>
           <ProductForm
             setName={setName}

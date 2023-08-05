@@ -4,7 +4,22 @@
 
   display: flex;
   padding: 20px;
+  margin-left: auto;
+  margin-right: auto;
   margin-bottom: 4px;
+  max-width: 1000px;
+}
+
+@media (max-width: 780px) {
+  .main {
+    flex-direction: column;
+    max-width: 320px;
+  }
+  .config {
+    justify-content: left !important;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
 }
 
 /* PIC LEFT */
@@ -42,6 +57,7 @@
   flex: 2;
   display: flex;
   align-items: center;
+  justify-content: center;
   /* border: 1px solid green; */
 }
 
@@ -119,6 +135,12 @@
   color: white;
   border: 1px solid red;
 }
+@media (max-width: 463px) {
+  .btnDelete {
+    margin-top: 20px;
+    margin-left: 30px;
+  }
+}
 
 /* FLAVOR ROW (CRUD) */
 .flavors {
@@ -136,9 +158,11 @@
 .flavorName {
   /* background-color: rgb(125, 159, 190); */
   width: 180px;
-  white-space: normal;
+  /* white-space: normal; */
   font-size: 1.3rem;
   color: grey;
+  inline-size: 180px;
+  overflow-wrap: break-word;
 }
 .inventoryInput {
   padding: 10px;

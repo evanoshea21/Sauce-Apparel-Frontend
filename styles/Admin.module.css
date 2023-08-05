@@ -3,6 +3,19 @@
   /* border-radius: 20px; */
   padding: 20px;
 }
+.createForms {
+  display: flex;
+}
+@media (max-width: 980px) {
+  .createForms {
+    flex-direction: column;
+  }
+}
+@media (max-width: 485px) {
+  .main .productForm {
+    flex-direction: column;
+  }
+}
 .main .productForm {
   display: flex;
 }
@@ -60,7 +73,7 @@
   margin-left: 10px;
 }
 .main h3 {
-  text-align: center;
+  /* text-align: center; */
   font-weight: 600;
   color: grey;
   margin: 10px;
