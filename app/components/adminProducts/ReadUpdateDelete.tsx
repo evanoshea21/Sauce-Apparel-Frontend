@@ -129,7 +129,7 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
     }, 3000);
   }
 
-  // set category tags color
+  // [TODO] -- set category tags color
   React.useEffect(() => {
     let category = product.product.category;
     if (category === "Uncategorized") {
@@ -595,7 +595,7 @@ function FlavorsCrud({
                     className={classes.inventoryInput}
                     type="number"
                     min="0"
-                    defaultValue={item.inventory}
+                    defaultValue={item.inventory ?? ""}
                     onChange={(e) =>
                       setFlavorUpdates((prev) => {
                         prev[item.flavor] = Number(e.target.value);
