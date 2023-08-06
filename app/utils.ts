@@ -1,4 +1,4 @@
-import type { CartItem } from "@/scripts/Types";
+import type { CartItem, FlavorsInventoryObj } from "@/scripts/Types";
 
 export function getCartItems() {
   const cart_itemsJSON = localStorage.getItem("cart_items") || "[]";
@@ -33,4 +33,19 @@ export function isValidPrice(input: string | number): boolean {
   }
 
   return true;
+}
+
+export function flavorsHasLowInventory(
+  flavorsInv: FlavorsInventoryObj[],
+  lessThanCount: number
+): boolean {
+  let hasLowInv: boolean = false;
+
+  flavorsInv.forEach((flavorObj: FlavorsInventoryObj) => {
+    if (flavorObj.inventory < lessThanCount) {
+      hasLowInv = true;
+    }
+  });
+
+  return hasLowInv;
 }

@@ -162,9 +162,12 @@ export default function Create({ formValues, setRefreshList }: CreateProps) {
         borderRadius: "20px",
         paddingTop: "20px",
         paddingBottom: "40px",
+        maxWidth: "970px",
+        marginLeft: "auto",
+        marginRight: "auto",
       }}
     >
-      <h1 style={{ marginLeft: "35px" }}>Add New Product</h1>
+      <h1 style={{ textAlign: "center" }}>Add New Product</h1>
       <div className={classes.createForms}>
         <div>
           <ProductForm

@@ -1,3 +1,9 @@
+export type Categories =
+  | "Uncategorized"
+  | "Disposable"
+  | "Non-Disposable"
+  | "Vape"
+  | "Other Vapes";
 export interface CartItem {
   itemId: string;
   name: string;

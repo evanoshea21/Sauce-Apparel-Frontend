@@ -2,7 +2,11 @@
 import React from "react";
 import type { Product, ProductData } from "@/scripts/Types";
 import axios from "axios";
-import { isValidPrice, isPositiveInteger } from "@/app/utils";
+import {
+  isValidPrice,
+  isPositiveInteger,
+  flavorsHasLowInventory,
+} from "@/app/utils";
 import classes from "@/styles/AdminProducts.module.css";
 import {
   FlavorsInventoryForm,
@@ -11,10 +15,12 @@ import {
 import type { FlavorsInventoryObj } from "@/scripts/Types";
 import Button from "@mui/material/Button";
 import EditTwoToneIcon from "@mui/icons-material/EditTwoTone";
+import FilterSearch from "./FilterSearch";
 //Product (everything) vs ProductData (only the product's data)
 
 export default function Read({ refreshList }: { refreshList: boolean }) {
   const [update, setUpdate] = React.useState<boolean>(false);
+  const [allProducts, setAllProducts] = React.useState<Product[]>([]);
   const [productsShown, setProductsShown] = React.useState<Product[]>([]);
 
   // get ALL products
@@ -27,6 +33,7 @@ export default function Read({ refreshList }: { refreshList: boolean }) {
       });
       console.log("Products READ: \n", productResponse.data);
       setProductsShown(productResponse.data.reverse());
+      setAllProducts(productResponse.data.reverse());
     })();
   }, [update, refreshList]);
 
@@ -71,9 +78,15 @@ export default function Read({ refreshList }: { refreshList: boolean }) {
 
   return (
     <div>
-      <h1 style={{ marginLeft: "10px", marginTop: "50px" }}>
+      <h1
+        style={{ marginLeft: "10px", marginTop: "50px", textAlign: "center" }}
+      >
         Products & Inventory
       </h1>
+      <FilterSearch
+        allProducts={allProducts}
+        setProductsShown={setProductsShown}
+      />
       <button onClick={() => setUpdate((prev) => !prev)}>Refresh</button>
       {productsShown.map((item, i) => (
         <ProductRow refreshRow={refreshRow} product={item} key={i} />
@@ -289,7 +302,11 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
           <div className={classes.title}>
             <h2>{product.product.name}</h2>
             <EditTwoToneIcon
-              sx={{ fontSize: "2rem" }}
+              sx={{
+                fontSize: "2rem",
+                backgroundColor:
+                  display === "edit product" ? "rgb(216, 216, 216)" : "",
+              }}
               className={classes.editIcon}
               onClick={() => {
                 setDisplay(
@@ -328,6 +345,11 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
               ? "Hide Flavors"
               : "Configure Flavors"}
           </Button>
+          {flavorsHasLowInventory(product.flavors_inventory, 8) && (
+            <p style={{ color: "orange", marginTop: "6px" }}>
+              Low Inventory Warning
+            </p>
+          )}
         </div>
 
         {/* PRICE */}
@@ -590,7 +612,14 @@ function FlavorsCrud({
             flavors_inventory.map((item: FlavorsInventoryObj, i: number) => {
               return (
                 <div className={classes.flavorRow} key={item.sku ?? i}>
-                  <div className={classes.flavorName}>{item.flavor}</div>
+                  <div
+                    style={{
+                      color: item.inventory < 8 ? "orange" : "",
+                    }}
+                    className={classes.flavorName}
+                  >
+                    {item.flavor}
+                  </div>
                   <input
                     className={classes.inventoryInput}
                     type="number"
