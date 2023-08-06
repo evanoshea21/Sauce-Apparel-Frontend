@@ -145,6 +145,15 @@
 /* FLAVOR ROW (CRUD) */
 .flavors {
   display: flex;
+  justify-content: center;
+  align-items: center;
+  /* margin-left: auto;
+  margin-right: auto; */
+}
+@media (max-width: 890px) {
+  .flavors {
+    flex-direction: column;
+  }
 }
 .flavorRows {
   padding: 20px;

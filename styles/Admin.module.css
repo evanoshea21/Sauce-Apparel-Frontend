@@ -78,3 +78,14 @@
   color: grey;
   margin: 10px;
 }
+.inputRow {
+  display: flex;
+}
+@media (max-width: 500px) {
+  .inputRow {
+    flex-direction: column;
+    margin-bottom: 5px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.421);
+  }
+}

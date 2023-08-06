@@ -277,7 +277,7 @@ export function FlavorsInventoryForm(props: FlavorsInventoryProps) {
         <h3>Add Flavors & Inventories (optional)</h3>
         {Array.apply(null, Array(rowsCount)).map((_x, i: number) => {
           return (
-            <div key={i}>
+            <div key={i} className={classes.inputRow}>
               <input
                 className="flavorInventoryInput"
                 id={`flavor-${i}-${props.productId ?? "create"}`}
