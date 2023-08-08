@@ -1,8 +1,11 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@200&display=swap");
+
 :root {
   --bluegrey: #bbc3cd;
   --lightgrey: #e3ebf6;
   --lightgrey2: #f3f5f9;
   --bgColor: #f6f2f0;
+  --fontMono: "Roboto Mono, monospace";
 }
 
 body {

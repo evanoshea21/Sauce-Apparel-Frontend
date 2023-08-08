@@ -1,10 +1,12 @@
 "use client";
 import React from "react";
 import classes from "@/styles/ui_css/TextInput.module.css";
+import classes2 from "@/styles/ui_css/CreditInput.module.css";
+import $ from "jquery";
 
 interface Props {
   color?: string;
-  inputId: string;
+  label: string;
   fontScale?: number;
   widthHeightScale?: number;
   onChange: React.Dispatch<React.SetStateAction<string>>;
@@ -14,46 +16,36 @@ interface Props {
 }
 
 export default function TextInput(props: Props) {
-  const [formId] = React.useState<string>(`input-${props.inputId}`);
-  const [value, setValue] = React.useState<string | undefined>(
-    props.defaultValue ?? ""
-  );
+  const [formId] = React.useState<string>(`credit-card-number-input`);
+  // const [value, setValue] = React.useState<string | undefined>();
   const [isFocused, setIsFocused] = React.useState<boolean>(false);
-  const [animClass, setAnimClass] = React.useState<"up" | "down">("down");
 
-  //change animation based on Value and Focus
   React.useEffect(() => {
-    // if there's a value.length, animateUp
-    if (value && value.length) {
-      setAnimClass("up");
-    }
-    // if there is focus, animateUp
-    else if (isFocused) {
-      setAnimClass("up");
-    } else {
-      setAnimClass("down");
-    }
-    // if no value, no focus, animateDown
-  }, [value, isFocused]);
+    $("#credit-card-number-input").on("keypress change", function () {
+      $(this).val(function (index, value) {
+        return value.replace(/\W/gi, "").replace(/(.{4})/g, "$1 ");
+      });
+    });
+
+    return () => {
+      $("#credit-card-number-input").off("keypress change");
+    };
+  }, []);
 
   return (
     <div
       className={classes.main}
       style={{
-        fontSize: `${props.fontScale ?? 1}rem`,
+        fontSize: `${1}rem`,
+        // fontSize: `${props.fontScale ?? 1}rem`,
         display: props.display,
       }}
     >
-      <label
-        className={`${classes.label} ${
-          animClass === "up" ? classes.animateUp : classes.animateDown
-        }`}
-        htmlFor={formId}
-      >
-        {props.placeholder}
+      <label className={`${classes.label} ${classes2.label}`} htmlFor={formId}>
+        {props.label}
       </label>
       <input
-        className={classes.input}
+        className={`${classes.input} ${classes2.input}`}
         style={{
           width: `${12 * (props.widthHeightScale ?? 1)}em`,
           height: `${1 * (0.4 * (props.widthHeightScale ?? 1))}em`,
@@ -62,11 +54,13 @@ export default function TextInput(props: Props) {
         id={formId}
         name={formId}
         required={false}
-        type="text"
-        value={value}
+        type="tel"
+        // value={value}
+        maxLength={23}
+        placeholder="xxxx xxxx xxxx xxxx"
         onChange={(e) => {
-          setValue(e.target.value);
-          props.onChange(e.target.value);
+          // console.log("val: ", e.target.value);
+          props.onChange(e.target.value.split(" ").join(""));
         }}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
