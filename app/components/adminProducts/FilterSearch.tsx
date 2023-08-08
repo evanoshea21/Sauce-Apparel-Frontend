@@ -165,10 +165,10 @@ export default function FilterSearch({ allProducts, setProductsShown }: Props) {
             )}
             MenuProps={MenuProps}
           >
-            {categoryNames.map((category) => (
+            {categoryNames.map((category: Categories, i: number) => (
               <MenuItem
-                key={category}
-                value={category}
+                key={category ?? "cat-" + i}
+                value={category ?? "catValue-" + i}
                 // style={getStyles(name, personName, theme)}
               >
                 {category}

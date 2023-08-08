@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import type { Product, ProductData } from "@/scripts/Types";
+import type { Categories, Product, ProductData } from "@/scripts/Types";
 import prisma from "@/lib/prismaClient";
 
 interface CreateProduct {
@@ -15,7 +15,7 @@ interface ReadProduct {
   method: "read";
   id?: string;
   name?: string;
-  category?: string;
+  category?: Categories;
   isFeatured?: true;
 }
 interface DeleteProduct {

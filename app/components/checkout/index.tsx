@@ -1,18 +1,22 @@
 "use client";
 import React from "react";
 
-import { getCartItems } from "../../utils";
 import type { CartItem } from "@/scripts/Types";
 
 import Cart from "./Cart";
 import Login from "./Login";
 import CustomerProfile from "./CustomerProfile";
 import CheckoutBtn from "./CheckoutBtn";
+import BillTo from "../forms/BillTo";
+import PersonalDetails from "../forms/PersonalDetails";
+import CreditCard from "../forms/CreditCard";
 
 export default function CheckoutPage() {
   const [customerProfileId, setCustomerProfileId] = React.useState<string>("");
   const [paymentProfileId, setPaymentProfileId] = React.useState<string>("");
   const [cartItems, setCartItems] = React.useState<CartItem[]>([]);
+
+  return <CreditCard />;
 
   return (
     <div>

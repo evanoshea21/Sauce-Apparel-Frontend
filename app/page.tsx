@@ -8,7 +8,7 @@ import {
   FlavorsInventoryForm,
 } from "./components/forms/ProductFlavorsForms";
 
-import type { FlavorsInventoryObj } from "@/scripts/Types";
+import type { Categories, FlavorsInventoryObj } from "@/scripts/Types";
 
 export default function Home() {
   const [name, setName] = React.useState<string>("");
@@ -17,7 +17,9 @@ export default function Home() {
   const [inventory, setInventory] = React.useState<number | null>(null);
   const [description, setDescription] = React.useState<string | null>(null);
   const [salesPrice, setSalesPrice] = React.useState<string | null>(null);
-  const [category, setCategory] = React.useState<string | null>(null);
+  const [category, setCategory] = React.useState<string | null>(
+    "Uncategorized"
+  );
   const [isFeatured, setIsFeatured] = React.useState<boolean>(false);
   const [flavorsInvSalesPriceArr, setFlavorsInvSalesPriceArr] = React.useState<
     FlavorsInventoryObj[]

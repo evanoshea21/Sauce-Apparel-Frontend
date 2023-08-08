@@ -4,6 +4,26 @@ import axios from "axios";
 // import classes from "@/styles/Checkout.module.css";
 import { useSession } from "next-auth/react";
 
+interface CreateProfilePayload {
+  creditCard: {
+    card_number: string;
+    expDate: string;
+  };
+  billTo: {
+    firstName: string;
+    lastName: string;
+    address: string;
+    city: string;
+    state: string;
+    zip_code: string;
+    country: string;
+    phone: string;
+  };
+  merchantCustomerId: string;
+  description?: string;
+  email: string;
+}
+
 /*
 Sole purpose: [Show CustomerProfile or Form] & [send CustomerId/PaymentId up via props]
 FLOW
@@ -74,20 +94,22 @@ export default function CustomerProfile({
   const [chosenCardId, setChosenCard] = React.useState<string>();
   // Form fields (state)
   // card
-  const [card_number, setCreditCardNum] = React.useState<string>();
-  const [expDate, setExpDate] = React.useState<string>();
+  const [card_number, setCreditCardNum] = React.useState<string>("");
+  const [expDate, setExpDate] = React.useState<string>("");
+  const [cvv, setCvv] = React.useState<string>("");
   // address
-  const [firstName, setFirstName] = React.useState<string>();
-  const [lastName, setLastName] = React.useState<string>();
-  const [address, setAddress] = React.useState<string>();
-  const [city, setCity] = React.useState<string>();
-  const [state, setState] = React.useState<string>();
-  const [zip_code, setZipCode] = React.useState<string>();
-  const [country, setCountry] = React.useState<string>();
+  const [firstName, setFirstName] = React.useState<string>("");
+  const [lastName, setLastName] = React.useState<string>("");
+  const [address, setAddress] = React.useState<string>("");
+  const [city, setCity] = React.useState<string>("");
+  const [state, setState] = React.useState<string>("");
+  const [zip_code, setZipCode] = React.useState<string>("");
+  const [country, setCountry] = React.useState<string>("");
   // more details
-  const [phone, setPhone] = React.useState<string>();
-  const [merchantCustomerId, setMerchantCustomerId] = React.useState<string>();
-  const [description, setDescription] = React.useState<string>();
+  const [phone, setPhone] = React.useState<string>("");
+  const [merchantCustomerId, setMerchantCustomerId] =
+    React.useState<string>("");
+  const [description, setDescription] = React.useState<string>("");
 
   // GET [CP-id] AFTER LOG IN, or set to [noCP] or [networkError]
   React.useEffect(() => {
@@ -164,7 +186,7 @@ export default function CustomerProfile({
     setDisplayState("loadingCP");
     if (!session) return;
 
-    const formData = {
+    const formData: CreateProfilePayload = {
       creditCard: {
         card_number,
         expDate,
@@ -181,7 +203,7 @@ export default function CustomerProfile({
       },
       merchantCustomerId,
       description,
-      email: session?.user.email,
+      email: session?.user.email ?? "no email provided",
     };
 
     // send form data to SDK create profile
@@ -266,6 +288,7 @@ export default function CustomerProfile({
     method: "POST";
     data: AddCardData;
   }
+
   function addCard() {
     let cardNum = "4539830555056060";
     let expDate = "0925";
@@ -347,6 +370,11 @@ export default function CustomerProfile({
             required
             placeholder="exp date"
             onChange={(e) => setExpDate(e.target.value)}
+          />
+          <input
+            required
+            placeholder="CVV"
+            onChange={(e) => setCvv(e.target.value)}
           />
           {/* ADDRESS */}
           <input

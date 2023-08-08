@@ -1,0 +1,56 @@
+.main {
+  position: relative;
+}
+
+.label {
+  position: absolute;
+  transform: translate(0%, -50%);
+  top: 50%;
+  left: 1.125em;
+  opacity: 0.7;
+  font-size: 1em;
+  /* transition: all 0.2s ease; */
+}
+
+.input {
+  padding-top: 2em;
+  padding-bottom: 1.2em;
+  padding-left: 0.8em;
+  padding-right: 1.25em;
+  /* width: 10em; */
+  border-radius: 0.35em;
+  border: 0.12em solid rgba(128, 128, 128, 0.201);
+  font-size: 1em;
+}
+.input:focus {
+  outline: none;
+  border: 0.12em solid rgba(128, 128, 128, 0.572);
+}
+
+/* ANIMATION OF LABEL */
+.animateUp {
+  animation-name: labelUp;
+  animation-duration: 0.2s;
+  animation-fill-mode: forwards;
+}
+@keyframes labelUp {
+  to {
+    top: 27%;
+    font-size: 0.8em;
+  }
+}
+.animateDown {
+  animation-name: labelDown;
+  animation-duration: 0.2s;
+  animation-fill-mode: forwards;
+}
+@keyframes labelDown {
+  from {
+    top: 27%;
+    font-size: 0.8em;
+  }
+  to {
+    top: 50%;
+    font-size: 1em;
+  }
+}

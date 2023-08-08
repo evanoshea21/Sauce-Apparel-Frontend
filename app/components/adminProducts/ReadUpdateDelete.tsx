@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import type { Product, ProductData } from "@/scripts/Types";
+import type { Categories, Product, ProductData } from "@/scripts/Types";
 import axios from "axios";
 import {
   isValidPrice,
@@ -16,6 +16,7 @@ import type { FlavorsInventoryObj } from "@/scripts/Types";
 import Button from "@mui/material/Button";
 import EditTwoToneIcon from "@mui/icons-material/EditTwoTone";
 import FilterSearch from "./FilterSearch";
+import { Category } from "@mui/icons-material";
 //Product (everything) vs ProductData (only the product's data)
 
 export default function Read({ refreshList }: { refreshList: boolean }) {
@@ -46,6 +47,13 @@ export default function Read({ refreshList }: { refreshList: boolean }) {
         });
         return arr;
       });
+      setAllProducts((prevProductArr) => {
+        let arr = prevProductArr.slice().filter((product) => {
+          return product.product.id !== productId;
+        });
+        return arr;
+      });
+
       return;
     }
 
@@ -60,6 +68,8 @@ export default function Read({ refreshList }: { refreshList: boolean }) {
     });
     console.log("response REFRESH: ", response.data);
 
+    let foundIndexGlobal: number;
+
     setProductsShown((prevProductArr) => {
       let arr = prevProductArr.slice();
       // find index where name = name
@@ -67,11 +77,18 @@ export default function Read({ refreshList }: { refreshList: boolean }) {
       for (let i = 0; i < arr.length; i++) {
         if (arr[i].product.id === productId) {
           foundIndex = i;
+          foundIndexGlobal = i;
           break;
         }
       }
       // replace index with response.data
       arr[foundIndex] = response.data[0];
+      return arr;
+    });
+    setAllProducts((prevProductArr) => {
+      let arr = prevProductArr.slice();
+      // replace index with response.data
+      arr[foundIndexGlobal] = response.data[0];
       return arr;
     });
   }
@@ -144,14 +161,16 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
 
   // [TODO] -- set category tags color
   React.useEffect(() => {
-    let category = product.product.category;
+    let category: string | null = product.product.category;
     if (category === "Uncategorized") {
       setCategoryColor("grey");
     } else if (category === "Disposable") {
       setCategoryColor("grey");
-    } else if (category === "60ml") {
+    } else if (category === "Non-Disposable") {
       setCategoryColor("grey");
-    } else if (category === "120ml") {
+    } else if (category === "Vape") {
+      setCategoryColor("grey");
+    } else if (category === "Other Vapes") {
       setCategoryColor("grey");
     } else {
       setCategoryColor("grey");

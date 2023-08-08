@@ -3,7 +3,8 @@ export type Categories =
   | "Disposable"
   | "Non-Disposable"
   | "Vape"
-  | "Other Vapes";
+  | "Other Vapes"
+  | null;
 export interface CartItem {
   itemId: string;
   name: string;

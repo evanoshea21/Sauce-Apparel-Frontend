@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import type { FlavorsInventoryObj } from "@/scripts/Types";
+import type { Categories, FlavorsInventoryObj } from "@/scripts/Types";
 import classes from "@/styles/Admin.module.css";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
