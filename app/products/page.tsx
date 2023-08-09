@@ -11,7 +11,7 @@ const productsFromDb: ProductsList = {
       name: "Monster Vape Pen",
       description: "MonsterVapes Vape Pen, 150ml, purple flavor",
       quantity: "1",
-      unitPrice: 28.99,
+      unitPrice: "28.99",
     },
     {
       itemId: "101",
@@ -19,7 +19,7 @@ const productsFromDb: ProductsList = {
       name: "Cookies Pen",
       description: "CookiesVapes Vape Pen, 180ml, apple flavor",
       quantity: "1",
-      unitPrice: 39.99,
+      unitPrice: "39.99",
     },
     {
       itemId: "102",
@@ -27,7 +27,7 @@ const productsFromDb: ProductsList = {
       name: "Flum Vape",
       description: "Flum Vape, 200ml, orange flavor",
       quantity: "1",
-      unitPrice: 25.99,
+      unitPrice: "25.99",
     },
     {
       itemId: "103",
@@ -35,7 +35,7 @@ const productsFromDb: ProductsList = {
       name: "Juul Vape",
       description: "MonsterVapes Vape Pen, 200ml, orange flavor",
       quantity: "1",
-      unitPrice: 20.49,
+      unitPrice: "20.49",
     },
   ],
 };

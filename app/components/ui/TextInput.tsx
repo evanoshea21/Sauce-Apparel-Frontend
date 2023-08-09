@@ -6,11 +6,14 @@ interface Props {
   color?: string;
   inputId: string;
   fontScale?: number;
-  widthHeightScale?: number;
+  widthScale?: number;
+  heightScale?: number;
   onChange: React.Dispatch<React.SetStateAction<string>>;
   placeholder: string;
   defaultValue?: string;
   display?: "inline-block" | "block";
+  styles?: {};
+  maxLength?: number;
 }
 
 export default function TextInput(props: Props) {
@@ -42,6 +45,7 @@ export default function TextInput(props: Props) {
       style={{
         fontSize: `${props.fontScale ?? 1}rem`,
         display: props.display,
+        ...props.styles,
       }}
     >
       <label
@@ -55,14 +59,15 @@ export default function TextInput(props: Props) {
       <input
         className={classes.input}
         style={{
-          width: `${12 * (props.widthHeightScale ?? 1)}em`,
-          height: `${1 * (0.4 * (props.widthHeightScale ?? 1))}em`,
+          width: `${12 * (props.widthScale ?? 1)}em`,
+          height: `${0.5 * (props.heightScale ?? 1)}em`,
           color: props.color ?? "rgb(50, 50, 50)",
         }}
         id={formId}
         name={formId}
         required={false}
         type="text"
+        maxLength={props.maxLength}
         value={value}
         onChange={(e) => {
           setValue(e.target.value);

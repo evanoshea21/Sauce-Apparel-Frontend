@@ -5,27 +5,27 @@ import classes2 from "@/styles/ui_css/CreditInput.module.css";
 import $ from "jquery";
 
 interface Props {
-  onChange: React.Dispatch<React.SetStateAction<string>>;
   color?: string;
   fontScale?: number;
   widthHeightScale?: number;
+  onChange: React.Dispatch<React.SetStateAction<string>>;
   display?: "inline-block" | "block";
 }
 
-export default function CreditInput(props: Props) {
-  const [formId] = React.useState<string>(`credit-card-number-input`);
+export default function ExpDateInput(props: Props) {
+  const [formId] = React.useState<string>(`credit-card-expDate-input`);
+  const [val, setVal] = React.useState<string>("");
   // const [value, setValue] = React.useState<string | undefined>();
   const [isFocused, setIsFocused] = React.useState<boolean>(false);
-
   React.useEffect(() => {
-    $("#credit-card-number-input").on("keypress change", function () {
+    $("#credit-card-expDate-input").on("keypress change", function () {
       $(this).val(function (index, value) {
-        return value.replace(/\W/gi, "").replace(/(.{4})/g, "$1 ");
+        return value.replace(/\W/gi, "").replace(/(.{2})/, "$1/");
       });
     });
 
     return () => {
-      $("#credit-card-number-input").off("keypress change");
+      $("#credit-card-expDate-input").off("keypress change");
     };
   }, []);
 
@@ -33,17 +33,21 @@ export default function CreditInput(props: Props) {
     <div
       className={classes2.main}
       style={{
+        // fontSize: `${1}rem`,
         fontSize: `${props.fontScale ?? 1}rem`,
         display: props.display,
       }}
     >
       <label className={`${classes.label} ${classes2.label}`} htmlFor={formId}>
-        Credit Card Number
+        Exp. Date
       </label>
+
       <input
-        className={`${classes.input} ${classes2.input}`}
+        className={`${classes.input} ${classes2.input} ${
+          val.length !== 0 && classes2.inputExp
+        } ${val.length == 0 && classes2.inputExpPlaceholder}`}
         style={{
-          width: `${16 * (props.widthHeightScale ?? 1)}em`,
+          width: `${5 * (props.widthHeightScale ?? 1)}em`,
           height: `${1 * (0.4 * (props.widthHeightScale ?? 1))}em`,
           color: props.color ?? "rgb(50, 50, 50)",
         }}
@@ -51,12 +55,11 @@ export default function CreditInput(props: Props) {
         name={formId}
         required={false}
         type="tel"
-        // value={value}
-        maxLength={23}
-        placeholder="XXXX XXXX XXXX XXXX"
-        // placeholder="xxxx xxxx xxxx xxxx"
+        maxLength={5}
+        placeholder="MM/YY"
         onChange={(e) => {
-          // console.log("val: ", e.target.value);
+          // console.log("val: ", e.target.value.split(" ").join(""));
+          setVal(e.target.value);
           props.onChange(e.target.value.split(" ").join(""));
         }}
         onFocus={() => setIsFocused(true)}

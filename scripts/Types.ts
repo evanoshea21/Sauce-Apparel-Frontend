@@ -9,9 +9,10 @@ export interface CartItem {
   itemId: string;
   name: string;
   quantity: string;
-  unitPrice: number; // account for sales price
+  maxQuantity?: string;
+  unitPrice: string; // account for sales price
 
-  description: string; // flavor/configs for SDK invoice
+  description: string; // flavor choice, sku
   img: string;
 }
 
@@ -38,4 +39,23 @@ export interface FlavorsInventoryObj {
   inventory: number;
   salesPrice: string | null;
   productId: string; // returns for READ; for CREATE, pass empty string
+}
+
+//ADD CARD (bill To form, credit card form)
+
+export interface Address {
+  firstName: string;
+  lastName: string;
+  address: string;
+  city: string;
+  state: string;
+  zip: string;
+  country: string;
+  phone: string;
+}
+export interface AddCardData {
+  customerProfileId: string;
+  cardNumber: string;
+  expDate: string;
+  billTo: Address;
 }

@@ -9,7 +9,7 @@ export function getCartSum(): number {
   if (cart_items.length === 0) return 0;
   let sum: number = 0;
   cart_items.forEach(
-    (item: CartItem) => (sum += item.unitPrice * Number(item.quantity))
+    (item: CartItem) => (sum += Number(item.unitPrice) * Number(item.quantity))
   );
   return sum;
 }

@@ -3,25 +3,25 @@ import React from "react";
 import axios from "axios";
 // import classes from "@/styles/Checkout.module.css";
 import { useSession } from "next-auth/react";
+import type { Address, AddCardData } from "@/scripts/Types";
+import { CreditCardForm, BillToForm } from "../forms/AddCardForms";
+import Button from "@mui/material/Button";
 
 interface CreateProfilePayload {
   creditCard: {
     card_number: string;
     expDate: string;
   };
-  billTo: {
-    firstName: string;
-    lastName: string;
-    address: string;
-    city: string;
-    state: string;
-    zip_code: string;
-    country: string;
-    phone: string;
-  };
-  merchantCustomerId: string;
-  description?: string;
-  email: string;
+  billTo: Address;
+  merchantCustomerId: string; // phone
+  description?: string; // profile created on website
+  email: string; // from session
+}
+
+interface AddCardRequest {
+  url: string;
+  method: "POST";
+  data: AddCardData;
 }
 
 /*
@@ -92,24 +92,19 @@ export default function CustomerProfile({
     React.useState<DisplayStates>("loggedOut");
   // SELECT CREDIT CARD
   const [chosenCardId, setChosenCard] = React.useState<string>();
-  // Form fields (state)
+  // FORM FIELDS
   // card
   const [card_number, setCreditCardNum] = React.useState<string>("");
   const [expDate, setExpDate] = React.useState<string>("");
-  const [cvv, setCvv] = React.useState<string>("");
   // address
   const [firstName, setFirstName] = React.useState<string>("");
   const [lastName, setLastName] = React.useState<string>("");
   const [address, setAddress] = React.useState<string>("");
   const [city, setCity] = React.useState<string>("");
   const [state, setState] = React.useState<string>("");
-  const [zip_code, setZipCode] = React.useState<string>("");
-  const [country, setCountry] = React.useState<string>("");
+  const [zip, setZipCode] = React.useState<string>("");
   // more details
   const [phone, setPhone] = React.useState<string>("");
-  const [merchantCustomerId, setMerchantCustomerId] =
-    React.useState<string>("");
-  const [description, setDescription] = React.useState<string>("");
 
   // GET [CP-id] AFTER LOG IN, or set to [noCP] or [networkError]
   React.useEffect(() => {
@@ -181,10 +176,17 @@ export default function CustomerProfile({
     );
   }, [chosenCardId]);
 
-  function handleForm(e: any) {
-    e.preventDefault();
+  function createProfile() {
     setDisplayState("loadingCP");
     if (!session) return;
+
+    // [TODO] error handling for form-inputs HERE (nums match etc)
+
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const dateStr = `${year}-${month}-${day}`;
 
     const formData: CreateProfilePayload = {
       creditCard: {
@@ -197,12 +199,12 @@ export default function CustomerProfile({
         address,
         city,
         state,
-        zip_code,
-        country,
+        zip,
+        country: "USA",
         phone,
       },
-      merchantCustomerId,
-      description,
+      merchantCustomerId: `${lastName},${firstName}`,
+      description: `member since ${dateStr}`,
       email: session?.user.email ?? "no email provided",
     };
 
@@ -213,8 +215,9 @@ export default function CustomerProfile({
       data: formData,
     })
       .then((res) => {
-        const custProfileId = res.data.customerProfileId;
+        const custProfileId: string = res.data.customerProfileId;
         // then, save CustomerProfile to User Account
+        //[TODO] ALSO save their personal info--fName, lName, phone, email
         axios({
           url: "/api/save-customer-profile",
           method: "POST",
@@ -235,7 +238,7 @@ export default function CustomerProfile({
         );
         setDisplayState("networkError");
       });
-  } // handle form
+  } // handle create profile form
 
   function deleteProfile() {
     axios({
@@ -264,29 +267,6 @@ export default function CustomerProfile({
       .catch((e) => {
         console.error("error deleting: ", e);
       });
-  }
-
-  interface Address {
-    firstName: string;
-    lastName: string;
-    address: string;
-    city: string;
-    state: string;
-    zip: string;
-    country: string;
-    phone: string;
-  }
-  interface AddCardData {
-    customerProfileId: string;
-    cardNumber: string;
-    expDate: string;
-    billTo: Address;
-  }
-
-  interface AddCardRequest {
-    url: string;
-    method: "POST";
-    data: AddCardData;
   }
 
   function addCard() {
@@ -357,77 +337,24 @@ export default function CustomerProfile({
 
   if (displayState === "noCP") {
     return (
-      <div>
-        <h3>Customer Profile DNE. Time to make one:</h3>
-        <form onSubmit={handleForm}>
-          {/* CREDIT CARD */}
-          <input
-            required
-            placeholder="credit card number"
-            onChange={(e) => setCreditCardNum(e.target.value)}
-          />
-          <input
-            required
-            placeholder="exp date"
-            onChange={(e) => setExpDate(e.target.value)}
-          />
-          <input
-            required
-            placeholder="CVV"
-            onChange={(e) => setCvv(e.target.value)}
-          />
-          {/* ADDRESS */}
-          <input
-            required
-            placeholder="first name"
-            onChange={(e) => setFirstName(e.target.value)}
-          />
-          <input
-            required
-            placeholder="last name"
-            onChange={(e) => setLastName(e.target.value)}
-          />
-          <input
-            required
-            placeholder="address"
-            onChange={(e) => setAddress(e.target.value)}
-          />
-          <input placeholder="city" onChange={(e) => setCity(e.target.value)} />
-          <input
-            required
-            placeholder="state"
-            onChange={(e) => setState(e.target.value)}
-          />
-          <input
-            required
-            placeholder="zip code"
-            onChange={(e) => setZipCode(e.target.value)}
-          />
-          <input
-            required
-            placeholder="country"
-            onChange={(e) => setCountry(e.target.value)}
-          />
-          <input
-            required
-            placeholder="phone"
-            onChange={(e) => setPhone(e.target.value)}
-          />
-          {/* USER PROFILE DETAILS */}
-          <input
-            required
-            placeholder="merchant customers id (prob not in form in future)"
-            onChange={(e) => setMerchantCustomerId(e.target.value)}
-          />
-          <input
-            required
-            placeholder="description (of customer?)"
-            onChange={(e) => setDescription(e.target.value)}
-          />
-
-          <button type="submit">Submit</button>
-        </form>
-      </div>
+      <>
+        <CreditCardForm
+          setFName={setFirstName}
+          setLName={setLastName}
+          setCCN={setCreditCardNum}
+          setExpDate={setExpDate}
+        />
+        <BillToForm
+          setAddress={setAddress}
+          setCity={setCity}
+          setZip={setZipCode}
+          setState={setState}
+          setPhone={setPhone}
+        />
+        <Button variant="contained" onClick={createProfile}>
+          Add Payment Option
+        </Button>
+      </>
     );
   }
   // else if (displayState === 'foundCP')
