@@ -6,7 +6,7 @@ export type Categories =
   | "Other Vapes"
   | null;
 export interface CartItem {
-  itemId: string;
+  sku: string;
   name: string;
   quantity: string;
   maxQuantity?: string;
