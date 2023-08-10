@@ -1,6 +1,6 @@
 .main {
   background-color: aliceblue;
-  max-width: 1000px;
+  max-width: 850px;
   border-radius: 10px;
   /* border: 1px solid grey; */
   margin-left: auto;
@@ -27,7 +27,7 @@
   display: flex;
   width: 350px;
 
-  border: 1px solid red;
+  /* border: 1px solid red; */
 }
 .nameFlavor > * {
   /* width: 50%; */
@@ -93,6 +93,106 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  /* border: 1px solid red; */
+  padding: 0 5px;
+}
+
+/* CART MOBILE */
+.cartRowMobile {
+  padding: 15px 5px;
+  width: 100%;
+}
+.imgBoxRowSm {
+  flex: 1;
+  /* border: 1px solid blue; */
+  object-fit: contain;
+  margin-right: 15px;
+  margin-left: 25px;
+}
+.imgBoxRowSm img {
+  width: 100%;
+  max-width: 165px;
+  max-height: 165px;
+}
+
+.right {
+  flex: 2;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.top,
+.bottom {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  margin-right: 15px;
+}
+.bottom {
+  align-items: center;
+}
+
+.nameFlavorSm h3 {
+  font-size: 1.1rem;
+  inline-size: 120px;
+  overflow-wrap: break-word;
+  margin-top: 0px;
+  margin-bottom: 20px;
+  /* border: 1px solid red; */
+}
+.nameFlavorSm p {
+  /* border: 1px solid red; */
+  font-size: 0.9rem;
+  margin: 0;
+  inline-size: 150px;
+  overflow-wrap: break-word;
+}
+.deleteSm {
+  width: 45px;
+  height: 45px;
+  background-color: #e2deda;
+  border-radius: 50%;
+  cursor: pointer;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.deleteSm > * {
+  color: #1e1d1c;
+}
+.quantitySm {
+  width: 120px;
+}
+@media (max-width: 370px) {
+  .quantitySm {
+    width: 100px;
+  }
+}
+.priceSm {
+  font-size: 1.2rem;
+  color: green;
+}
+@media (max-width: 470px) {
+  .right {
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+  .imgBoxRowSm {
+    margin-left: 5px;
+  }
+  .priceSm {
+    font-size: 1rem;
+  }
+}
+@media (min-width: 400px) {
+  .nameFlavorSm h3 {
+    font-size: 1.3rem;
+    inline-size: 180px;
+  }
+  .nameFlavorSm p {
+    font-size: 1rem;
+  }
 }
 
 @media (max-width: 800px) {
@@ -100,12 +200,12 @@
     display: none;
   }
   .cartRowMobile {
-    display: block;
+    display: flex;
   }
 }
 @media (min-width: 801px) {
   .cartRow {
-    display: block;
+    display: flex;
   }
   .cartRowMobile {
     display: none;

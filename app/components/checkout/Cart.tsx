@@ -108,36 +108,36 @@ export default function Cart() {
               </div>
               {/* SMALL ROW */}
               <div className={classes.cartRowMobile}>
-                <div className={classes.productSm}>
-                  <div className={classes.imgBoxRow}>
-                    <img src={item.img} alt="product image" />
+                <div className={classes.imgBoxRowSm}>
+                  <img src={item.img} alt="product image" />
+                </div>
+                <div className={classes.right}>
+                  <div className={classes.top}>
+                    <div className={classes.nameFlavorSm}>
+                      <h3>SMALL {item.name}</h3>
+                      <p>{item.description.split(":")[1].trim()}</p>
+                    </div>
+                    <div
+                      className={classes.deleteSm}
+                      onClick={() => removeFromCart(item.sku)}
+                    >
+                      <DeleteOutlineIcon />
+                    </div>
                   </div>
-                  <div className={classes.nameFlavorSm}>
-                    <h3>SMALL {item.name}</h3>
-                    <p>{item.description.split(":")[1].trim()}</p>
+                  <div className={classes.bottom}>
+                    <div className={classes.priceSm}>
+                      <span>$ </span>
+                      {item.unitPrice}
+                    </div>
+                    <div className={classes.quantitySm}>
+                      <ChangeQuantity
+                        sku={item.sku}
+                        currentQ={Number(quantities[item.sku]) || 0}
+                        maxQuantity={Number(item.maxQuantity) || 0}
+                        changeQuantity={changeQuantity}
+                      />
+                    </div>
                   </div>
-                </div>
-                <div className={classes.quantitySm}>
-                  <ChangeQuantity
-                    sku={item.sku}
-                    currentQ={Number(quantities[item.sku]) || 0}
-                    maxQuantity={Number(item.maxQuantity) || 0}
-                    changeQuantity={changeQuantity}
-                  />
-                </div>
-                <div className={classes.priceSm}>
-                  <span
-                  // style={{ color: "grey", fontSize: "1rem" }}
-                  >
-                    ${" "}
-                  </span>
-                  {item.unitPrice}
-                </div>
-                <div
-                  className={classes.deleteSm}
-                  onClick={() => removeFromCart(item.sku)}
-                >
-                  <DeleteOutlineIcon />
                 </div>
               </div>
               <div className={classes.line}></div>
