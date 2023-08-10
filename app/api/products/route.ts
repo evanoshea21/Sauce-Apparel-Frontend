@@ -13,6 +13,7 @@ interface UpdateProduct {
 }
 interface ReadProduct {
   method: "read";
+  fullProduct?: boolean;
   id?: string;
   name?: string;
   category?: Categories;
@@ -65,6 +66,9 @@ export async function POST(req: NextRequest) {
         isFeatured: reqBody.isFeatured,
       },
     });
+    if (!reqBody.fullProduct) {
+      return NextResponse.json(productResponse);
+    }
     let products: Product[] = [];
     // for each of these products, run a query to tack on the flavors_inventories
     for (let i = 0; i < productResponse.length; i++) {

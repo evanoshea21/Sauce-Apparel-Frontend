@@ -4,6 +4,51 @@ export function getCartItems() {
   const cart_itemsJSON = localStorage.getItem("cart_items") || "[]";
   return JSON.parse(cart_itemsJSON);
 }
+export function clearCartItems() {
+  localStorage.removeItem("cart_items");
+}
+export function addToCart(cartItem: CartItem) {
+  const cartItemsJSON = localStorage.getItem("cart_items");
+
+  if (!cartItemsJSON) {
+    const items = [{ ...cartItem }];
+    localStorage.setItem("cart_items", JSON.stringify(items));
+  } else {
+    const cartItems = JSON.parse(cartItemsJSON);
+    cartItems.push({ ...cartItem });
+    localStorage.setItem("cart_items", JSON.stringify(cartItems));
+  }
+}
+export function removeFromCart(sku: string) {
+  let items: CartItem[] = getCartItems();
+  items = items.filter((item: CartItem) => {
+    sku !== item.sku;
+  });
+  localStorage.setItem("cart_items", JSON.stringify(items));
+}
+export function changeQuantityCart(sku: string, newQ: number) {
+  const item: CartItem = getCartItems().find(
+    (item: CartItem) => item.sku === sku
+  );
+  //check if new q is in RANGE
+  if (newQ <= (Number(item.maxQuantity) ?? 0)) {
+    //update item
+    item.quantity = String(newQ);
+    //replace item in cart localstorage
+    const cart: CartItem[] = getCartItems();
+    // find item where sku matches
+    for (let i = 0; i < cart.length; i++) {
+      if (cart[i].sku === sku) {
+        cart[i] = item;
+        break;
+      }
+    }
+    localStorage.setItem("cart_items", JSON.stringify(cart));
+    return "success";
+  }
+  return "error, hit max";
+}
+
 export function getCartSum(): number {
   let cart_items = getCartItems();
   if (cart_items.length === 0) return 0;

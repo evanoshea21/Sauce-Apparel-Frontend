@@ -13,12 +13,11 @@ import { CreditCardForm, BillToForm } from "../forms/AddCardForms";
 export default function CheckoutPage() {
   const [customerProfileId, setCustomerProfileId] = React.useState<string>("");
   const [paymentProfileId, setPaymentProfileId] = React.useState<string>("");
-  const [cartItems, setCartItems] = React.useState<CartItem[]>([]);
 
   return (
     <div>
       {/* CART ITEMS HERE */}
-      <Cart cartItems={cartItems} setCartItems={setCartItems} />
+      <Cart />
       {/* LOGIN COMPONENT HERE */}
       <Login />
       {/* DISPLAY USER CIM INFO HERE */}
@@ -31,7 +30,6 @@ export default function CheckoutPage() {
       <CheckoutBtn
         customerProfileId={customerProfileId}
         paymentProfileId={paymentProfileId}
-        cartItems={cartItems}
       />
     </div>
   );

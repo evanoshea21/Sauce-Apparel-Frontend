@@ -21,7 +21,6 @@ Left to do:
 interface Props {
   customerProfileId: string;
   paymentProfileId: string;
-  cartItems: CartItem[];
 }
 interface ChargeProfileDataToSend {
   customerProfileId: string;
@@ -37,12 +36,16 @@ interface ChargeProfileDataToSend {
 export default function CheckoutBtn({
   customerProfileId,
   paymentProfileId,
-  cartItems,
 }: Props) {
   const [purchaseResponse, setPurchaseResponse] = React.useState<{
     success: boolean;
     text: string;
   }>({ success: false, text: "" });
+  const [cartItems, setCartItems] = React.useState<CartItem[]>([]);
+
+  React.useEffect(() => {
+    setCartItems(getCartItems());
+  }, []);
 
   function completeCheckout() {
     // Parse Cart_Items

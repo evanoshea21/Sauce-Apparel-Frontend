@@ -1,8 +1,9 @@
 "use client";
 import React from "react";
 import classes from "@/styles/Cart.module.css";
-import { getCartItems, getCartSum } from "@/app/utils";
+import { changeQuantityCart, getCartItems, getCartSum } from "@/app/utils";
 import type { CartItem } from "@/scripts/Types";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 /*
 Sole purpose: GET/EDIT cart items from localStorage
 
@@ -14,99 +15,170 @@ Left to do:
 
 */
 
-const cartItemsData: CartItem[] = [
-  {
-    sku: "2084bkasdj82bf803",
-    name: "Flume Vapes",
-    quantity: "1",
-    maxQuantity: "4",
-    unitPrice: "24.99",
-    description: "peach",
-    img: "htttp:///cjdsncjdsnjcds",
-  },
-  {
-    sku: "12njb23b082buef0c",
-    name: "Big Vape",
-    quantity: "2",
-    maxQuantity: "5",
-    unitPrice: "34.99",
-    description: "pear",
-    img: "htttp:///cjdsncjdsnjcds",
-  },
-  {
-    sku: "csb23f3of84b3fwuofu",
-    name: "Disposable Vape",
-    quantity: "1",
-    maxQuantity: "3",
-    unitPrice: "14.50",
-    description: "mint",
-    img: "htttp:///cjdsncjdsnjcds",
-  },
-  {
-    sku: "2jnj2lj3nuo32uc40",
-    name: "Air Vape",
-    quantity: "1",
-    maxQuantity: "10",
-    unitPrice: "54.99",
-    description: "orange",
-    img: "htttp:///cjdsncjdsnjcds",
-  },
-];
-
-interface Props {
-  cartItems: CartItem[];
-  setCartItems: React.Dispatch<React.SetStateAction<CartItem[]>>;
-}
-
-export default function Cart(props: any) {
+export default function Cart() {
   const [totalPrice, setTotalPrice] = React.useState<number>();
   const [cartItems, setCartItems] = React.useState<CartItem[]>([]);
-  // const [cartItems, setCartItems] = React.useState<CartItem[]>([])
+  const [quantities, setQuantities] = React.useState<{ [key: string]: string }>(
+    {}
+  );
 
   // GET SET cart items from LocalStorage
   React.useEffect(() => {
-    // get localStorage, set cart items
-    const cart_items = cartItemsData;
-    // const cart_items = getCartItems();
-    setCartItems(cart_items);
+    setCartItems(getCartItems());
   }, []);
+
+  React.useEffect(() => {
+    if (cartItems) {
+      // set the Qs state
+      let obj: { [key: string]: string } = {};
+      cartItems.forEach((item: CartItem) => {
+        obj[item.sku] = item.quantity;
+      });
+      setQuantities(obj);
+    }
+  }, [cartItems]);
 
   //set SUM price of cart items
   React.useEffect(() => {
     setTotalPrice(getCartSum());
-    console.log("Cart: ", cartItemsData);
   }, [cartItems]);
 
-  function removeFromCart(itemId: string) {
+  function removeFromCart(sku: string) {
     // filter out the itemId
-    const newCartItems = cartItems.filter(
-      (item: CartItem) => item.sku !== itemId
-    );
+    const newCartItems = cartItems.filter((item: CartItem) => item.sku !== sku);
     setCartItems(newCartItems);
     // set new
     localStorage.setItem("cart_items", JSON.stringify(newCartItems));
   }
 
-  function changeQuantity() {}
+  function changeQuantity(sku: string, newQ: number) {
+    const item = cartItems.find((item) => item.sku === sku);
+    if (newQ > Number(item?.maxQuantity) || newQ < 1) return;
+    setQuantities((prevQs) => {
+      let newQs = { ...prevQs };
+      newQs[sku] = String(newQ);
+      return newQs;
+    });
+    changeQuantityCart(sku, newQ);
+  }
+
+  if (cartItems.length === 0) {
+    return <>Empty Cart...</>;
+  }
 
   return (
-    <div className={classes.main}>
-      <h1>Cart Items</h1>
-
-      {cartItems.length === 0 && <div>Looks like your cart is empty...</div>}
-
-      {cartItems.length !== 0 &&
-        cartItems.map((item, i) => {
-          //
+    <>
+      <h1>Shopping Cart</h1>
+      <div className={classes.main}>
+        {cartItems.map((item: CartItem) => {
           return (
-            <div key={i}>
-              <h3>{item.name}</h3>
-              <span>${item.unitPrice}</span>
-              <button onClick={() => removeFromCart(item.sku)}>REMOVE</button>
+            <div key={item.sku}>
+              <div className={classes.cartRow}>
+                <div className={classes.product}>
+                  <div className={classes.imgBoxRow}>
+                    <img src={item.img} alt="product image" />
+                  </div>
+                  <div className={classes.nameFlavor}>
+                    <h3>{item.name}</h3>
+                    <p>{item.description.split(":")[1].trim()}</p>
+                  </div>
+                </div>
+                <div className={classes.quantity}>
+                  <ChangeQuantity
+                    sku={item.sku}
+                    currentQ={Number(quantities[item.sku]) || 0}
+                    maxQuantity={Number(item.maxQuantity) || 0}
+                    changeQuantity={changeQuantity}
+                  />
+                </div>
+                <div className={classes.price}>
+                  <span
+                  // style={{ color: "grey", fontSize: "1rem" }}
+                  >
+                    ${" "}
+                  </span>
+                  {item.unitPrice}
+                </div>
+                <div
+                  className={classes.delete}
+                  onClick={() => removeFromCart(item.sku)}
+                >
+                  <DeleteOutlineIcon />
+                </div>
+              </div>
+              {/* SMALL ROW */}
+              <div className={classes.cartRowMobile}>
+                <div className={classes.productSm}>
+                  <div className={classes.imgBoxRow}>
+                    <img src={item.img} alt="product image" />
+                  </div>
+                  <div className={classes.nameFlavorSm}>
+                    <h3>SMALL {item.name}</h3>
+                    <p>{item.description.split(":")[1].trim()}</p>
+                  </div>
+                </div>
+                <div className={classes.quantitySm}>
+                  <ChangeQuantity
+                    sku={item.sku}
+                    currentQ={Number(quantities[item.sku]) || 0}
+                    maxQuantity={Number(item.maxQuantity) || 0}
+                    changeQuantity={changeQuantity}
+                  />
+                </div>
+                <div className={classes.priceSm}>
+                  <span
+                  // style={{ color: "grey", fontSize: "1rem" }}
+                  >
+                    ${" "}
+                  </span>
+                  {item.unitPrice}
+                </div>
+                <div
+                  className={classes.deleteSm}
+                  onClick={() => removeFromCart(item.sku)}
+                >
+                  <DeleteOutlineIcon />
+                </div>
+              </div>
+              <div className={classes.line}></div>
             </div>
           );
         })}
-      {totalPrice !== 0 && <h4>Total Price: ${totalPrice}</h4>}
+      </div>
+    </>
+  );
+}
+
+interface ChangeQProps {
+  sku: string;
+  currentQ: number;
+  changeQuantity: (sku: string, newQ: number) => void;
+  maxQuantity: number;
+}
+
+function ChangeQuantity({
+  sku,
+  currentQ,
+  changeQuantity,
+  maxQuantity,
+}: ChangeQProps) {
+  return (
+    <div className={classes.changeQBox}>
+      <span
+        className={classes.plusMinus}
+        style={{ color: currentQ === 1 ? "grey" : "" }}
+        onClick={() => changeQuantity(sku, currentQ - 1)}
+      >
+        -
+      </span>
+      <span>{currentQ}</span>
+      <span
+        className={classes.plusMinus}
+        style={{ color: currentQ === maxQuantity ? "grey" : "" }}
+        onClick={() => changeQuantity(sku, currentQ + 1)}
+      >
+        +
+      </span>
     </div>
   );
 }

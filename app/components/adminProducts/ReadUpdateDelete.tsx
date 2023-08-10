@@ -30,7 +30,7 @@ export default function Read({ refreshList }: { refreshList: boolean }) {
       let productResponse = await axios({
         url: "/api/products",
         method: "POST",
-        data: { method: "read" },
+        data: { method: "read", fullProduct: true },
       });
       console.log("Products READ: \n", productResponse.data);
       setProductsShown(productResponse.data.reverse());
@@ -63,6 +63,7 @@ export default function Read({ refreshList }: { refreshList: boolean }) {
       method: "POST",
       data: {
         method: "read",
+        fullProduct: true,
         id: productId,
       },
     });
