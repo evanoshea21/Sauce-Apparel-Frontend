@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import type { Address, AddCardData } from "@/scripts/Types";
 import { CreditCardForm, BillToForm } from "../forms/AddCardForms";
 import Button from "@mui/material/Button";
+import { Add } from "@mui/icons-material";
 
 interface CreateProfilePayload {
   creditCard: {
@@ -16,12 +17,6 @@ interface CreateProfilePayload {
   merchantCustomerId: string; // phone
   description?: string; // profile created on website
   email: string; // from session
-}
-
-interface AddCardRequest {
-  url: string;
-  method: "POST";
-  data: AddCardData;
 }
 
 /*
@@ -55,22 +50,8 @@ Left to do:
 interface Props {
   setPaymentProfileId: React.Dispatch<React.SetStateAction<string>>;
   setCustomerProfileId: React.Dispatch<React.SetStateAction<string>>;
-  customerProfileId: string;
 }
-interface CustomerProfile {
-  customerProfileId: string;
-  description: string;
-  email: string;
-  merchantCustomerId: string;
-  paymentProfiles: PaymentProfile[];
-  profileType: string;
-}
-interface PaymentProfile {
-  billTo: {}[];
-  customerPaymentProfileId: string;
-  customerType: string;
-  payment: { creditCard: { cardNumber: string } };
-}
+
 type DisplayStates =
   | "loggedOut"
   | "loadingCP"
@@ -78,10 +59,9 @@ type DisplayStates =
   | "noCP"
   | "networkError";
 
-export default function CustomerProfile({
+export default function Payment({
   setPaymentProfileId,
   setCustomerProfileId,
-  customerProfileId,
 }: Props) {
   //session updates on refresh
   const { data: session, status } = useSession();
@@ -94,23 +74,11 @@ export default function CustomerProfile({
   const [chosenCardId, setChosenCard] = React.useState<string>();
   // FORM FIELDS
   // card
-  const [card_number, setCreditCardNum] = React.useState<string>("");
-  const [expDate, setExpDate] = React.useState<string>("");
-  // address
-  const [firstName, setFirstName] = React.useState<string>("");
-  const [lastName, setLastName] = React.useState<string>("");
-  const [address, setAddress] = React.useState<string>("");
-  const [city, setCity] = React.useState<string>("");
-  const [state, setState] = React.useState<string>("");
-  const [zip, setZipCode] = React.useState<string>("");
-  // more details
-  const [phone, setPhone] = React.useState<string>("");
 
   // GET [CP-id] AFTER LOG IN, or set to [noCP] or [networkError]
   React.useEffect(() => {
     // this running everytime you leave TAB. how to change this? ... thinking
     if (status === "authenticated") {
-      console.log("running api..");
       setDisplayState("loadingCP");
       axios({
         url: "/api/get-profile-by-userid",
@@ -181,63 +149,6 @@ export default function CustomerProfile({
     if (!session) return;
 
     // [TODO] error handling for form-inputs HERE (nums match etc)
-
-    const date = new Date();
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    const dateStr = `${year}-${month}-${day}`;
-
-    const formData: CreateProfilePayload = {
-      creditCard: {
-        card_number,
-        expDate,
-      },
-      billTo: {
-        firstName,
-        lastName,
-        address,
-        city,
-        state,
-        zip,
-        country: "USA",
-        phone,
-      },
-      merchantCustomerId: `${lastName},${firstName}`,
-      description: `member since ${dateStr}`,
-      email: session?.user.email ?? "no email provided",
-    };
-
-    // send form data to SDK create profile
-    axios({
-      url: "http://localhost:1400/createprofile",
-      method: "POST",
-      data: formData,
-    })
-      .then((res) => {
-        const custProfileId: string = res.data.customerProfileId;
-        // then, save CustomerProfile to User Account
-        //[TODO] ALSO save their personal info--fName, lName, phone, email
-        axios({
-          url: "/api/save-customer-profile",
-          method: "POST",
-          data: { userId: session.user.id, customerProfileId: custProfileId },
-        })
-          .then((res) => {
-            setCustomerProfileId(custProfileId);
-          })
-          .catch((e) => {
-            console.error("error saving profile to DB");
-            setDisplayState("networkError");
-          });
-      })
-      .catch((e) => {
-        console.log(
-          "ERROR creating profile:\n ",
-          e.response.data.messages.message[0]
-        );
-        setDisplayState("networkError");
-      });
   } // handle create profile form
 
   function deleteProfile() {
@@ -336,26 +247,7 @@ export default function CustomerProfile({
   }
 
   if (displayState === "noCP") {
-    return (
-      <>
-        <CreditCardForm
-          setFName={setFirstName}
-          setLName={setLastName}
-          setCCN={setCreditCardNum}
-          setExpDate={setExpDate}
-        />
-        <BillToForm
-          setAddress={setAddress}
-          setCity={setCity}
-          setZip={setZipCode}
-          setState={setState}
-          setPhone={setPhone}
-        />
-        <Button variant="contained" onClick={createProfile}>
-          Add Payment Option
-        </Button>
-      </>
-    );
+    return <AddCardProfile />;
   }
   // else if (displayState === 'foundCP')
   return (
@@ -386,5 +278,180 @@ export default function CustomerProfile({
       )}
       <button onClick={() => addCard()}>Add Card</button>
     </div>
+  );
+}
+
+interface AddCardRequest {
+  url: string;
+  method: "POST";
+  data: AddCardData;
+}
+interface CustomerProfile {
+  customerProfileId: string;
+  description: string;
+  email: string;
+  merchantCustomerId: string;
+  paymentProfiles: PaymentProfile[];
+  profileType: string;
+}
+interface PaymentProfile {
+  billTo: {}[];
+  customerPaymentProfileId: string;
+  customerType: string;
+  payment: { creditCard: { cardNumber: string } };
+}
+interface AddCardProfileProps {
+  customerProfile?: CustomerProfile;
+  setRefreshProfile: React.Dispatch<React.SetStateAction<boolean>>;
+}
+function AddCardProfile({
+  customerProfile,
+  setRefreshProfile,
+}: AddCardProfileProps) {
+  // holds state for forms. Adds card / Creates customer profile
+  const [card_number, setCreditCardNum] = React.useState<string>("");
+  const [expDate, setExpDate] = React.useState<string>("");
+  // address
+  const [firstName, setFirstName] = React.useState<string>("");
+  const [lastName, setLastName] = React.useState<string>("");
+  const [address, setAddress] = React.useState<string>("");
+  const [city, setCity] = React.useState<string>("");
+  const [state, setState] = React.useState<string>("");
+  const [zip, setZipCode] = React.useState<string>("");
+  // more details
+  const [phone, setPhone] = React.useState<string>("");
+
+  function addCardProfile() {
+    // if existing profile, ADD card to it
+    if (customerProfile) {
+      let addCardReqConfig: AddCardRequest = {
+        url: "http://localhost:1400/addCard",
+        method: "POST",
+        data: {
+          customerProfileId: customerProfile.customerProfileId,
+          cardNumber: card_number,
+          expDate,
+          billTo: {
+            firstName,
+            lastName,
+            address,
+            city,
+            state,
+            zip,
+            country: "USA",
+            phone,
+          },
+        },
+      };
+      axios(addCardReqConfig)
+        .then((res) => {
+          console.log("added Card Response: ", res.data);
+          setChosenCard(res.data.customerPaymentProfileId);
+          // get profile again
+          console.log(
+            "updating profile state... retrieving new payments on file.."
+          );
+          axios({
+            url: "http://localhost:1400/getprofile",
+            method: "POST",
+            data: { id: customerProfileId },
+          })
+            .then((res) => {
+              console.log("GET customer profile after creation: ", res.data);
+
+              setCustomerProfile(res.data.profile);
+            })
+            .catch((e) => {
+              console.log("error getting profile");
+              setDisplayState("networkError");
+            });
+        })
+        .catch((e) => {
+          console.error(
+            "error adding card: ",
+            e.response.data.messages.message[0]
+          );
+        });
+    } else {
+      // if not, CREATE customer profile with card
+      const date = new Date();
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1;
+      const day = date.getDate();
+      const dateStr = `${year}-${month}-${day}`;
+
+      const formData: CreateProfilePayload = {
+        creditCard: {
+          card_number,
+          expDate,
+        },
+        billTo: {
+          firstName,
+          lastName,
+          address,
+          city,
+          state,
+          zip,
+          country: "USA",
+          phone,
+        },
+        merchantCustomerId: `${lastName},${firstName}`,
+        description: `member since ${dateStr}`,
+        email: session?.user.email ?? "no email provided",
+      };
+
+      // send form data to SDK create profile
+      axios({
+        url: "http://localhost:1400/createprofile",
+        method: "POST",
+        data: formData,
+      })
+        .then((res) => {
+          const custProfileId: string = res.data.customerProfileId;
+          // then, save CustomerProfile to User Account
+          //[TODO] ALSO save their personal info--fName, lName, phone, email
+          axios({
+            url: "/api/save-customer-profile",
+            method: "POST",
+            data: { userId: session.user.id, customerProfileId: custProfileId },
+          })
+            .then((res) => {
+              setCustomerProfileId(custProfileId);
+            })
+            .catch((e) => {
+              console.error("error saving profile to DB");
+              // setDisplayState("networkError");
+            });
+        })
+        .catch((e) => {
+          console.log(
+            "ERROR creating profile:\n ",
+            e.response.data.messages.message[0]
+          );
+          // setDisplayState("networkError");
+        });
+    }
+  }
+
+  return (
+    <>
+      <CreditCardForm
+        setFName={setFirstName}
+        setLName={setLastName}
+        setCCN={setCreditCardNum}
+        setExpDate={setExpDate}
+      />
+      <BillToForm
+        setAddress={setAddress}
+        setCity={setCity}
+        setZip={setZipCode}
+        setState={setState}
+        setPhone={setPhone}
+        defaultValues={defaultBillTo}
+      />
+      <Button variant="contained" onClick={addCardProfile}>
+        Add Payment Option
+      </Button>
+    </>
   );
 }

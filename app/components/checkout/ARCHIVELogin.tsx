@@ -51,12 +51,7 @@ export default function LoginReg() {
         <h1>OAuth</h1>
         <p>logged out...</p>
         <button onClick={Login}>GITHUB Login</button>
-        {/* <button onClick={Logout}>LOGOUT CONFIRM</button> */}
       </div>
     );
   }
 }
-
-// export default function LoginReg() {
-//   return <div>Login Reg</div>;
-// }

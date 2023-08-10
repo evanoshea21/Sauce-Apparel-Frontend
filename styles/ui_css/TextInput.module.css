@@ -1,5 +1,6 @@
 .main {
   position: relative;
+  height: fit-content;
 }
 
 .label {
@@ -34,6 +35,10 @@
   animation-fill-mode: forwards;
 }
 @keyframes labelUp {
+  from {
+    top: 50%;
+    font-size: 1em;
+  }
   to {
     top: 27%;
     font-size: 0.8em;

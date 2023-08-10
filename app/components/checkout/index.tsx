@@ -4,11 +4,10 @@ import React from "react";
 import type { CartItem } from "@/scripts/Types";
 
 import Cart from "./Cart";
-import Login from "./Login";
-import CustomerProfile from "./CustomerProfile";
+import Login from "./ARCHIVELogin";
+import Payment from "./Payment";
 import CheckoutBtn from "./CheckoutBtn";
 import PersonalDetails from "../forms/PersonalDetails";
-import { CreditCardForm, BillToForm } from "../forms/AddCardForms";
 
 export default function CheckoutPage() {
   const [customerProfileId, setCustomerProfileId] = React.useState<string>("");
@@ -18,13 +17,10 @@ export default function CheckoutPage() {
     <div>
       {/* CART ITEMS HERE */}
       <Cart />
-      {/* LOGIN COMPONENT HERE */}
-      <Login />
-      {/* DISPLAY USER CIM INFO HERE */}
-      <CustomerProfile
-        setPaymentProfileId={setPaymentProfileId}
+      {/* GET PAYMENT */}
+      <Payment
         setCustomerProfileId={setCustomerProfileId}
-        customerProfileId={customerProfileId}
+        setPaymentProfileId={setPaymentProfileId}
       />
       {/* COMPLETE CHECKOUT BUTTON HERE */}
       <CheckoutBtn

@@ -48,7 +48,13 @@ model User {
 }
 
 model CustomerProfile {
-  id                String @id @default(cuid())
+  id String @id @default(cuid())
+
+  firstName String
+  lastName  String
+  phone     String
+  email     String
+
   customerProfileId String @unique
   userId            String @unique
   user              User   @relation(fields: [userId], references: [id], onDelete: Cascade)

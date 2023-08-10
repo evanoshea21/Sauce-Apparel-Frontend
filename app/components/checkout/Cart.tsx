@@ -114,7 +114,7 @@ export default function Cart() {
                 <div className={classes.right}>
                   <div className={classes.top}>
                     <div className={classes.nameFlavorSm}>
-                      <h3>SMALL {item.name}</h3>
+                      <h3>{item.name}</h3>
                       <p>{item.description.split(":")[1].trim()}</p>
                     </div>
                     <div

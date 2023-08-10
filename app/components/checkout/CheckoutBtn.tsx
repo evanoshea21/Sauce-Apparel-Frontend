@@ -50,6 +50,7 @@ export default function CheckoutBtn({
   function completeCheckout() {
     // Parse Cart_Items
     const cart_items = getCartItems();
+    // [TODO] remove unnecesary properties like MaxQuantity AFTER holding-inventory
 
     // Build Payload object to send for Transaction
     let dataPayload: ChargeProfileDataToSend = {
