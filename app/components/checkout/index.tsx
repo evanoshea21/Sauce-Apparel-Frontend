@@ -4,10 +4,10 @@ import React from "react";
 import type { CartItem } from "@/scripts/Types";
 
 import Cart from "./Cart";
-import Login from "./ARCHIVELogin";
 import Payment from "./Payment";
-import CheckoutBtn from "./CheckoutBtn";
+import CheckoutBtn from "./CheckoutBox";
 import PersonalDetails from "../forms/PersonalDetails";
+import { signOut } from "next-auth/react";
 
 export default function CheckoutPage() {
   const [customerProfileId, setCustomerProfileId] = React.useState<string>("");
@@ -15,10 +15,12 @@ export default function CheckoutPage() {
 
   return (
     <div>
+      <button onClick={() => signOut()}>Log out</button>
       {/* CART ITEMS HERE */}
       <Cart />
       {/* GET PAYMENT */}
       <Payment
+        customerProfileId={customerProfileId}
         setCustomerProfileId={setCustomerProfileId}
         setPaymentProfileId={setPaymentProfileId}
       />

@@ -18,14 +18,10 @@ interface BillToProps {
   setState: React.Dispatch<React.SetStateAction<string>>;
   setZip: React.Dispatch<React.SetStateAction<string>>;
   setPhone: React.Dispatch<React.SetStateAction<string>>;
+  defaultValues?: Address;
 }
 
 export function CreditCardForm(props: CreditCardProps) {
-  // const [fName, setFName] = React.useState<string>("");
-  // const [lName, setLName] = React.useState<string>("");
-  // const [CCN, setCCN] = React.useState<string>("");
-  // const [expDate, setExpDate] = React.useState<string>("");
-
   return (
     <div>
       <h1>Payment</h1>
@@ -85,13 +81,7 @@ export function CreditCardForm(props: CreditCardProps) {
 }
 
 export function BillToForm(props: BillToProps) {
-  // const [address, setAddress] = React.useState<string>("");
-  // const [city, setCity] = React.useState<string>("");
-  // const [state, setState] = React.useState<string>("");
-  // const [zip, setZip] = React.useState<string>("");
-  // const [country] = React.useState<string>("USA");
-  // const [phone, setPhone] = React.useState<string>("");
-
+  console.log("Default Values?: ", props.defaultValues);
   return (
     <div>
       <h1>Billing Address</h1>
@@ -107,6 +97,7 @@ export function BillToForm(props: BillToProps) {
       >
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <TextInput
+            defaultValue={props.defaultValues?.address ?? ""}
             fontScale={0.9}
             inputId="billTo-address"
             placeholder="Street Address"
@@ -115,6 +106,7 @@ export function BillToForm(props: BillToProps) {
             widthScale={1.1}
           />
           <TextInput
+            defaultValue={props.defaultValues?.city ?? ""}
             fontScale={0.9}
             inputId="billTo-city"
             placeholder="City"
@@ -125,6 +117,7 @@ export function BillToForm(props: BillToProps) {
         </div>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <TextInput
+            defaultValue={props.defaultValues?.state ?? ""}
             fontScale={0.9}
             inputId="billTo-state"
             placeholder="State"
@@ -134,6 +127,7 @@ export function BillToForm(props: BillToProps) {
             maxLength={2}
           />
           <TextInput
+            defaultValue={props.defaultValues?.zip ?? ""}
             fontScale={0.9}
             inputId="billTo-zip"
             placeholder="Zip"
@@ -143,6 +137,7 @@ export function BillToForm(props: BillToProps) {
             maxLength={5}
           />
           <TextInput
+            defaultValue={props.defaultValues?.phone ?? ""}
             fontScale={0.9}
             inputId="billTo-phone"
             placeholder="Phone"

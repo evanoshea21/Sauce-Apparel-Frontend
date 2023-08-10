@@ -10,12 +10,16 @@ Sole purpose:
 - Gather customerId, paymentId, and cartItems, AND SEND PAYLOAD to api '/chargeprofile'
 - show response to customer, redirect to thank you page
 
-CLEAN
+Proper flow of purchase:
+- First Check items are in stock, and hold them (decrement items in cart) if they are -- same time on same route
+- Then hit Transaction (ChargeCustomer)
+  - Success:
+    - re-route to thank you
+    - use response to add to ORDER table AND cartItems to PurchasedItems
+  - Error:
+    - re-route to error
+    - UNDO items HOLD (increment all items in cart)
 
-Left to do:
-- ui (styling purchase button)
-- redirect to ThankYou page
-- send email to customer (authorize might handle this)
 */
 
 interface Props {

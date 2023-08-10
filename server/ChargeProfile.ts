@@ -10,7 +10,6 @@ interface CartItem {
 interface Address {
   firstName: string;
   lastName: string;
-  Company: string;
   address: string;
   city: string;
   state: string;

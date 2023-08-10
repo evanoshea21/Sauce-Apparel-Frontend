@@ -42,6 +42,20 @@ export interface FlavorsInventoryObj {
 }
 
 //ADD CARD (bill To form, credit card form)
+export interface CustomerProfile {
+  customerProfileId: string;
+  description: string;
+  email: string;
+  merchantCustomerId: string;
+  paymentProfiles: PaymentProfile[];
+  profileType: string;
+}
+export interface PaymentProfile {
+  billTo: Address;
+  customerPaymentProfileId: string;
+  customerType: string;
+  payment: { creditCard: { cardNumber: string } };
+}
 
 export interface Address {
   firstName: string;
