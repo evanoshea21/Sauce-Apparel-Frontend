@@ -33,7 +33,7 @@ export default function SignIn({ setDisplayState }: Props) {
     // SHOW LOGIN STUFF
     return (
       <div className={classes.signinMain}>
-        <h2>Log in</h2>
+        <h2>Log in to Complete Purchase</h2>
         <button className={classes.githubBtn} onClick={Login}>
           GITHUB
         </button>

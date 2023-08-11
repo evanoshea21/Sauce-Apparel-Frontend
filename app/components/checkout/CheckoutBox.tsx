@@ -3,7 +3,9 @@ import React from "react";
 import axios from "axios";
 import classes from "@/styles/CheckoutBox.module.css";
 import type { CartItem } from "@/scripts/Types";
-import { getCartItems, getCartSumAndCount } from "../../utils";
+import { getCartItems, getCartSumAndCount, roundPrice } from "../../utils";
+import LockIcon from "@mui/icons-material/Lock";
+import type { Payment } from "./index";
 
 const TAX_PERCENT = Number(process.env.NEXT_PUBLIC_STATE_TAX_AS_DECIMAL);
 
@@ -26,7 +28,7 @@ Proper flow of purchase:
 
 interface Props {
   customerProfileId: string;
-  paymentProfileId: string;
+  payment: Payment | undefined;
   refreshCart: boolean;
 }
 interface ChargeProfileDataToSend {
@@ -42,7 +44,7 @@ interface ChargeProfileDataToSend {
 
 export default function CheckoutBtn({
   customerProfileId,
-  paymentProfileId,
+  payment,
   refreshCart,
 }: Props) {
   const [purchaseResponse, setPurchaseResponse] = React.useState<{
@@ -53,28 +55,37 @@ export default function CheckoutBtn({
   const [subtotal, setSubtotal] = React.useState<number>(0);
   const [tax, setTax] = React.useState<number>(0);
   const [count, setCount] = React.useState<string>("");
-  const [buttonTextColor, setButtonTextColor] = React.useState<{
+  const [buttonProps, setButtonProps] = React.useState<{
     text: string;
     color: string;
-  }>({ text: "Order for Pickup", color: "green" });
+    cursor: "not-allowed" | "pointer";
+  }>({ text: "Order for Pickup", color: "green", cursor: "pointer" });
 
   React.useEffect(() => {
-    if (customerProfileId.length === 0 || paymentProfileId.length === 0) {
-      setButtonTextColor({ text: "Add Payment Card", color: "grey" });
+    if (customerProfileId.length === 0 || !payment) {
+      setButtonProps({
+        text: "Add Payment",
+        color: "grey",
+        cursor: "not-allowed",
+      });
     } else {
-      setButtonTextColor({ text: "Order for Pickup", color: "green" });
+      setButtonProps({
+        text: "Order for Pickup",
+        color: "green",
+        cursor: "pointer",
+      });
     }
-  }, [customerProfileId, paymentProfileId]);
+  }, [customerProfileId, payment]);
 
   React.useEffect(() => {
     const { sum, count } = getCartSumAndCount();
-    setSubtotal(sum);
+    setSubtotal(roundPrice(sum));
     setCount(String(count));
   }, [refreshCart]);
   React.useEffect(() => {
     if (subtotal) {
       const amount = subtotal * TAX_PERCENT;
-      setTax(amount);
+      setTax(roundPrice(amount));
     }
   }, [subtotal]);
 
@@ -86,11 +97,12 @@ export default function CheckoutBtn({
     // Parse Cart_Items
     const cart_items = getCartItems();
     // [TODO] remove unnecesary properties like MaxQuantity AFTER holding-inventory
+    if (!payment || !customerProfileId) return;
 
     // Build Payload object to send for Transaction
     let dataPayload: ChargeProfileDataToSend = {
       customerProfileId,
-      customerPaymentProfileId: paymentProfileId,
+      customerPaymentProfileId: payment?.paymentProfileId ?? "",
       order: {
         invoiceNumber: "INV-testInvoiceNum", // INV-??
         description: "online-order", // online order
@@ -122,6 +134,7 @@ export default function CheckoutBtn({
   }
 
   if (subtotal === 0) return <></>;
+
   return (
     <div className={classes.main}>
       <h2 className={classes.title}>Order Summary</h2>
@@ -137,6 +150,18 @@ export default function CheckoutBtn({
         <span>Cart Items</span>
         <span>{count}</span>
       </div>
+      <div className={classes.row}>
+        <span>Payment</span>
+        {payment ? (
+          <span style={{ textAlign: "right" }}>
+            {payment?.cardType}
+            <br />
+            ••{payment?.cardNumber.slice(-4)}
+          </span>
+        ) : (
+          <>--</>
+        )}
+      </div>
 
       <h2 className={classes.row2}>
         <span>Total</span>
@@ -145,28 +170,37 @@ export default function CheckoutBtn({
       <div className={classes.buttonBox}>
         <button
           disabled={
-            Number(count) === 0 ||
-            customerProfileId.length == 0 ||
-            paymentProfileId.length === 0
+            Number(count) === 0 || customerProfileId.length == 0 || !payment
           }
           onClick={completeCheckout}
           style={{
-            backgroundColor: buttonTextColor.color,
+            backgroundColor: buttonProps.color,
+            cursor: buttonProps.cursor,
           }}
         >
-          {buttonTextColor.text}
+          <LockIcon />
+          {buttonProps.text}
         </button>
+      </div>
+      <div
+        style={{
+          color: "rgba(50,50,50,.7)",
+          width: "100%",
+          fontSize: "13px",
+          textAlign: "center",
+        }}
+      >
+        All purchases are secured with Authorize.net payment gateway.{" "}
+        <a
+          style={{ color: "inherit", fontSize: "12px" }}
+          href="https://www.authorize.net/content/dam/anet2021/documents/security-0604.pdf"
+        >
+          Learn More
+        </a>
       </div>
       <p style={{ color: purchaseResponse.success ? "green" : "red" }}>
         {purchaseResponse.text}
       </p>
     </div>
   );
-}
-
-function roundPrice(price: number) {
-  let num = price;
-  num *= 100;
-  let rounded = Math.round(num);
-  return rounded / 100;
 }

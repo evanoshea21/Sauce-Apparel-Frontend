@@ -33,6 +33,10 @@
   justify-content: space-between;
   /* box-sizing: border-box; */
 }
+.cardTypeInCard {
+  inline-size: 125px;
+  overflow-wrap: break-word;
+}
 .cardNum {
   text-align: right;
 }
@@ -59,7 +63,7 @@
 
 @media (max-width: 415px) {
   .main {
-    padding: 5px;
+    padding: 15px;
   }
   .card,
   .addCard {

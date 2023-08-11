@@ -1,6 +1,7 @@
 .main {
   position: relative;
   height: fit-content;
+  margin: 5px;
 }
 
 .label {

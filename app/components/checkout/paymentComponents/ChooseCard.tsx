@@ -5,27 +5,33 @@ import type { CustomerProfile } from "@/scripts/Types";
 import classes from "@/styles/Payment.module.css";
 import { DisplayStates } from "../Payment";
 import axios from "axios";
+import type { Payment } from "../index";
 
 interface Props {
   customerProfile: CustomerProfile | undefined;
-  chosenPaymentId: string;
-  setChosenPaymentId: React.Dispatch<React.SetStateAction<string>>;
+  chosenPayment: Payment | undefined;
+  setChosenPayment: React.Dispatch<React.SetStateAction<Payment | undefined>>;
   setDisplayState: React.Dispatch<React.SetStateAction<DisplayStates>>;
   reset: () => void;
 }
 
 export default function ChooseCard({
   customerProfile,
-  chosenPaymentId,
-  setChosenPaymentId,
+  chosenPayment,
+  setChosenPayment,
   setDisplayState,
   reset,
 }: Props) {
   React.useEffect(() => {
     if (customerProfile) {
-      setChosenPaymentId(
-        customerProfile.paymentProfiles[0].customerPaymentProfileId
-      );
+      const paymentProfileId: string =
+        customerProfile.paymentProfiles[0].customerPaymentProfileId;
+      const cardType: string =
+        customerProfile.paymentProfiles[0].payment.creditCard.cardType;
+      const cardNumber: string =
+        customerProfile.paymentProfiles[0].payment.creditCard.cardNumber;
+      let obj = { cardNumber, cardType, paymentProfileId };
+      setChosenPayment(obj);
     }
   }, [customerProfile]);
 
@@ -65,7 +71,8 @@ export default function ChooseCard({
               className={classes.border}
               style={{
                 border:
-                  chosenPaymentId === card.customerPaymentProfileId
+                  chosenPayment?.paymentProfileId ===
+                  card.customerPaymentProfileId
                     ? "5px solid #7097e5"
                     : "5px solid transparent",
               }}
@@ -73,17 +80,26 @@ export default function ChooseCard({
               <div
                 key={card.customerPaymentProfileId}
                 className={classes.card}
-                onClick={() =>
-                  setChosenPaymentId(card.customerPaymentProfileId)
-                }
+                onClick={() => {
+                  const paymentProfileId = card.customerPaymentProfileId;
+                  const cardNumber = card.payment.creditCard.cardNumber;
+                  const cardType = card.payment.creditCard.cardType;
+                  let obj = { cardNumber, cardType, paymentProfileId };
+                  setChosenPayment(obj);
+                }}
                 style={{
                   backgroundColor:
-                    chosenPaymentId === card.customerPaymentProfileId
+                    chosenPayment?.paymentProfileId ===
+                    card.customerPaymentProfileId
                       ? "#434258"
                       : "",
                 }}
               >
-                <span>{card.payment.creditCard.cardType}</span>
+                <span className={classes.cardTypeInCard}>
+                  {card.payment.creditCard.cardType === "AmericanExpress"
+                    ? "Amex"
+                    : card.payment.creditCard.cardType}
+                </span>
                 <span className={classes.cardNum}>
                   •• {card.payment.creditCard.cardNumber.slice(-4)}
                 </span>
@@ -105,9 +121,11 @@ export default function ChooseCard({
           </div>
         </div>
       </div>
-      {/* {customerProfile && (
+
+      {/* FOR TESTING (DELETE PROFILE) */}
+      {customerProfile && (
         <button onClick={deleteProfile}>DELETE PROFILE</button>
-      )} */}
+      )}
     </div>
   );
 }

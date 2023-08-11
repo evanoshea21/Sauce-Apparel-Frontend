@@ -105,3 +105,10 @@ export function returnDateStr(): string {
   const dateStr = `${year}-${month}-${day}`;
   return dateStr;
 }
+
+export function roundPrice(price: number | string): number {
+  let num = Number(price);
+  num *= 100;
+  let rounded = Math.round(num);
+  return rounded / 100;
+}

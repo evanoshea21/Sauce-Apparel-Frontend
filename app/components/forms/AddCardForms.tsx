@@ -7,12 +7,12 @@ import CvvInput from "../ui/CvvInput";
 import Button from "@mui/material/Button";
 
 interface CreditCardProps {
-  setFName: React.Dispatch<React.SetStateAction<string>>;
-  setLName: React.Dispatch<React.SetStateAction<string>>;
   setCCN: React.Dispatch<React.SetStateAction<string>>;
   setExpDate: React.Dispatch<React.SetStateAction<string>>;
 }
 interface BillToProps {
+  setFName: React.Dispatch<React.SetStateAction<string>>;
+  setLName: React.Dispatch<React.SetStateAction<string>>;
   setAddress: React.Dispatch<React.SetStateAction<string>>;
   setCity: React.Dispatch<React.SetStateAction<string>>;
   setState: React.Dispatch<React.SetStateAction<string>>;
@@ -24,12 +24,60 @@ interface BillToProps {
 export function CreditCardForm(props: CreditCardProps) {
   return (
     <div>
-      <h1>Payment</h1>
+      <h3 style={{ marginLeft: "8px" }}>Add Payment</h3>
       <form
         style={{
           // border: "1px solid red",
-          width: "380px",
-          height: "140px",
+          maxWidth: "390px",
+          // height: "140px",
+          display: "flex",
+          flexWrap: "wrap",
+          // flexDirection: "column",
+          // justifyContent: "space-between",
+        }}
+      >
+        {/* <div style={{ display: "flex", justifyContent: "space-between" }}> */}
+        <div
+          style={{
+            // border: "1px solid green",
+            paddingRight: "10px",
+            paddingBottom: "20px",
+          }}
+        >
+          <CreditInput
+            fontScale={0.9}
+            onChange={props.setCCN}
+            display="inline-block"
+          />
+        </div>
+        <div
+          style={
+            {
+              // border: "1px solid blue",
+              // paddingLeft: "10px",
+            }
+          }
+        >
+          <ExpDateInput
+            fontScale={0.9}
+            onChange={props.setExpDate}
+            display="inline-block"
+          />
+        </div>
+        {/* </div> */}
+      </form>
+    </div>
+  );
+}
+
+export function BillToForm(props: BillToProps) {
+  return (
+    <div>
+      <h3 style={{ marginLeft: "8px" }}>Billing Details</h3>
+      <form
+        style={{
+          // border: "1px solid red",
+          maxWidth: "390px",
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
@@ -38,7 +86,7 @@ export function CreditCardForm(props: CreditCardProps) {
         <div
           style={{
             display: "flex",
-            justifyContent: "space-between",
+            flexWrap: "wrap",
           }}
         >
           <TextInput
@@ -56,45 +104,14 @@ export function CreditCardForm(props: CreditCardProps) {
             onChange={props.setLName}
             display="inline-block"
             widthScale={0.94}
-            // styles={{ marginLeft: "2.9em" }}
           />
         </div>
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <div>
-            <CreditInput
-              fontScale={0.9}
-              onChange={props.setCCN}
-              display="inline-block"
-            />
-          </div>
-          <div>
-            <ExpDateInput
-              fontScale={0.9}
-              onChange={props.setExpDate}
-              display="inline-block"
-            />
-          </div>
-        </div>
-      </form>
-    </div>
-  );
-}
-
-export function BillToForm(props: BillToProps) {
-  return (
-    <div>
-      <h1>Billing Address</h1>
-      <form
-        style={{
-          // border: "1px solid red",
-          width: "380px",
-          height: "120px",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-        }}
-      >
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+          }}
+        >
           <TextInput
             defaultValue={props.defaultValues?.address ?? ""}
             fontScale={0.9}
@@ -102,7 +119,7 @@ export function BillToForm(props: BillToProps) {
             placeholder="Street Address"
             onChange={props.setAddress}
             display="block"
-            widthScale={1.1}
+            widthScale={1.05}
           />
           <TextInput
             defaultValue={props.defaultValues?.city ?? ""}
@@ -114,7 +131,12 @@ export function BillToForm(props: BillToProps) {
             widthScale={0.7}
           />
         </div>
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+          }}
+        >
           <TextInput
             defaultValue={props.defaultValues?.state ?? ""}
             fontScale={0.9}
@@ -142,7 +164,7 @@ export function BillToForm(props: BillToProps) {
             placeholder="Phone"
             onChange={props.setPhone}
             display="block"
-            widthScale={0.95}
+            widthScale={0.9}
             maxLength={10}
           />
         </div>

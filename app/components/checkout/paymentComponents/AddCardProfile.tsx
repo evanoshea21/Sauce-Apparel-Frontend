@@ -28,7 +28,6 @@ interface AddCardProfileProps {
   setRefetchAllCustomer: React.Dispatch<React.SetStateAction<boolean>>;
   setRefreshCustomer: React.Dispatch<React.SetStateAction<boolean>>;
   setDisplayState: React.Dispatch<React.SetStateAction<DisplayStates>>;
-  setChosenPaymentId: React.Dispatch<React.SetStateAction<string>>;
   session: any;
 }
 export default function AddCardProfile({
@@ -36,9 +35,9 @@ export default function AddCardProfile({
   setRefetchAllCustomer,
   setRefreshCustomer,
   setDisplayState,
-  setChosenPaymentId,
   session,
 }: AddCardProfileProps) {
+  const [errorMessage, setErrorMessage] = React.useState<string>("");
   // holds state for forms. Adds card / Creates customer profile
   const [card_number, setCreditCardNum] = React.useState<string>("");
   const [expDate, setExpDate] = React.useState<string>("");
@@ -52,7 +51,29 @@ export default function AddCardProfile({
   // more details
   const [phone, setPhone] = React.useState<string>("");
 
+  function allFieldsAreFilled(): boolean {
+    // go through all
+
+    if (
+      card_number.length === 0 ||
+      expDate.length === 0 ||
+      firstName.length === 0 ||
+      lastName.length === 0 ||
+      address.length === 0 ||
+      city.length === 0 ||
+      state.length === 0 ||
+      zip.length === 0 ||
+      phone.length === 0
+    ) {
+      setErrorMessage("Please fill in all fields.");
+      return false;
+    }
+
+    return true;
+  }
+
   function addCardProfile() {
+    if (!allFieldsAreFilled()) return;
     // if existing profile, ADD card to it
     setDisplayState("loadingCP");
     if (existingCustomerProfile) {
@@ -78,8 +99,6 @@ export default function AddCardProfile({
       axios(addCardReqConfig)
         .then((res) => {
           console.log("Success Added Card Response: ", res.data);
-          //set added card to new card
-          setChosenPaymentId(res.data.customerPaymentProfileId);
           // get profile again for parent to go back to CHOOSE card
           setRefreshCustomer((prev) => !prev);
         })
@@ -110,7 +129,6 @@ export default function AddCardProfile({
         description: `member since ${returnDateStr()}`,
         email: session?.user.email ?? "no email provided",
       };
-
       // send form data to SDK create profile
       axios({
         url: "http://localhost:1400/createprofile",
@@ -142,37 +160,74 @@ export default function AddCardProfile({
             });
         })
         .catch((e) => {
-          console.log(
-            "ERROR creating profile:\n ",
-            e.response.data.messages.message[0]
-          );
-          setDisplayState("networkError");
+          const error = e.response.data.messages.message[0];
+          console.log("ERROR creating profile:\n ", error);
+          if (["E00027", "E00013"].includes(error.code)) {
+            // invalid card
+            setDisplayState("invalidCard");
+          } else {
+            setDisplayState("networkError");
+          }
         });
     }
   }
 
   return (
     <>
-      <CreditCardForm
-        setFName={setFirstName}
-        setLName={setLastName}
-        setCCN={setCreditCardNum}
-        setExpDate={setExpDate}
-      />
-      <BillToForm
-        setAddress={setAddress}
-        setCity={setCity}
-        setZip={setZipCode}
-        setState={setState}
-        setPhone={setPhone}
-        defaultValues={existingCustomerProfile?.paymentProfiles[0].billTo}
-      />
-      <Button variant="contained" onClick={addCardProfile}>
-        Add Payment Option
-      </Button>
-      <Button variant="outlined" onClick={() => setDisplayState("chooseCard")}>
-        Back to Payment
-      </Button>
+      <div
+        style={{
+          // border: "1px solid red",
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        <CreditCardForm setCCN={setCreditCardNum} setExpDate={setExpDate} />
+      </div>
+      <div
+        style={{
+          // border: "1px solid red",
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        <BillToForm
+          setFName={setFirstName}
+          setLName={setLastName}
+          setAddress={setAddress}
+          setCity={setCity}
+          setZip={setZipCode}
+          setState={setState}
+          setPhone={setPhone}
+        />
+      </div>
+      <div
+        style={{
+          color: "red",
+          textAlign: "center",
+          maxWidth: "320px",
+          margin: "20px auto 0 auto",
+        }}
+      >
+        {errorMessage}
+      </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          marginTop: "20px",
+        }}
+      >
+        <Button variant="contained" onClick={addCardProfile}>
+          Add Payment
+        </Button>
+        <Button
+          sx={{ ml: 2 }}
+          variant="outlined"
+          onClick={() => setDisplayState("chooseCard")}
+        >
+          Cancel
+        </Button>
+      </div>
     </>
   );
 }

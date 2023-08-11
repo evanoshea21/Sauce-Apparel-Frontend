@@ -37,4 +37,9 @@
   border-radius: 40px;
   outline: none;
   border: 1px solid rgba(128, 128, 128, 0.583);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
 }

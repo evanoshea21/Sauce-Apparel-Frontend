@@ -6,9 +6,15 @@
   padding-right: 50px;
   max-width: 1000px;
 }
+.gap {
+  height: 200px;
+}
 @media (max-width: 890px) {
   .checkoutFlex {
     flex-direction: column;
+  }
+  .gap {
+    display: none;
   }
 }
 @media (max-width: 690px) {

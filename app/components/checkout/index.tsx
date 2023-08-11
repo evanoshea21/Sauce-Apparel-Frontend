@@ -6,9 +6,15 @@ import Payment from "./Payment";
 import CheckoutBox from "./CheckoutBox";
 import { signOut } from "next-auth/react";
 
+export interface Payment {
+  paymentProfileId: string;
+  cardNumber: string;
+  cardType: string;
+}
+
 export default function CheckoutPage() {
   const [customerProfileId, setCustomerProfileId] = React.useState<string>("");
-  const [paymentProfileId, setPaymentProfileId] = React.useState<string>("");
+  const [payment, setPayment] = React.useState<Payment | undefined>();
   const [refreshCart, setRefreshCart] = React.useState<boolean>(false);
 
   return (
@@ -23,9 +29,9 @@ export default function CheckoutPage() {
           <Payment
             customerProfileId={customerProfileId}
             setCustomerProfileId={setCustomerProfileId}
-            setPaymentProfileId={setPaymentProfileId}
+            setPayment={setPayment}
           />
-          {/* <div style={{ height: "600px", backgroundColor: "" }}></div> */}
+          <div className={classes.gap}></div>
         </div>
         {/* COMPLETE CHECKOUT BUTTON HERE */}
         <div
@@ -40,7 +46,7 @@ export default function CheckoutPage() {
           <CheckoutBox
             refreshCart={refreshCart}
             customerProfileId={customerProfileId}
-            paymentProfileId={paymentProfileId}
+            payment={payment}
           />
         </div>
       </div>

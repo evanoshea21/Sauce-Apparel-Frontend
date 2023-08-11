@@ -8,9 +8,11 @@ import { useSession } from "next-auth/react";
 import AddCardProfile from "./paymentComponents/AddCardProfile";
 import ChooseCard from "./paymentComponents/ChooseCard";
 import SignIn from "./paymentComponents/SignIn";
+import type { Payment } from "./index";
+import Button from "@mui/material/Button";
 
 interface Props {
-  setPaymentProfileId: React.Dispatch<React.SetStateAction<string>>;
+  setPayment: React.Dispatch<React.SetStateAction<Payment | undefined>>;
   setCustomerProfileId: React.Dispatch<React.SetStateAction<string>>;
   customerProfileId: string;
 }
@@ -18,12 +20,13 @@ interface Props {
 export type DisplayStates =
   | "loggedOut" // LOG IN
   | "loadingCP" // loading
+  | "invalidCard" // error
   | "networkError" // error
   | "chooseCard" // CHOOSE CARD-add card option inside
   | "addCard"; // ADD CARD
 
 export default function Payment({
-  setPaymentProfileId,
+  setPayment,
   customerProfileId,
   setCustomerProfileId,
 }: Props) {
@@ -32,7 +35,7 @@ export default function Payment({
   // local state for Payment Cards
   const [customerProfile, setCustomerProfile] =
     React.useState<CustomerProfile>();
-  const [chosenPaymentId, setChosenPaymentId] = React.useState<string>("");
+  const [chosenPayment, setChosenPayment] = React.useState<Payment>();
   const [displayState, setDisplayState] =
     React.useState<DisplayStates>("loggedOut");
   const [refetchAllCustomer, setRefetchAllCustomer] =
@@ -100,10 +103,10 @@ export default function Payment({
 
   //see updates to chosen card, pass it UP to Checkout
   React.useEffect(() => {
-    if (chosenPaymentId) {
-      setPaymentProfileId(chosenPaymentId);
+    if (chosenPayment) {
+      setPayment(chosenPayment);
     }
-  }, [chosenPaymentId]);
+  }, [chosenPayment]);
 
   // CHOOSE CARD if customerProfile defined
   React.useEffect(() => {
@@ -116,20 +119,81 @@ export default function Payment({
   function reset() {
     setCustomerProfile(undefined);
     setCustomerProfileId("");
-    setChosenPaymentId("");
+    setChosenPayment(undefined);
+    setPayment(undefined);
     setDisplayState("chooseCard");
   }
 
   if (displayState === "loadingCP") {
-    return <div className={classes.main}>Loading your Profile...</div>;
+    return (
+      <h2
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+        className={classes.main}
+      >
+        Loading...
+      </h2>
+    );
   }
   if (displayState === "networkError") {
     return (
       <div className={classes.main}>
-        Network Error: Couldn't retrieve your profile. Try again later.
+        <h2>Oops. Network Error, try again.</h2>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <Button
+            variant="outlined"
+            onClick={() => {
+              setDisplayState("addCard");
+            }}
+          >
+            Try Again.
+          </Button>
+        </div>
       </div>
     );
   }
+  if (displayState === "invalidCard") {
+    return (
+      <div className={classes.main}>
+        <h2>Invalid Card Entered.</h2>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+          }}
+        >
+          <Button
+            style={{ width: "200px", margin: "10px auto 0 auto" }}
+            variant="contained"
+            onClick={() => {
+              setDisplayState("addCard");
+            }}
+          >
+            Try Again.
+          </Button>
+          <Button
+            style={{ width: "200px", margin: "10px auto 0 auto" }}
+            variant="outlined"
+            onClick={() => {
+              setDisplayState("chooseCard");
+            }}
+          >
+            Return to Payment.
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   if (displayState === "loggedOut") {
     return (
       <div className={classes.main}>
@@ -145,7 +209,6 @@ export default function Payment({
           setRefetchAllCustomer={setRefetchAllCustomer}
           setRefreshCustomer={setRefreshCustomer}
           setDisplayState={setDisplayState}
-          setChosenPaymentId={setChosenPaymentId}
           session={session}
         />
       </div>
@@ -155,8 +218,8 @@ export default function Payment({
     <div className={classes.main}>
       <ChooseCard
         customerProfile={customerProfile}
-        chosenPaymentId={chosenPaymentId}
-        setChosenPaymentId={setChosenPaymentId}
+        chosenPayment={chosenPayment}
+        setChosenPayment={setChosenPayment}
         setDisplayState={setDisplayState}
         reset={reset}
       />
