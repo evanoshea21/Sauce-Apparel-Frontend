@@ -1,9 +1,11 @@
 "use client";
 import React from "react";
 import axios from "axios";
-import classes from "@/styles/Checkout.module.css";
+import classes from "@/styles/CheckoutBox.module.css";
 import type { CartItem } from "@/scripts/Types";
-import { getCartItems, getCartSum } from "../../utils";
+import { getCartItems, getCartSumAndCount } from "../../utils";
+
+const TAX_PERCENT = Number(process.env.NEXT_PUBLIC_STATE_TAX_AS_DECIMAL);
 
 /*
 Sole purpose:
@@ -25,6 +27,7 @@ Proper flow of purchase:
 interface Props {
   customerProfileId: string;
   paymentProfileId: string;
+  refreshCart: boolean;
 }
 interface ChargeProfileDataToSend {
   customerProfileId: string;
@@ -40,16 +43,44 @@ interface ChargeProfileDataToSend {
 export default function CheckoutBtn({
   customerProfileId,
   paymentProfileId,
+  refreshCart,
 }: Props) {
   const [purchaseResponse, setPurchaseResponse] = React.useState<{
     success: boolean;
     text: string;
   }>({ success: false, text: "" });
-  const [cartItems, setCartItems] = React.useState<CartItem[]>([]);
+  const [total, setTotal] = React.useState<string>("");
+  const [subtotal, setSubtotal] = React.useState<number>(0);
+  const [tax, setTax] = React.useState<number>(0);
+  const [count, setCount] = React.useState<string>("");
+  const [buttonTextColor, setButtonTextColor] = React.useState<{
+    text: string;
+    color: string;
+  }>({ text: "Order for Pickup", color: "green" });
 
   React.useEffect(() => {
-    setCartItems(getCartItems());
-  }, []);
+    if (customerProfileId.length === 0 || paymentProfileId.length === 0) {
+      setButtonTextColor({ text: "Add Payment Card", color: "grey" });
+    } else {
+      setButtonTextColor({ text: "Order for Pickup", color: "green" });
+    }
+  }, [customerProfileId, paymentProfileId]);
+
+  React.useEffect(() => {
+    const { sum, count } = getCartSumAndCount();
+    setSubtotal(sum);
+    setCount(String(count));
+  }, [refreshCart]);
+  React.useEffect(() => {
+    if (subtotal) {
+      const amount = subtotal * TAX_PERCENT;
+      setTax(amount);
+    }
+  }, [subtotal]);
+
+  React.useEffect(() => {
+    setTotal(String(roundPrice(subtotal + tax)));
+  }, [tax]);
 
   function completeCheckout() {
     // Parse Cart_Items
@@ -65,8 +96,10 @@ export default function CheckoutBtn({
         description: "online-order", // online order
       },
       ordered_items: cart_items,
-      amountToCharge: getCartSum(),
+      amountToCharge: Number(total),
     };
+
+    console.log("Checkout Payload: ", dataPayload);
     // Send Transaction call to Customer Profile
     axios({
       url: "http://localhost:1400/chargeProfile",
@@ -90,20 +123,50 @@ export default function CheckoutBtn({
 
   //
   return (
-    <div>
-      <button
-        disabled={
-          cartItems.length === 0 ||
-          customerProfileId.length == 0 ||
-          paymentProfileId.length === 0
-        }
-        onClick={completeCheckout}
-      >
-        Checkout Button
-      </button>
+    <div className={classes.main}>
+      <h2 className={classes.title}>Order Summary</h2>
+      <div className={classes.row}>
+        <span>Subtotal</span>
+        <span>${subtotal}</span>
+      </div>
+      <div className={classes.row}>
+        <span>Tax (at {String(TAX_PERCENT).split(".")[1]}%)</span>
+        <span>${tax}</span>
+      </div>
+      <div className={classes.row}>
+        <span>Cart Items</span>
+        <span>{count}</span>
+      </div>
+
+      <h2 className={classes.row2}>
+        <span>Total</span>
+        <span>${total}</span>
+      </h2>
+      <div className={classes.buttonBox}>
+        <button
+          disabled={
+            Number(count) === 0 ||
+            customerProfileId.length == 0 ||
+            paymentProfileId.length === 0
+          }
+          onClick={completeCheckout}
+          style={{
+            backgroundColor: buttonTextColor.color,
+          }}
+        >
+          {buttonTextColor.text}
+        </button>
+      </div>
       <p style={{ color: purchaseResponse.success ? "green" : "red" }}>
         {purchaseResponse.text}
       </p>
     </div>
   );
+}
+
+function roundPrice(price: number) {
+  let num = price;
+  num *= 100;
+  let rounded = Math.round(num);
+  return rounded / 100;
 }

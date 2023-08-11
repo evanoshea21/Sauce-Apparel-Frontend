@@ -54,6 +54,7 @@ export default function AddCardProfile({
 
   function addCardProfile() {
     // if existing profile, ADD card to it
+    setDisplayState("loadingCP");
     if (existingCustomerProfile) {
       let addCardReqConfig: AddCardRequest = {
         url: "http://localhost:1400/addCard",

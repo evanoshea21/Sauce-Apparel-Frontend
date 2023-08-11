@@ -1,7 +1,7 @@
 "use strict";
 
 interface CartItem {
-  itemId: string;
+  sku: string;
   name: string;
   description: string;
   quantity: string;
@@ -60,7 +60,7 @@ function chargeCustomerProfile(
   var lineItemList: any[] = [];
   data.ordered_items.forEach((item) => {
     var lineItem = new ApiContracts.LineItemType();
-    lineItem.setItemId(item.itemId);
+    lineItem.setItemId(item.sku);
     lineItem.setName(item.name);
     lineItem.setDescription(item.description);
     lineItem.setQuantity(item.quantity);

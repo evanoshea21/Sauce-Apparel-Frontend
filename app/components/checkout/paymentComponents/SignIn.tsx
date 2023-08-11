@@ -1,7 +1,8 @@
 "use client";
 import React from "react";
-import { getProviders, useSession, signIn, signOut } from "next-auth/react";
+import { getProviders, useSession, signIn } from "next-auth/react";
 import { DisplayStates } from "../Payment";
+import classes from "@/styles/Payment.module.css";
 
 interface Props {
   setDisplayState: React.Dispatch<React.SetStateAction<DisplayStates>>;
@@ -31,8 +32,13 @@ export default function SignIn({ setDisplayState }: Props) {
   } else {
     // SHOW LOGIN STUFF
     return (
-      <div>
-        <button onClick={Login}>GITHUB LOGIN</button>
+      <div className={classes.signinMain}>
+        <h2>Log in</h2>
+        <button className={classes.githubBtn} onClick={Login}>
+          GITHUB
+        </button>
+        <button className={classes.googleBtn}>GOOGLE (non-op rn)</button>
+        <button className={classes.facebookBtn}>FACEBOOK (non-op rn)</button>
       </div>
     );
   }

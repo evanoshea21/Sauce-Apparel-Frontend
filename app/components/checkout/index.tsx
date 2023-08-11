@@ -1,23 +1,20 @@
 "use client";
 import React from "react";
-
-import type { CartItem } from "@/scripts/Types";
-
 import Cart from "./Cart";
 import Payment from "./Payment";
 import CheckoutBtn from "./CheckoutBox";
-import PersonalDetails from "../forms/PersonalDetails";
 import { signOut } from "next-auth/react";
 
 export default function CheckoutPage() {
   const [customerProfileId, setCustomerProfileId] = React.useState<string>("");
   const [paymentProfileId, setPaymentProfileId] = React.useState<string>("");
+  const [refreshCart, setRefreshCart] = React.useState<boolean>(false);
 
   return (
     <div>
       <button onClick={() => signOut()}>Log out</button>
       {/* CART ITEMS HERE */}
-      <Cart />
+      <Cart setRefreshCart={setRefreshCart} />
       {/* GET PAYMENT */}
       <Payment
         customerProfileId={customerProfileId}
@@ -26,6 +23,7 @@ export default function CheckoutPage() {
       />
       {/* COMPLETE CHECKOUT BUTTON HERE */}
       <CheckoutBtn
+        refreshCart={refreshCart}
         customerProfileId={customerProfileId}
         paymentProfileId={paymentProfileId}
       />

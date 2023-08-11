@@ -68,10 +68,9 @@ function createCustomerProfile(data: CreateProfileData, callback: any) {
   var customerProfileType = new ApiContracts.CustomerProfileType();
   customerProfileType.setMerchantCustomerId(
     "M_" + data.merchantCustomerId ?? "1234"
-    // utils.getRandomString("cust")
   );
   customerProfileType.setDescription(
-    "Profile created on ECigCity sign up form"
+    data.description ?? "Profile created on ECig Website."
   );
   customerProfileType.setEmail(data.email);
   customerProfileType.setPaymentProfiles(paymentProfilesList);

@@ -49,14 +49,16 @@ export function changeQuantityCart(sku: string, newQ: number) {
   return "error, hit max";
 }
 
-export function getCartSum(): number {
+export function getCartSumAndCount(): { sum: number; count: number } {
   let cart_items = getCartItems();
-  if (cart_items.length === 0) return 0;
+  if (cart_items.length === 0) return { sum: 0, count: 0 };
   let sum: number = 0;
-  cart_items.forEach(
-    (item: CartItem) => (sum += Number(item.unitPrice) * Number(item.quantity))
-  );
-  return sum;
+  let count: number = 0;
+  cart_items.forEach((item: CartItem) => {
+    sum += Number(item.unitPrice) * Number(item.quantity);
+    count += Number(item.quantity);
+  });
+  return { sum, count };
 }
 
 export function isPositiveInteger(input: string | number): boolean {

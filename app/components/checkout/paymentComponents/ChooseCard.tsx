@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Add } from "@mui/icons-material";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import type { CustomerProfile } from "@/scripts/Types";
 import classes from "@/styles/Payment.module.css";
 import { DisplayStates } from "../Payment";
@@ -21,6 +21,14 @@ export default function ChooseCard({
   setDisplayState,
   reset,
 }: Props) {
+  React.useEffect(() => {
+    if (customerProfile) {
+      setChosenPaymentId(
+        customerProfile.paymentProfiles[0].customerPaymentProfileId
+      );
+    }
+  }, [customerProfile]);
+
   function deleteProfile() {
     if (!customerProfile) return;
     axios({
@@ -47,22 +55,56 @@ export default function ChooseCard({
   }
 
   return (
-    <div>
-      {customerProfile &&
-        customerProfile.paymentProfiles.map((card) => (
+    <div className={classes.chooseMain}>
+      <h2>Payment Method</h2>
+      <div className={classes.cardOptions}>
+        {customerProfile &&
+          customerProfile.paymentProfiles.map((card) => (
+            <div
+              key={card.payment.creditCard.cardNumber}
+              className={classes.border}
+              style={{
+                border:
+                  chosenPaymentId === card.customerPaymentProfileId
+                    ? "5px solid #7097e5"
+                    : "5px solid transparent",
+              }}
+            >
+              <div
+                key={card.customerPaymentProfileId}
+                className={classes.card}
+                onClick={() =>
+                  setChosenPaymentId(card.customerPaymentProfileId)
+                }
+                style={{
+                  backgroundColor:
+                    chosenPaymentId === card.customerPaymentProfileId
+                      ? "#434258"
+                      : "",
+                }}
+              >
+                <span>{card.payment.creditCard.cardType}</span>
+                <span className={classes.cardNum}>
+                  •• {card.payment.creditCard.cardNumber.slice(-4)}
+                </span>
+              </div>
+            </div>
+          ))}
+        <div
+          className={classes.border}
+          style={{
+            border: "5px solid transparent",
+          }}
+        >
           <div
-            key={card.customerPaymentProfileId}
-            className={classes.card}
-            onClick={() => setChosenPaymentId(card.customerPaymentProfileId)}
-            style={{
-              backgroundColor:
-                chosenPaymentId === card.customerPaymentProfileId ? "grey" : "",
-            }}
+            className={classes.addCard}
+            onClick={() => setDisplayState("addCard")}
           >
-            {card.payment.creditCard.cardNumber}
+            <AddCircleOutlineIcon />
+            <span>New Card</span>
           </div>
-        ))}
-      <button onClick={() => setDisplayState("addCard")}>Add card</button>
+        </div>
+      </div>
       {customerProfile && (
         <button onClick={deleteProfile}>DELETE PROFILE</button>
       )}

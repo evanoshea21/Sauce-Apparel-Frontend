@@ -54,7 +54,13 @@ export interface PaymentProfile {
   billTo: Address;
   customerPaymentProfileId: string;
   customerType: string;
-  payment: { creditCard: { cardNumber: string } };
+  payment: {
+    creditCard: {
+      cardNumber: string;
+      cardType: string;
+      expirationDate: string;
+    };
+  };
 }
 
 export interface Address {

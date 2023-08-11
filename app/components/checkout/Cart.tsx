@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import classes from "@/styles/Cart.module.css";
-import { changeQuantityCart, getCartItems, getCartSum } from "@/app/utils";
+import { changeQuantityCart, getCartItems } from "@/app/utils";
 import type { CartItem } from "@/scripts/Types";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 /*
@@ -15,8 +15,11 @@ Left to do:
 
 */
 
-export default function Cart() {
-  const [totalPrice, setTotalPrice] = React.useState<number>();
+interface Props {
+  setRefreshCart: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export default function Cart({ setRefreshCart }: Props) {
   const [cartItems, setCartItems] = React.useState<CartItem[]>([]);
   const [quantities, setQuantities] = React.useState<{ [key: string]: string }>(
     {}
@@ -38,17 +41,13 @@ export default function Cart() {
     }
   }, [cartItems]);
 
-  //set SUM price of cart items
-  React.useEffect(() => {
-    setTotalPrice(getCartSum());
-  }, [cartItems]);
-
   function removeFromCart(sku: string) {
     // filter out the itemId
     const newCartItems = cartItems.filter((item: CartItem) => item.sku !== sku);
     setCartItems(newCartItems);
     // set new
     localStorage.setItem("cart_items", JSON.stringify(newCartItems));
+    setRefreshCart((prev) => !prev);
   }
 
   function changeQuantity(sku: string, newQ: number) {
@@ -60,6 +59,7 @@ export default function Cart() {
       return newQs;
     });
     changeQuantityCart(sku, newQ);
+    setRefreshCart((prev) => !prev);
   }
 
   if (cartItems.length === 0) {
@@ -68,8 +68,8 @@ export default function Cart() {
 
   return (
     <>
-      <h1>Shopping Cart</h1>
       <div className={classes.main}>
+        <h2>Your Items</h2>
         {cartItems.map((item: CartItem) => {
           return (
             <div key={item.sku}>

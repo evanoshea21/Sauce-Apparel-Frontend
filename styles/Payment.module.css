@@ -1,8 +1,104 @@
 .main {
-  border: 1px solid grey;
+  background-color: aliceblue;
+  /* border: 2px solid rgba(211, 211, 211, 0.609); */
   border-radius: 20px;
-  max-width: 800px;
+  max-width: 620px;
   min-height: 200px;
   padding: 20px;
   box-sizing: border-box;
+  margin: 50px auto;
+}
+.main h2 {
+  text-align: center;
+}
+
+.cardOptions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  /* border: 1px solid red; */
+}
+
+.card {
+  background-color: #89888b;
+  color: white;
+  margin: 3px;
+  padding: 10px;
+  border-radius: 15px;
+  width: 120px;
+  height: 65px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  /* box-sizing: border-box; */
+}
+.cardNum {
+  text-align: right;
+}
+.addCard {
+  cursor: pointer;
+  background-color: transparent;
+  border: 2px solid rgba(128, 128, 128, 0.481);
+  margin: 3px;
+  padding: 10px;
+  width: 120px;
+  height: 61px;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+.border {
+  border-radius: 20px;
+  margin: 8px;
+  width: fit-content;
+}
+
+@media (max-width: 415px) {
+  .main {
+    padding: 5px;
+  }
+  .card,
+  .addCard {
+    width: 100px;
+    height: 58px;
+  }
+  .cardOptions {
+    justify-content: center;
+  }
+  .border {
+    margin: 4px;
+  }
+}
+
+/* SIGN IN COMPONENT */
+.signinMain {
+  display: flex;
+  flex-direction: column;
+  /* justify-content: center; */
+}
+.githubBtn,
+.facebookBtn,
+.googleBtn {
+  width: 200px;
+  margin: 10px auto;
+  padding: 15px;
+  border-radius: 20px;
+  border: 1px solid grey;
+}
+
+.githubBtn {
+  background-color: rgb(28, 28, 28);
+  color: white;
+}
+.googleBtn {
+  background-color: rgb(228, 31, 31);
+  color: white;
+}
+.facebookBtn {
+  background-color: rgb(13, 82, 210);
+  color: white;
 }
