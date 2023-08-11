@@ -121,7 +121,7 @@ export default function CheckoutBtn({
       });
   }
 
-  //
+  if (subtotal === 0) return <></>;
   return (
     <div className={classes.main}>
       <h2 className={classes.title}>Order Summary</h2>

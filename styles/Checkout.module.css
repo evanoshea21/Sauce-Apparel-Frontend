@@ -1,0 +1,19 @@
+.checkoutFlex {
+  display: flex;
+  gap: 30px;
+  margin: 50px auto;
+  padding-left: 50px;
+  padding-right: 50px;
+  max-width: 1000px;
+}
+@media (max-width: 890px) {
+  .checkoutFlex {
+    flex-direction: column;
+  }
+}
+@media (max-width: 690px) {
+  .checkoutFlex {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+}
