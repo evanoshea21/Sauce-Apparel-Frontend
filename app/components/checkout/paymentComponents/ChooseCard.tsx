@@ -105,9 +105,9 @@ export default function ChooseCard({
           </div>
         </div>
       </div>
-      {customerProfile && (
+      {/* {customerProfile && (
         <button onClick={deleteProfile}>DELETE PROFILE</button>
-      )}
+      )} */}
     </div>
   );
 }

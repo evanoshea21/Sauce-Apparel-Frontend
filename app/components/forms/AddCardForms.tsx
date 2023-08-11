@@ -81,7 +81,6 @@ export function CreditCardForm(props: CreditCardProps) {
 }
 
 export function BillToForm(props: BillToProps) {
-  console.log("Default Values?: ", props.defaultValues);
   return (
     <div>
       <h1>Billing Address</h1>
