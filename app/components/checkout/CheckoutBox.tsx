@@ -117,9 +117,14 @@ export default function CheckoutBtn({
   }, [tax]);
 
   async function completeCheckout() {
+    //reset some values
     setScreen("sending purchase");
     setInvIssues(undefined);
-    if (!payment || !customerProfileId) return; // failsafe if no payment and user
+    setPurchaseResponse({ success: false, text: "" });
+    // failsafe if no payment and user
+    if (!payment || !customerProfileId) return;
+    //track if re-stocking is needed
+    let stockDecremented: boolean = false;
 
     // Parse Cart_Items
     const cart_items = getCartItems();
@@ -141,6 +146,7 @@ export default function CheckoutBtn({
       const holdRes = await affectInventory("hold-inv", cart_items);
       console.log("CheckRes: ", holdRes);
       //SUCCESSFULLY DECR AVAILABLE STOCK...
+      stockDecremented = true;
 
       //CHARGE PROFILE
       const { data } = await axios({
@@ -196,20 +202,22 @@ export default function CheckoutBtn({
           text: "Insufficient Inventory, Edit your Cart.",
           cursor: "not-allowed",
         });
-        //ATTEMPT to restock
-        try {
-          const restockRes = await affectInventory("restock-inv", cart_items);
-          console.log("RestockRes: ", restockRes);
-        } catch (e) {
-          console.log("Couldnt Restock: ", e);
-          setPurchaseResponse({
-            success: false,
-            text: "Merchant Error: couldn't restock.",
-          });
-        }
       } else {
         //handle network error or transaction error
         // "there was an issue processing your request. Try again later."
+        if (stockDecremented) {
+          //ATTEMPT to restock [NOT when it's insufficient, DUH]
+          try {
+            const restockRes = await affectInventory("restock-inv", cart_items);
+            console.log("RestockRes: ", restockRes);
+          } catch (e) {
+            console.log("Couldnt Restock: ", e);
+            setPurchaseResponse({
+              success: false,
+              text: "Merchant Error: couldn't restock.",
+            });
+          }
+        }
         setPurchaseResponse({
           success: false,
           text: "Oops. Payment couldn't be processed.",

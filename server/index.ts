@@ -27,7 +27,7 @@ app.use(cors());
 //ROUTES
 
 app.get("/test", (req: any, res: any) => {
-  // create customer profile
+  // test
   console.log("server hit [test]");
   res.send("pong [server test]");
 });
@@ -48,7 +48,7 @@ app.post("/createprofile", (req: any, res: any) => {
   });
 });
 app.post("/getprofile", (req: any, res: any) => {
-  // create customer profile
+  // get customer profile
   let customerId: string = req.body.id;
   // let customerId: string = req.body.id.slice(0, -3) + "921";
   getProfile(customerId, function (response: any) {
@@ -69,7 +69,7 @@ app.post("/getprofile", (req: any, res: any) => {
   // res.send("server pong");
 });
 app.post("/chargeProfile", (req: any, res: any) => {
-  // create customer profile
+  // charge customer profile
   chargeProfile(req.body, function (response: any) {
     if (response.messages.resultCode === "Error") {
       res.status(500).send(response);
@@ -80,7 +80,7 @@ app.post("/chargeProfile", (req: any, res: any) => {
 });
 
 app.post("/refundProfile", (req: any, res: any) => {
-  // create customer profile
+  // refund customer profile
 
   refundProfile(req.body, function (response: any) {
     if (response.messages.resultCode === "Error") {
@@ -92,8 +92,6 @@ app.post("/refundProfile", (req: any, res: any) => {
 });
 
 app.post("/addCard", (req: any, res: any) => {
-  console.log("req.body ADD CARD: ", req.body);
-  // create customer profile
   addCard(req.body, function (response: any) {
     console.log(
       "addCard RESPONSE\n==================================",
@@ -110,7 +108,6 @@ app.post("/addCard", (req: any, res: any) => {
 app.delete("/deleteprofile", (req: any, res: any) => {
   console.log("======delete profile BODY: ", req.body);
   let { customerId } = req.body;
-  // create customer profile
   deleteProfile(customerId, function (response: any) {
     console.log(
       "deleteProfile RESPONSE\n==================================",
