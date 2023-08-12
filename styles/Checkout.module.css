@@ -19,6 +19,17 @@
   justify-content: center;
   align-items: center;
 }
+.success {
+  background-color: rgba(255, 255, 255, 0.769);
+}
+.success > * {
+  margin: 0;
+}
+.success p {
+  font-size: 1.4rem;
+  width: 450px;
+  text-align: center;
+}
 .gap {
   height: 200px;
 }

@@ -8,6 +8,7 @@ import { signOut } from "next-auth/react";
 import type { InvIssues } from "./CheckoutBox";
 import axios from "axios";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 
 export interface Payment {
   paymentProfileId: string;
@@ -16,6 +17,12 @@ export interface Payment {
   expDate: string;
 }
 
+export type Screens =
+  | "loading"
+  | "sending purchase"
+  | ["successful transaction", string]
+  | undefined;
+
 export default function CheckoutPage() {
   const { data: session, status } = useSession();
   const [customerProfileId, setCustomerProfileId] = React.useState<string>("");
@@ -23,9 +30,7 @@ export default function CheckoutPage() {
   const [refreshCart, setRefreshCart] = React.useState<boolean>(false);
   const [invIssues, setInvIssues] = React.useState<InvIssues[] | undefined>();
   const [cartIsDefined, setCartIsDefined] = React.useState<boolean>(false);
-  const [screen, setScreen] = React.useState<
-    "loading" | "purchase" | undefined
-  >("loading");
+  const [screen, setScreen] = React.useState<Screens>("loading");
 
   function refundProfile() {
     let obj = {
@@ -53,20 +58,33 @@ export default function CheckoutPage() {
 
   return (
     <>
-      {screen &&
-        (screen === "loading" ? (
-          <div className={classes.screen}>
-            <img src="https://i.gifer.com/XOsX.gif" width="350px" />
-            <h2>Loading...</h2>
-            {/* <img src="https://i.gifer.com/ZKZg.gif" width="50px" /> */}
-          </div>
-        ) : (
-          <div className={classes.screen}>
-            <img src="https://i.gifer.com/7Q9s.gif" width="350px" />
-            <h2>Hopefully your transaction goes through...</h2>
-            <img src="https://i.gifer.com/ZKZg.gif" width="50px" />
-          </div>
-        ))}
+      {screen === "loading" && (
+        <div className={classes.screen}>
+          <img src="https://i.gifer.com/XOsX.gif" width="350px" />
+          <h2>Loading...</h2>
+          {/* <img src="https://i.gifer.com/ZKZg.gif" width="50px" /> */}
+        </div>
+      )}
+      {screen === "sending purchase" && (
+        <div className={classes.screen}>
+          <img src="https://i.gifer.com/7Q9s.gif" width="350px" />
+          <h2>Hopefully your transaction goes through...</h2>
+          <img src="https://i.gifer.com/ZKZg.gif" width="50px" />
+        </div>
+      )}
+      {Array.isArray(screen) && (
+        <div className={`${classes.screen} ${classes.success}`}>
+          <img src="https://i.gifer.com/CGQ.gif" width="350px" />
+          <h2>Your Order has been placed!</h2>
+          <h3>Order #: {screen[1]}</h3>
+          <p>
+            At ECigCity we greatly value our patrons as they keep our business
+            alive.
+          </p>
+          <Link href="/">Return Home</Link>
+        </div>
+      )}
+
       <div className={classes.checkoutFlex}>
         <div
           style={{

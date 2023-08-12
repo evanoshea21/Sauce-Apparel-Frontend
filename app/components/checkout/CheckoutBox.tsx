@@ -3,6 +3,7 @@ import React from "react";
 import axios from "axios";
 import classes from "@/styles/CheckoutBox.module.css";
 import type { CartItem, Order, PurchasedItem } from "@/scripts/Types";
+import type { Screens } from "./index";
 import {
   clearCartItems,
   getCartItems,
@@ -42,9 +43,7 @@ interface Props {
   payment: Payment | undefined;
   refreshCart: boolean;
   setInvIssues: React.Dispatch<React.SetStateAction<InvIssues[] | undefined>>;
-  setScreen: React.Dispatch<
-    React.SetStateAction<"loading" | "purchase" | undefined>
-  >;
+  setScreen: React.Dispatch<React.SetStateAction<Screens>>;
 }
 interface ChargeProfileDataToSend {
   customerProfileId: string;
@@ -118,7 +117,7 @@ export default function CheckoutBtn({
   }, [tax]);
 
   async function completeCheckout() {
-    setScreen("purchase");
+    setScreen("sending purchase");
     setInvIssues(undefined);
     if (!payment || !customerProfileId) return; // failsafe if no payment and user
 
@@ -150,7 +149,7 @@ export default function CheckoutBtn({
         data: dataPayload,
       });
       console.log("Transaction Response: ", data);
-      setPurchaseResponse({ success: true, text: "Transaction Complete!" });
+      // setPurchaseResponse({ success: true, text: "Transaction Complete!" });
       //SUCCESSFUL TRANSACTION
 
       //NOW CLEAR OUT CART ITEMS
@@ -160,13 +159,14 @@ export default function CheckoutBtn({
         method: "POST";
         data: SaveOrderReq;
       }
+      const refTransId = data.transactionResponse.transId;
       const saveOrderReqConfig: AxiosReqSaveOrder = {
         url: "/api/orders",
         method: "POST",
         data: {
           method: "save-order",
           order: {
-            refTransId: data.transactionResponse.transId,
+            refTransId,
             amount: total,
             cardNum: payment.cardNumber,
             expDate: payment.expDate,
@@ -180,7 +180,7 @@ export default function CheckoutBtn({
       const orderRes = await axios(saveOrderReqConfig);
       console.log("Save Order response: ", orderRes.data);
       //REDIRECT TO THANK YOU PAGE (or component)
-      setScreen(undefined);
+      setScreen(["successful transaction", refTransId]);
       setPurchaseResponse({
         success: true,
         text: "Purchase went through!",
