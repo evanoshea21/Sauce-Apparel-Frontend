@@ -85,9 +85,30 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ errorCheckingStock: e }, { status: 500 });
     }
   } else if (method === "restock-inv") {
-    return NextResponse.json({ error: "pong" }, { status: 200 });
+    // If a transaction fails to go through, this will re-stock the products
+    const incrPromises: any[] = [];
+    items.forEach((item) => {
+      incrPromises.push(
+        prisma.flavors_Inventory.update({
+          where: {
+            sku: item.sku,
+          },
+          data: {
+            inventory: { increment: item.quantity },
+          },
+        })
+      );
+    }); // for each item, push in promise to decrement
+    try {
+      const increResponses = await Promise.all(incrPromises);
+      return NextResponse.json({ increResponses });
+    } catch (e) {
+      return NextResponse.json({ errorIncrementing: e }, { status: 500 });
+    }
   } else {
-    return NextResponse.json({ error: "pong" }, { status: 200 });
+    return NextResponse.json(
+      { message: "didn't hit correct route.." },
+      { status: 500 }
+    );
   }
-  return NextResponse.json({ oops: "yo" }, { status: 200 });
 }

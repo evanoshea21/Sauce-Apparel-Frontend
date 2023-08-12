@@ -62,6 +62,33 @@ model CustomerProfile {
   @@index(fields: [userId])
 }
 
+model Orders {
+  //for refund
+  refTransId     String           @id @unique
+  amount         String
+  cardNum        String
+  expDate        String
+  //to ref customer who purchased
+  userId         String
+  //timestamped
+  createdAt      DateTime         @updatedAt
+  // reference the PurchasedItems
+  purchasedItems PurchasedItems[]
+}
+
+model PurchasedItems {
+  id          String @id @default(cuid())
+  sku         String
+  name        String
+  quantity    String
+  unitPrice   String
+  img         String
+  description String
+  refTransId  String
+
+  order Orders @relation(fields: [refTransId], references: [refTransId], onDelete: Cascade)
+}
+
 model VerificationToken {
   identifier String
   token      String   @unique

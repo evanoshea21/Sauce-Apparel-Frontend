@@ -30,7 +30,9 @@ export default function ChooseCard({
         customerProfile.paymentProfiles[0].payment.creditCard.cardType;
       const cardNumber: string =
         customerProfile.paymentProfiles[0].payment.creditCard.cardNumber;
-      let obj = { cardNumber, cardType, paymentProfileId };
+      const expDate: string =
+        customerProfile.paymentProfiles[0].payment.creditCard.expirationDate;
+      let obj = { cardNumber, cardType, expDate, paymentProfileId };
       setChosenPayment(obj);
     }
   }, [customerProfile]);
@@ -84,7 +86,8 @@ export default function ChooseCard({
                   const paymentProfileId = card.customerPaymentProfileId;
                   const cardNumber = card.payment.creditCard.cardNumber;
                   const cardType = card.payment.creditCard.cardType;
-                  let obj = { cardNumber, cardType, paymentProfileId };
+                  const expDate = card.payment.creditCard.expirationDate;
+                  let obj = { cardNumber, expDate, cardType, paymentProfileId };
                   setChosenPayment(obj);
                 }}
                 style={{

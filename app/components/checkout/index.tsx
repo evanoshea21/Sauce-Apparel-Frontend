@@ -11,6 +11,7 @@ export interface Payment {
   paymentProfileId: string;
   cardNumber: string;
   cardType: string;
+  expDate: string;
 }
 
 export default function CheckoutPage() {

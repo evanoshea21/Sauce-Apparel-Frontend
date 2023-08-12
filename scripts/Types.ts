@@ -41,6 +41,20 @@ export interface FlavorsInventoryObj {
   productId: string; // returns for READ; for CREATE, pass empty string
 }
 
+export interface Order {
+  //for refund
+  refTransId: string;
+  amount: string;
+  cardNum: string;
+  expDate: string;
+  //to ref customer who purchased
+  userId: string;
+}
+export interface PurchasedItem extends CartItem {
+  // basically a cartItem, with saved time and referencing Order in DB
+  refTransId: string;
+}
+
 //ADD CARD (bill To form, credit card form)
 export interface CustomerProfile {
   customerProfileId: string;

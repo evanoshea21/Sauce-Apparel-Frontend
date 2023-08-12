@@ -2,10 +2,12 @@
 import React from "react";
 import axios from "axios";
 import classes from "@/styles/CheckoutBox.module.css";
-import type { CartItem } from "@/scripts/Types";
+import type { CartItem, Order, PurchasedItem } from "@/scripts/Types";
 import { getCartItems, getCartSumAndCount, roundPrice } from "../../utils";
 import LockIcon from "@mui/icons-material/Lock";
 import type { Payment } from "./index";
+import { SaveOrderReq } from "@/app/api/orders/route";
+import { useSession } from "next-auth/react";
 
 const TAX_PERCENT = Number(process.env.NEXT_PUBLIC_STATE_TAX_AS_DECIMAL);
 
@@ -53,6 +55,8 @@ export default function CheckoutBtn({
   refreshCart,
   setInvIssues,
 }: Props) {
+  const { data: session, status } = useSession();
+
   const [purchaseResponse, setPurchaseResponse] = React.useState<{
     success: boolean;
     text: string;
@@ -66,6 +70,7 @@ export default function CheckoutBtn({
     color: string;
     cursor: "not-allowed" | "pointer";
   }>({ text: "Order for Pickup", color: "green", cursor: "pointer" });
+  const [btnLoading, setBtnLoading] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     if (customerProfileId.length === 0 || !payment) {
@@ -87,6 +92,12 @@ export default function CheckoutBtn({
     const { sum, count } = getCartSumAndCount();
     setSubtotal(roundPrice(sum));
     setCount(String(count));
+    setButtonProps({
+      color: "green",
+      text: "Order for Pickup",
+      cursor: "pointer",
+    });
+    setBtnLoading(false);
   }, [refreshCart]);
   React.useEffect(() => {
     if (subtotal) {
@@ -101,6 +112,7 @@ export default function CheckoutBtn({
 
   async function completeCheckout() {
     setInvIssues(undefined);
+    setBtnLoading(true);
     if (!payment || !customerProfileId) return; // failsafe if no payment and user
 
     // Parse Cart_Items
@@ -116,21 +128,56 @@ export default function CheckoutBtn({
       ordered_items: cart_items,
       amountToCharge: Number(total),
     };
-    console.log("Checkout Payload1: ", dataPayload);
+    console.log("Checkout Payload: ", dataPayload);
 
     try {
       const holdRes = await checkAndHold(cart_items);
       console.log("CheckRes: ", holdRes);
+      //SUCCESSFULLY DECR AVAILABLE STOCK...
+      const { data } = await axios({
+        url: "http://localhost:1400/chargeProfile",
+        method: "POST",
+        data: dataPayload,
+      });
+      console.log("Transaction Response: ", data);
+      setPurchaseResponse({ success: true, text: "Transaction Complete!" });
+      //SUCCESSFUL TRANSACTION (now re-route to thank you, and edit ORDERs table)
+      interface AxiosReqSaveOrder {
+        url: "/api/orders";
+        method: "POST";
+        data: SaveOrderReq;
+      }
+      const saveOrderReqConfig: AxiosReqSaveOrder = {
+        url: "/api/orders",
+        method: "POST",
+        data: {
+          method: "save-order",
+          order: {
+            refTransId: data.transactionResponse.transId,
+            amount: total,
+            cardNum: payment.cardNumber,
+            expDate: payment.expDate,
+            userId: session?.user.id!,
+          },
+          purchasedItems: cart_items,
+        },
+      };
+
+      //SAVE ORDER AND PURCHASED_ITEMS
+      const orderRes = await axios(saveOrderReqConfig);
+      console.log("Save Order response: ", orderRes.data);
     } catch (e: any) {
+      // INSUFFICIENT STOCK or Network error
       console.error("CheckHold Error: ", e);
       if (e?.message === "insufficient inventory") {
         setInvIssues(e.stock);
-        // change buttonProps
         setButtonProps({
           color: "grey",
-          text: "Insufficient Funds, Edit your Cart.",
+          text: "Insufficient Inventory, Edit your Cart.",
           cursor: "not-allowed",
         });
+      } else {
+        //handle network error or transaction error
       }
     }
     return;
@@ -193,7 +240,10 @@ export default function CheckoutBtn({
       <div className={classes.buttonBox}>
         <button
           disabled={
-            Number(count) === 0 || customerProfileId.length == 0 || !payment
+            Number(count) === 0 ||
+            customerProfileId.length == 0 ||
+            !payment ||
+            btnLoading
           }
           onClick={completeCheckout}
           style={{
