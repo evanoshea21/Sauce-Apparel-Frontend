@@ -5,6 +5,7 @@ import Cart from "./Cart";
 import Payment from "./Payment";
 import CheckoutBox from "./CheckoutBox";
 import { signOut } from "next-auth/react";
+import type { InvIssues } from "./CheckoutBox";
 
 export interface Payment {
   paymentProfileId: string;
@@ -16,6 +17,7 @@ export default function CheckoutPage() {
   const [customerProfileId, setCustomerProfileId] = React.useState<string>("");
   const [payment, setPayment] = React.useState<Payment | undefined>();
   const [refreshCart, setRefreshCart] = React.useState<boolean>(false);
+  const [invIssues, setInvIssues] = React.useState<InvIssues[] | undefined>();
 
   return (
     <>
@@ -25,7 +27,7 @@ export default function CheckoutPage() {
             flex: "2 ",
           }}
         >
-          <Cart setRefreshCart={setRefreshCart} />
+          <Cart setRefreshCart={setRefreshCart} invIssues={invIssues} />
           <Payment
             customerProfileId={customerProfileId}
             setCustomerProfileId={setCustomerProfileId}
@@ -47,6 +49,7 @@ export default function CheckoutPage() {
             refreshCart={refreshCart}
             customerProfileId={customerProfileId}
             payment={payment}
+            setInvIssues={setInvIssues}
           />
         </div>
       </div>

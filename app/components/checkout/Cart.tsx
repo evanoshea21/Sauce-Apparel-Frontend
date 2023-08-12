@@ -4,6 +4,7 @@ import classes from "@/styles/Cart.module.css";
 import { changeQuantityCart, getCartItems } from "@/app/utils";
 import type { CartItem } from "@/scripts/Types";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import type { InvIssues } from "./CheckoutBox";
 /*
 Sole purpose: GET/EDIT cart items from localStorage
 
@@ -17,9 +18,10 @@ Left to do:
 
 interface Props {
   setRefreshCart: React.Dispatch<React.SetStateAction<boolean>>;
+  invIssues: InvIssues[] | undefined;
 }
 
-export default function Cart({ setRefreshCart }: Props) {
+export default function Cart({ setRefreshCart, invIssues }: Props) {
   const [cartItems, setCartItems] = React.useState<CartItem[]>([]);
   const [quantities, setQuantities] = React.useState<{ [key: string]: string }>(
     {}
@@ -71,41 +73,9 @@ export default function Cart({ setRefreshCart }: Props) {
       <div className={classes.main}>
         <h2>Your Items</h2>
         {cartItems.map((item: CartItem) => {
+          const invMessage = invIssues?.find((issue) => issue.sku === item.sku);
           return (
             <div key={item.sku}>
-              <div className={classes.cartRow}>
-                <div className={classes.product}>
-                  <div className={classes.imgBoxRow}>
-                    <img src={item.img} alt="product image" />
-                  </div>
-                  <div className={classes.nameFlavor}>
-                    <h3>{item.name}</h3>
-                    <p>{item.description.split(":")[1].trim()}</p>
-                  </div>
-                </div>
-                <div className={classes.quantity}>
-                  <ChangeQuantity
-                    sku={item.sku}
-                    currentQ={Number(quantities[item.sku]) || 0}
-                    maxQuantity={Number(item.maxQuantity) || 0}
-                    changeQuantity={changeQuantity}
-                  />
-                </div>
-                <div className={classes.price}>
-                  <span
-                  // style={{ color: "grey", fontSize: "1rem" }}
-                  >
-                    ${" "}
-                  </span>
-                  {item.unitPrice}
-                </div>
-                <div
-                  className={classes.delete}
-                  onClick={() => removeFromCart(item.sku)}
-                >
-                  <DeleteOutlineIcon />
-                </div>
-              </div>
               {/* SMALL ROW */}
               <div className={classes.cartRowMobile}>
                 <div className={classes.imgBoxRowSm}>
@@ -114,7 +84,7 @@ export default function Cart({ setRefreshCart }: Props) {
                 <div className={classes.right}>
                   <div className={classes.top}>
                     <div className={classes.nameFlavorSm}>
-                      <h3>{item.name}</h3>
+                      <h3 onClick={() => console.log(item.sku)}>{item.name}</h3>
                       <p>{item.description.split(":")[1].trim()}</p>
                     </div>
                     <div
@@ -138,6 +108,19 @@ export default function Cart({ setRefreshCart }: Props) {
                       />
                     </div>
                   </div>
+                  {invMessage && (
+                    <div>
+                      {invMessage.availableInv <= 0 ? (
+                        <span style={{ color: "red" }}>
+                          Currently Out of Stock.
+                        </span>
+                      ) : (
+                        <span style={{ color: "orange" }}>
+                          Only {invMessage?.availableInv} available units now.
+                        </span>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
               <div className={classes.line}></div>
@@ -182,3 +165,38 @@ function ChangeQuantity({
     </div>
   );
 }
+
+// OLD LARGE CART ROW (ARCHIVE)
+// <div className={classes.cartRow}>
+// <div className={classes.product}>
+// <div className={classes.imgBoxRow}>
+//   <img src={item.img} alt="product image" />
+// </div>
+// <div className={classes.nameFlavor}>
+//   <h3>{item.name}</h3>
+//   <p>{item.description.split(":")[1].trim()}</p>
+// </div>
+// </div>
+// <div className={classes.quantity}>
+// <ChangeQuantity
+//   sku={item.sku}
+//   currentQ={Number(quantities[item.sku]) || 0}
+//   maxQuantity={Number(item.maxQuantity) || 0}
+//   changeQuantity={changeQuantity}
+// />
+// </div>
+// <div className={classes.price}>
+// <span
+// // style={{ color: "grey", fontSize: "1rem" }}
+// >
+//   ${" "}
+// </span>
+// {item.unitPrice}
+// </div>
+// <div
+// className={classes.delete}
+// onClick={() => removeFromCart(item.sku)}
+// >
+// <DeleteOutlineIcon />
+// </div>
+// </div>

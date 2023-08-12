@@ -25,11 +25,16 @@ Proper flow of purchase:
     - UNDO items HOLD (increment all items in cart)
 
 */
+export interface InvIssues {
+  sku: string;
+  availableInv: number;
+}
 
 interface Props {
   customerProfileId: string;
   payment: Payment | undefined;
   refreshCart: boolean;
+  setInvIssues: React.Dispatch<React.SetStateAction<InvIssues[] | undefined>>;
 }
 interface ChargeProfileDataToSend {
   customerProfileId: string;
@@ -46,6 +51,7 @@ export default function CheckoutBtn({
   customerProfileId,
   payment,
   refreshCart,
+  setInvIssues,
 }: Props) {
   const [purchaseResponse, setPurchaseResponse] = React.useState<{
     success: boolean;
@@ -93,25 +99,42 @@ export default function CheckoutBtn({
     setTotal(String(roundPrice(subtotal + tax)));
   }, [tax]);
 
-  function completeCheckout() {
+  async function completeCheckout() {
+    setInvIssues(undefined);
+    if (!payment || !customerProfileId) return; // failsafe if no payment and user
+
     // Parse Cart_Items
     const cart_items = getCartItems();
-    // [TODO] remove unnecesary properties like MaxQuantity AFTER holding-inventory
-    if (!payment || !customerProfileId) return;
-
     // Build Payload object to send for Transaction
     let dataPayload: ChargeProfileDataToSend = {
       customerProfileId,
       customerPaymentProfileId: payment?.paymentProfileId ?? "",
       order: {
         invoiceNumber: "INV-testInvoiceNum", // INV-??
-        description: "online-order", // online order
+        description: "online order", // online order
       },
       ordered_items: cart_items,
       amountToCharge: Number(total),
     };
+    console.log("Checkout Payload1: ", dataPayload);
 
-    console.log("Checkout Payload: ", dataPayload);
+    try {
+      const holdRes = await checkAndHold(cart_items);
+      console.log("CheckRes: ", holdRes);
+    } catch (e: any) {
+      console.error("CheckHold Error: ", e);
+      if (e?.message === "insufficient inventory") {
+        setInvIssues(e.stock);
+        // change buttonProps
+        setButtonProps({
+          color: "grey",
+          text: "Insufficient Funds, Edit your Cart.",
+          cursor: "not-allowed",
+        });
+      }
+    }
+    return;
+
     // Send Transaction call to Customer Profile
     axios({
       url: "http://localhost:1400/chargeProfile",
@@ -203,4 +226,27 @@ export default function CheckoutBtn({
       </p>
     </div>
   );
+}
+
+async function checkAndHold(cartItems: CartItem[]): Promise<boolean> {
+  let skuAndQuantitis: { sku: string; quantity: number }[] = [];
+
+  cartItems.forEach((item) => {
+    skuAndQuantitis.push({ sku: item.sku, quantity: Number(item.quantity) });
+  });
+
+  return new Promise((resolve, reject) => {
+    axios({
+      url: "/api/inventory",
+      method: "POST",
+      data: {
+        method: "hold-inv",
+        items: skuAndQuantitis,
+      },
+    })
+      .then((res) => {
+        resolve(res.data);
+      })
+      .catch((e) => reject(e.response.data));
+  });
 }
