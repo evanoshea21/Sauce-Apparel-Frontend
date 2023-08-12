@@ -48,32 +48,34 @@ model User {
 }
 
 model CustomerProfile {
-  id String @id @default(cuid())
+  userId String @id @unique
 
   firstName String
   lastName  String
   phone     String
   email     String
 
-  customerProfileId String @unique
-  userId            String @unique
-  user              User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  customerProfileId String   @unique
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orders            Orders[]
 
   @@index(fields: [userId])
 }
 
 model Orders {
   //for refund
-  refTransId     String           @id @unique
-  amount         String
-  cardNum        String
-  expDate        String
+  refTransId      String           @id @unique
+  amount          String
+  cardNum         String
+  expDate         String
   //to ref customer who purchased
-  userId         String
-  //timestamped
-  createdAt      DateTime         @updatedAt
+  userId          String
+  //timestamped + order status
+  status          String           @default("unfulfilled")
+  createdAt       DateTime         @default(now())
   // reference the PurchasedItems
-  purchasedItems PurchasedItems[]
+  purchasedItems  PurchasedItems[]
+  customerProfile CustomerProfile  @relation(fields: [userId], references: [userId])
 }
 
 model PurchasedItems {
@@ -107,6 +109,7 @@ model Products {
   description       String?
   salesPrice        String?
   category          String?
+  createdAt         DateTime            @default(now())
   isFeatured        Boolean             @default(false)
   Flavors_Inventory Flavors_Inventory[]
 

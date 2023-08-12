@@ -3,7 +3,12 @@ import React from "react";
 import axios from "axios";
 import classes from "@/styles/CheckoutBox.module.css";
 import type { CartItem, Order, PurchasedItem } from "@/scripts/Types";
-import { getCartItems, getCartSumAndCount, roundPrice } from "../../utils";
+import {
+  clearCartItems,
+  getCartItems,
+  getCartSumAndCount,
+  roundPrice,
+} from "../../utils";
 import LockIcon from "@mui/icons-material/Lock";
 import type { Payment } from "./index";
 import { SaveOrderReq } from "@/app/api/orders/route";
@@ -131,9 +136,12 @@ export default function CheckoutBtn({
     console.log("Checkout Payload: ", dataPayload);
 
     try {
-      const holdRes = await checkAndHold(cart_items);
+      //ATTEMPT CHECK INV AND HOLD IT
+      const holdRes = await affectInventory("hold-inv", cart_items);
       console.log("CheckRes: ", holdRes);
       //SUCCESSFULLY DECR AVAILABLE STOCK...
+
+      //CHARGE PROFILE
       const { data } = await axios({
         url: "http://localhost:1400/chargeProfile",
         method: "POST",
@@ -141,7 +149,10 @@ export default function CheckoutBtn({
       });
       console.log("Transaction Response: ", data);
       setPurchaseResponse({ success: true, text: "Transaction Complete!" });
-      //SUCCESSFUL TRANSACTION (now re-route to thank you, and edit ORDERs table)
+      //SUCCESSFUL TRANSACTION
+
+      //NOW CLEAR OUT CART ITEMS
+      clearCartItems();
       interface AxiosReqSaveOrder {
         url: "/api/orders";
         method: "POST";
@@ -163,12 +174,15 @@ export default function CheckoutBtn({
         },
       };
 
-      //SAVE ORDER AND PURCHASED_ITEMS
+      //AND SAVE ORDER AND PURCHASED_ITEMS
       const orderRes = await axios(saveOrderReqConfig);
       console.log("Save Order response: ", orderRes.data);
+      //REDIRECT TO THANK YOU PAGE (or component)
+      setBtnLoading(false);
     } catch (e: any) {
+      setBtnLoading(false);
       // INSUFFICIENT STOCK or Network error
-      console.error("CheckHold Error: ", e);
+      console.error("Error: ", e);
       if (e?.message === "insufficient inventory") {
         setInvIssues(e.stock);
         setButtonProps({
@@ -176,32 +190,23 @@ export default function CheckoutBtn({
           text: "Insufficient Inventory, Edit your Cart.",
           cursor: "not-allowed",
         });
+        //ATTEMPT to restock
+        try {
+          const restockRes = await affectInventory("restock-inv", cart_items);
+          console.log("RestockRes: ", restockRes);
+        } catch (e) {
+          console.log("Couldnt Restock: ", e);
+        }
       } else {
         //handle network error or transaction error
-      }
-    }
-    return;
-
-    // Send Transaction call to Customer Profile
-    axios({
-      url: "http://localhost:1400/chargeProfile",
-      method: "POST",
-      data: dataPayload,
-    })
-      .then((res) => {
-        console.log("transaction response: ", res.data);
-        // response OK, tell user (UI) the transaction has gone through
-        setPurchaseResponse({ success: true, text: "Transaction Complete!" });
-      })
-      .catch((e) => {
-        console.error("issue with transaction: \n", e);
-        // response NOT OK, tell user (UI) why transaction has failed
+        // "there was an issue processing your request. Try again later."
         setPurchaseResponse({
           success: false,
-          text: "Payment didn't go through :(",
+          text: "Oops. Payment couldn't be processed.",
         });
-      });
-  }
+      }
+    }
+  } //complete checkout
 
   if (subtotal === 0) return <></>;
 
@@ -278,7 +283,10 @@ export default function CheckoutBtn({
   );
 }
 
-async function checkAndHold(cartItems: CartItem[]): Promise<boolean> {
+async function affectInventory(
+  type: "hold-inv" | "restock-inv",
+  cartItems: CartItem[]
+): Promise<boolean> {
   let skuAndQuantitis: { sku: string; quantity: number }[] = [];
 
   cartItems.forEach((item) => {
@@ -290,7 +298,7 @@ async function checkAndHold(cartItems: CartItem[]): Promise<boolean> {
       url: "/api/inventory",
       method: "POST",
       data: {
-        method: "hold-inv",
+        method: type,
         items: skuAndQuantitis,
       },
     })
