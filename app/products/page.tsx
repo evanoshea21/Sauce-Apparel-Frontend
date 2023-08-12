@@ -1,4 +1,3 @@
-// import React from 'react'
 import classes from "@/styles/Products.module.css";
 import axios from "axios";
 import type { Product, ProductData } from "../../scripts/Types";

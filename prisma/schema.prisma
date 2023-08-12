@@ -123,7 +123,7 @@ model Flavors_Inventory {
   productId  String
   salesPrice String?
 
-  product Products @relation(fields: [productId], references: [id])
+  product Products @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@unique([productId, flavor]) // cant have 2 identical flavors under 1 product
   @@index([productId])
