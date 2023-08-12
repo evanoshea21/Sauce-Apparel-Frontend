@@ -199,7 +199,7 @@ export default function CheckoutBtn({
         setInvIssues(e.stock);
         setButtonProps({
           color: "grey",
-          text: "Insufficient Inventory, Edit your Cart.",
+          text: "Insufficient Inventory.",
           cursor: "not-allowed",
         });
       } else {
