@@ -106,9 +106,15 @@ export function returnDateStr(): string {
   return dateStr;
 }
 
-export function roundPrice(price: number | string): number {
+export function roundPrice(price: number | string): string {
   let num = Number(price);
   num *= 100;
   let rounded = Math.round(num);
-  return rounded / 100;
+  let amountStr = String(rounded / 100);
+  if (amountStr.indexOf(".") === -1) {
+    amountStr += ".00";
+  } else if (amountStr.split(".")[1].length === 1) {
+    amountStr += "0";
+  }
+  return amountStr;
 }

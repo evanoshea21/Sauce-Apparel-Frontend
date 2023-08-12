@@ -42,6 +42,9 @@ interface Props {
   payment: Payment | undefined;
   refreshCart: boolean;
   setInvIssues: React.Dispatch<React.SetStateAction<InvIssues[] | undefined>>;
+  setScreen: React.Dispatch<
+    React.SetStateAction<"loading" | "purchase" | undefined>
+  >;
 }
 interface ChargeProfileDataToSend {
   customerProfileId: string;
@@ -59,6 +62,7 @@ export default function CheckoutBtn({
   payment,
   refreshCart,
   setInvIssues,
+  setScreen,
 }: Props) {
   const { data: session, status } = useSession();
 
@@ -66,16 +70,15 @@ export default function CheckoutBtn({
     success: boolean;
     text: string;
   }>({ success: false, text: "" });
-  const [total, setTotal] = React.useState<string>("");
-  const [subtotal, setSubtotal] = React.useState<number>(0);
-  const [tax, setTax] = React.useState<number>(0);
+  const [total, setTotal] = React.useState<string>("0.00");
+  const [subtotal, setSubtotal] = React.useState<string>("0.00");
+  const [tax, setTax] = React.useState<string>("0.00");
   const [count, setCount] = React.useState<string>("");
   const [buttonProps, setButtonProps] = React.useState<{
     text: string;
     color: string;
     cursor: "not-allowed" | "pointer";
   }>({ text: "Order for Pickup", color: "green", cursor: "pointer" });
-  const [btnLoading, setBtnLoading] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     if (customerProfileId.length === 0 || !payment) {
@@ -102,22 +105,21 @@ export default function CheckoutBtn({
       text: "Order for Pickup",
       cursor: "pointer",
     });
-    setBtnLoading(false);
   }, [refreshCart]);
   React.useEffect(() => {
     if (subtotal) {
-      const amount = subtotal * TAX_PERCENT;
+      const amount = Number(subtotal) * TAX_PERCENT;
       setTax(roundPrice(amount));
     }
   }, [subtotal]);
 
   React.useEffect(() => {
-    setTotal(String(roundPrice(subtotal + tax)));
+    setTotal(roundPrice(Number(subtotal) + Number(tax)));
   }, [tax]);
 
   async function completeCheckout() {
+    setScreen("purchase");
     setInvIssues(undefined);
-    setBtnLoading(true);
     if (!payment || !customerProfileId) return; // failsafe if no payment and user
 
     // Parse Cart_Items
@@ -178,9 +180,13 @@ export default function CheckoutBtn({
       const orderRes = await axios(saveOrderReqConfig);
       console.log("Save Order response: ", orderRes.data);
       //REDIRECT TO THANK YOU PAGE (or component)
-      setBtnLoading(false);
+      setScreen(undefined);
+      setPurchaseResponse({
+        success: true,
+        text: "Purchase went through!",
+      });
     } catch (e: any) {
-      setBtnLoading(false);
+      setScreen(undefined);
       // INSUFFICIENT STOCK or Network error
       console.error("Error: ", e);
       if (e?.message === "insufficient inventory") {
@@ -196,6 +202,10 @@ export default function CheckoutBtn({
           console.log("RestockRes: ", restockRes);
         } catch (e) {
           console.log("Couldnt Restock: ", e);
+          setPurchaseResponse({
+            success: false,
+            text: "Merchant Error: couldn't restock.",
+          });
         }
       } else {
         //handle network error or transaction error
@@ -208,7 +218,7 @@ export default function CheckoutBtn({
     }
   } //complete checkout
 
-  if (subtotal === 0) return <></>;
+  if (subtotal === "0.00") return <></>;
 
   return (
     <div className={classes.main}>
@@ -245,10 +255,7 @@ export default function CheckoutBtn({
       <div className={classes.buttonBox}>
         <button
           disabled={
-            Number(count) === 0 ||
-            customerProfileId.length == 0 ||
-            !payment ||
-            btnLoading
+            Number(count) === 0 || customerProfileId.length == 0 || !payment
           }
           onClick={completeCheckout}
           style={{

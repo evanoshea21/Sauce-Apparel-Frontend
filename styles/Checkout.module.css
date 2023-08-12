@@ -6,6 +6,19 @@
   padding-right: 50px;
   max-width: 1000px;
 }
+.screen {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  background-color: rgba(95, 95, 95, 0.341);
+  backdrop-filter: blur(5px);
+
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+}
 .gap {
   height: 200px;
 }

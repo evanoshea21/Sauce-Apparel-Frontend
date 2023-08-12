@@ -7,6 +7,7 @@ import CheckoutBox from "./CheckoutBox";
 import { signOut } from "next-auth/react";
 import type { InvIssues } from "./CheckoutBox";
 import axios from "axios";
+import { useSession } from "next-auth/react";
 
 export interface Payment {
   paymentProfileId: string;
@@ -16,10 +17,15 @@ export interface Payment {
 }
 
 export default function CheckoutPage() {
+  const { data: session, status } = useSession();
   const [customerProfileId, setCustomerProfileId] = React.useState<string>("");
   const [payment, setPayment] = React.useState<Payment | undefined>();
   const [refreshCart, setRefreshCart] = React.useState<boolean>(false);
   const [invIssues, setInvIssues] = React.useState<InvIssues[] | undefined>();
+  const [cartIsDefined, setCartIsDefined] = React.useState<boolean>(false);
+  const [screen, setScreen] = React.useState<
+    "loading" | "purchase" | undefined
+  >("loading");
 
   function refundProfile() {
     let obj = {
@@ -38,15 +44,40 @@ export default function CheckoutPage() {
       .catch((e) => console.error("Error refunding: ", e));
   }
 
+  React.useEffect(() => {
+    if (status && cartIsDefined) {
+      console.log("status");
+      setScreen(undefined);
+    }
+  }, [status, cartIsDefined]);
+
   return (
     <>
+      {screen &&
+        (screen === "loading" ? (
+          <div className={classes.screen}>
+            <img src="https://i.gifer.com/XOsX.gif" width="350px" />
+            <h2>Loading...</h2>
+            {/* <img src="https://i.gifer.com/ZKZg.gif" width="50px" /> */}
+          </div>
+        ) : (
+          <div className={classes.screen}>
+            <img src="https://i.gifer.com/7Q9s.gif" width="350px" />
+            <h2>Hopefully your transaction goes through...</h2>
+            <img src="https://i.gifer.com/ZKZg.gif" width="50px" />
+          </div>
+        ))}
       <div className={classes.checkoutFlex}>
         <div
           style={{
             flex: "2 ",
           }}
         >
-          <Cart setRefreshCart={setRefreshCart} invIssues={invIssues} />
+          <Cart
+            setCartIsDefined={setCartIsDefined}
+            setRefreshCart={setRefreshCart}
+            invIssues={invIssues}
+          />
           <Payment
             customerProfileId={customerProfileId}
             setCustomerProfileId={setCustomerProfileId}
@@ -69,6 +100,7 @@ export default function CheckoutPage() {
             customerProfileId={customerProfileId}
             payment={payment}
             setInvIssues={setInvIssues}
+            setScreen={setScreen}
           />
         </div>
       </div>

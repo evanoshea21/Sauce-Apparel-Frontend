@@ -37,7 +37,7 @@ export default function Payment({
     React.useState<CustomerProfile>();
   const [chosenPayment, setChosenPayment] = React.useState<Payment>();
   const [displayState, setDisplayState] =
-    React.useState<DisplayStates>("loggedOut");
+    React.useState<DisplayStates>("loadingCP");
   const [refetchAllCustomer, setRefetchAllCustomer] =
     React.useState<boolean>(true);
   const [refreshCustomer, setRefreshCustomer] = React.useState<boolean>(true);
@@ -80,6 +80,9 @@ export default function Payment({
             setDisplayState("networkError");
           }
         });
+    } else if (status === "unauthenticated") {
+      // not logged in
+      setDisplayState("loggedOut");
     }
   }, [status, refetchAllCustomer]);
 

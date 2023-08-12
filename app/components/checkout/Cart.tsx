@@ -19,9 +19,14 @@ Left to do:
 interface Props {
   setRefreshCart: React.Dispatch<React.SetStateAction<boolean>>;
   invIssues: InvIssues[] | undefined;
+  setCartIsDefined: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function Cart({ setRefreshCart, invIssues }: Props) {
+export default function Cart({
+  setCartIsDefined,
+  setRefreshCart,
+  invIssues,
+}: Props) {
   const [cartItems, setCartItems] = React.useState<CartItem[]>([]);
   const [quantities, setQuantities] = React.useState<{ [key: string]: string }>(
     {}
@@ -34,6 +39,7 @@ export default function Cart({ setRefreshCart, invIssues }: Props) {
 
   React.useEffect(() => {
     if (cartItems) {
+      setCartIsDefined(true);
       // set the Qs state
       let obj: { [key: string]: string } = {};
       cartItems.forEach((item: CartItem) => {
@@ -65,13 +71,17 @@ export default function Cart({ setRefreshCart, invIssues }: Props) {
   }
 
   if (cartItems.length === 0) {
-    return <>Empty Cart...</>;
+    return (
+      <div className={`${classes.main} ${classes.cartEmpty}`}>
+        <h2>It appears your cart is empty</h2>
+      </div>
+    );
   }
 
   return (
     <>
       <div className={classes.main}>
-        <h2>Your Items</h2>
+        <h2 className={classes.title}>Your Items</h2>
         {cartItems.map((item: CartItem) => {
           const invMessage = invIssues?.find((issue) => issue.sku === item.sku);
           return (
