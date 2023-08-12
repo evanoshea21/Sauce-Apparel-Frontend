@@ -7,11 +7,12 @@ const bodyParser = require("body-parser"); //parses json
 const cors = require("cors"); // sets CORS headers
 
 //UTILS imported (functions to charge credit card)
-const chargeProfile = require("./ChargeProfile");
 const createProfile = require("./CreateProfile");
-const addCard = require("./AddCard");
-const deleteProfile = require("./DeleteProfile");
 const getProfile = require("./GetProfile");
+const addCard = require("./AddCard");
+const chargeProfile = require("./ChargeProfile");
+const refundProfile = require("./RefundProfile");
+const deleteProfile = require("./DeleteProfile");
 const getPaymentProfile = require("./GetPaymentProfile");
 
 const app = express(); // init express server
@@ -70,6 +71,18 @@ app.post("/getprofile", (req: any, res: any) => {
 app.post("/chargeProfile", (req: any, res: any) => {
   // create customer profile
   chargeProfile(req.body, function (response: any) {
+    if (response.messages.resultCode === "Error") {
+      res.status(500).send(response);
+    } else {
+      res.send(response);
+    }
+  });
+});
+
+app.post("/refundProfile", (req: any, res: any) => {
+  // create customer profile
+
+  refundProfile(req.body, function (response: any) {
     if (response.messages.resultCode === "Error") {
       res.status(500).send(response);
     } else {

@@ -6,6 +6,7 @@ import Payment from "./Payment";
 import CheckoutBox from "./CheckoutBox";
 import { signOut } from "next-auth/react";
 import type { InvIssues } from "./CheckoutBox";
+import axios from "axios";
 
 export interface Payment {
   paymentProfileId: string;
@@ -19,6 +20,23 @@ export default function CheckoutPage() {
   const [payment, setPayment] = React.useState<Payment | undefined>();
   const [refreshCart, setRefreshCart] = React.useState<boolean>(false);
   const [invIssues, setInvIssues] = React.useState<InvIssues[] | undefined>();
+
+  function refundProfile() {
+    let obj = {
+      refTransId: "80001755520",
+      amount: "10.00",
+      cardNum: "0885",
+      expDate: "XXXX",
+    };
+
+    axios({
+      url: "http://localhost:1400/refundProfile",
+      method: "POST",
+      data: obj,
+    })
+      .then((res) => console.log("Refund Res: ", res.data))
+      .catch((e) => console.error("Error refunding: ", e));
+  }
 
   return (
     <>
@@ -55,6 +73,7 @@ export default function CheckoutPage() {
         </div>
       </div>
       <button onClick={() => signOut()}>Log out</button>
+      <button onClick={refundProfile}>Refund Profile Hard-coded</button>
     </>
   );
 }
