@@ -1,15 +1,20 @@
-@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@200&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;600;700&display=swap");
 
 :root {
   --bluegrey: #bbc3cd;
   --lightgrey: #e3ebf6;
   --lightgrey2: #f3f5f9;
   --bgColor: #f6f2f0;
-  --fontMono: "Roboto Mono, monospace";
+  --font: "Poppins, sans-serif";
 }
 
 body {
   background-color: var(--bgColor);
+  font-family: "Poppins", sans-serif !important;
+}
+body,
+html {
+  margin: 0;
 }
 
 .MuiSelect-select {
