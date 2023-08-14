@@ -14,9 +14,9 @@ export default async function ProductDisplay() {
   const products: ProductData[] = productsRes.data;
 
   return (
-    <div>
+    <div className={classes.gridMain}>
       <h1>Vapes For You!</h1>
-      <div className={classes.display}>
+      <div className={classes.gridDisplay}>
         {products.map((product) => {
           return <ProductCard product={product} />;
         })}
