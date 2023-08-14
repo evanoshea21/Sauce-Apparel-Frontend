@@ -9,7 +9,7 @@ export default function Home() {
     <>
       <Navbar />
       <div className={classes.main}>
-        {/* <ProductGrid /> */}
+        <ProductGrid />
         <ProductSlider />
       </div>
     </>

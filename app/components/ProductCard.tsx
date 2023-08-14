@@ -1,6 +1,7 @@
 import { ProductData } from "@/scripts/Types";
 import classes from "@/styles/ProductCard.module.css";
 import Link from "next/link";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 
 interface Props {
   product: ProductData;
@@ -43,9 +44,14 @@ export default function ProductCard({ product }: Props) {
             <span>{cents}</span>
           </div>
         </div>
-        <Link href={`/products/${product.name.split(" ").join("-")}`}>
-          <div className={classes.addToCartBtn}>Add to Cart</div>
-        </Link>
+        <div className={classes.bottomLinks}>
+          <Link href={`/products/${product.name.split(" ").join("-")}`}>
+            <div className={classes.addToCartBtn}>Add to Cart</div>
+          </Link>
+          <div className={classes.heart}>
+            <FavoriteBorderIcon />
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -19,7 +19,7 @@ export default async function ProductSlider() {
       <div className={classes.boxForFade}>
         <div className={classes.sliderDisplay}>
           {products.map((product) => {
-            return <ProductCard product={product} />;
+            return <ProductCard key={product.id} product={product} />;
           })}
           <div
             style={{
