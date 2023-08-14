@@ -25,7 +25,7 @@ export default async function ProductSlider() {
             style={{
               display: "block",
               width: "200px",
-              height: "200px",
+              height: "300px",
               // backgroundColor: "blue",
             }}
           ></div>
