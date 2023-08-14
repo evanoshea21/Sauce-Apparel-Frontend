@@ -9,8 +9,8 @@ export default function Home() {
     <>
       {/* <Navbar /> */}
       <div className={classes.main}>
-        {/* <ProductGrid /> */}
-        <ProductSlider />
+        <ProductGrid />
+        {/* <ProductSlider /> */}
       </div>
     </>
   );
