@@ -13,7 +13,6 @@ export default async function ProductsPage() {
     },
   });
   const products: ProductData[] = response.data;
-  console.log("Products on product page: ", products);
 
   return (
     <div className={classes.main}>

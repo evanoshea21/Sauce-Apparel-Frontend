@@ -40,7 +40,6 @@ export async function POST(req: NextRequest) {
       const flavorInventoryArr = [...reqBody.data.flavors_inventory];
       flavorInventoryArr.forEach((obj) => {
         // add productId from productResponse
-        //idk if this VV works
         obj.productId = productResponse.id;
       });
 

@@ -1,6 +1,7 @@
 .main {
-  height: 400px;
+  /* height: 400px; */
   width: 90vw;
+  max-width: 1250px;
   margin-left: auto;
   margin-right: auto;
   border: 1px solid grey;
