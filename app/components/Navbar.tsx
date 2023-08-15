@@ -6,6 +6,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import Badge from "@mui/material/Badge";
 import Drawer from "./Drawer";
+import { SavedNav } from "./ClientElements";
 
 export default function Navbar() {
   return (
@@ -37,10 +38,7 @@ export default function Navbar() {
           </li>
         </ul>
         <div className={classes.rightBtns}>
-          <div className={classes.saved}>
-            <FavoriteBorderIcon className={classes.icon} />
-            {/* <span className={classes.text}>Saved</span> */}
-          </div>
+          <SavedNav />
           <div className={classes.profile}>
             <PersonOutlineIcon className={classes.icon} />
             <span className={classes.text}>Profile</span>

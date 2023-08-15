@@ -29,22 +29,7 @@
   align-items: center;
   gap: 15px;
 }
-.heart {
-  width: 46px;
-  height: 46px;
-  border-radius: 100px;
-  /* background-color: antiquewhite; */
-  border: 2px solid green;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-}
-.heart * {
-  font-size: 1.5rem;
-  color: green;
-  font-weight: 200;
-}
+
 @media (max-width: 1005px) {
   .main {
     flex-basis: 220px;

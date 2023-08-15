@@ -1,9 +1,10 @@
-import type { CartItem, FlavorsInventoryObj } from "@/scripts/Types";
+import type { CartItem, SavedItem, FlavorsInventoryObj } from "@/scripts/Types";
 
 export function getCartItems() {
   const cart_itemsJSON = localStorage.getItem("cart_items") || "[]";
   return JSON.parse(cart_itemsJSON);
 }
+
 export function clearCartItems() {
   localStorage.removeItem("cart_items");
 }
@@ -19,10 +20,11 @@ export function addToCart(cartItem: CartItem) {
     localStorage.setItem("cart_items", JSON.stringify(cartItems));
   }
 }
+
 export function removeFromCart(sku: string) {
   let items: CartItem[] = getCartItems();
   items = items.filter((item: CartItem) => {
-    sku !== item.sku;
+    return sku !== item.sku;
   });
   localStorage.setItem("cart_items", JSON.stringify(items));
 }
@@ -117,4 +119,29 @@ export function roundPrice(price: number | string): string {
     amountStr += "0";
   }
   return amountStr;
+}
+
+// SAVED ITEMS
+export function getSavedItems() {
+  const saved_itemsJSON = localStorage.getItem("saved_items") || "[]";
+  return JSON.parse(saved_itemsJSON);
+}
+export function addToSaved(savedItem: SavedItem) {
+  const savedItemsJSON = localStorage.getItem("saved_items");
+
+  if (!savedItemsJSON) {
+    const items = [{ ...savedItem }];
+    localStorage.setItem("saved_items", JSON.stringify(items));
+  } else {
+    const savedItems = JSON.parse(savedItemsJSON);
+    savedItems.push({ ...savedItem });
+    localStorage.setItem("saved_items", JSON.stringify(savedItems));
+  }
+}
+export function removeFromSaved(name: string) {
+  let items: SavedItem[] = getSavedItems();
+  items = items.filter((item: SavedItem) => {
+    return name !== item.name;
+  });
+  localStorage.setItem("saved_items", JSON.stringify(items));
 }

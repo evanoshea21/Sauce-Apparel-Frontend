@@ -1,7 +1,7 @@
 import { ProductData } from "@/scripts/Types";
 import classes from "@/styles/ProductCard.module.css";
 import Link from "next/link";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import { SaveBtn } from "./ClientElements";
 
 interface Props {
   product: ProductData;
@@ -48,9 +48,7 @@ export default function ProductCard({ product }: Props) {
           <Link href={`/products/${product.name.split(" ").join("-")}`}>
             <div className={classes.addToCartBtn}>Add to Cart</div>
           </Link>
-          <div className={classes.heart}>
-            <FavoriteBorderIcon />
-          </div>
+          <SaveBtn product={{ name: product.name, img: product.imageUrl }} />
         </div>
       </div>
     </div>

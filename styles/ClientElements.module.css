@@ -1,0 +1,66 @@
+.saveBtn {
+  width: 46px;
+  height: 46px;
+  border-radius: 100px;
+  /* background-color: antiquewhite; */
+  border: 2px solid green;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+.saveBtn * {
+  font-size: 1.5rem;
+  color: green;
+  font-weight: 200;
+}
+
+.savedNav {
+  position: relative;
+}
+.savedNavDropdown {
+  position: absolute;
+  background-color: white;
+  border: 1px solid rgba(128, 128, 128, 0.185);
+  border-radius: 10px;
+  bottom: 0px;
+  transform: translateY(100%);
+  width: 300px;
+  max-height: 250px;
+  overflow-y: scroll;
+}
+.savedNavRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.savedNavRow span {
+  text-align: right;
+  color: black;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+}
+.savedNavRow * {
+  /* border: 1px solid red; */
+}
+.savedNavBorder {
+  width: 70%;
+  height: 1px;
+  margin-left: auto;
+  margin-right: auto;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.328);
+}
+.imgBox {
+  width: 80px;
+  height: 80px;
+}
+.imgBox img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}

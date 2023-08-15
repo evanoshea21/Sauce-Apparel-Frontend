@@ -130,7 +130,11 @@ export default function CheckoutBtn({
     const cart_items: PurchasedItem[] = getCartItems();
     cart_items.forEach((item) => {
       let newName = item.name.replaceAll("&", "and");
-      item.name = newName.slice(0, 27) + "...";
+      if (newName.length > 30) {
+        item.name = newName.slice(0, 27) + "...";
+      } else {
+        item.name = newName;
+      }
     });
     // Build Payload object to send for Transaction
     let dataPayload: ChargeProfileDataToSend = {

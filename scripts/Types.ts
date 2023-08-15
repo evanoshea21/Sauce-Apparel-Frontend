@@ -15,6 +15,10 @@ export interface CartItem {
   description: string; // flavor choice, sku
   img: string;
 }
+export interface SavedItem {
+  name: string;
+  img: string;
+}
 
 export interface Product {
   product: ProductData;
