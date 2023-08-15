@@ -82,10 +82,10 @@ export default function Cart({
     <>
       <div className={classes.main}>
         <h2 className={classes.title}>Your Items</h2>
-        {cartItems.map((item: CartItem) => {
+        {cartItems.map((item: CartItem, i: number) => {
           const invMessage = invIssues?.find((issue) => issue.sku === item.sku);
           return (
-            <div key={item.sku}>
+            <div key={`${item.sku}-${i}`}>
               {/* SMALL ROW */}
               <div className={classes.cartRowMobile}>
                 <div className={classes.imgBoxRowSm}>

@@ -1,0 +1,34 @@
+.main {
+  width: 90vw;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+  border: 1px solid grey;
+  display: flex;
+}
+.main > * {
+  flex: 1;
+}
+.imgBox img {
+  width: 95%;
+  height: 100%;
+  object-fit: contain;
+}
+.configFlavorAndQuantity {
+  display: flex;
+  gap: 30px;
+
+  margin: 20px 0 5px 0;
+}
+.menuItemBox > * {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  /* max-width: 100px; */
+}
+.menuItemBox > * div {
+  /* background-color: blue; */
+}
+.limitedStock {
+  color: red;
+}

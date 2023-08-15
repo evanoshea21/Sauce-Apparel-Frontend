@@ -15,7 +15,7 @@ export default async function ProductDisplay() {
 
   return (
     <div className={classes.gridMain}>
-      <h1>Vapes For You!</h1>
+      <h1>Vapes For You</h1>
       <div className={classes.gridDisplay}>
         {products.map((product) => {
           return <ProductCard product={product} />;

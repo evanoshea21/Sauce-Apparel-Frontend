@@ -127,7 +127,11 @@ export default function CheckoutBtn({
     let stockDecremented: boolean = false;
 
     // Parse Cart_Items
-    const cart_items = getCartItems();
+    const cart_items: PurchasedItem[] = getCartItems();
+    cart_items.forEach((item) => {
+      let newName = item.name.replaceAll("&", "and");
+      item.name = newName.slice(0, 27) + "...";
+    });
     // Build Payload object to send for Transaction
     let dataPayload: ChargeProfileDataToSend = {
       customerProfileId,

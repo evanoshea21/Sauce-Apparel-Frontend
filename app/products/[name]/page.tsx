@@ -1,13 +1,17 @@
 // import React from "react";
 import axios from "axios";
 import type { Product } from "@/scripts/Types";
-import AddToCart from "./AddToCart";
+import ConfigAddToCart from "./ConfigAddToCart";
+import Navbar from "@/app/components/Navbar";
+import classes from "@/styles/DetailsPage.module.css";
 
 interface Props {
   params: any;
 }
 
 export default async function ProductDetails({ params }: Props) {
+  let name = params.name.split("-").join(" ");
+  let newName = name.replace("%26", "&");
   let response;
   try {
     response = await axios({
@@ -16,7 +20,7 @@ export default async function ProductDetails({ params }: Props) {
       data: {
         method: "read",
         fullProduct: true,
-        name: params.name.split("-").join(" "),
+        name: newName,
       },
     });
   } catch (e) {
@@ -31,12 +35,18 @@ export default async function ProductDetails({ params }: Props) {
 
   return (
     <div>
-      <h1>Product Details page for {params.name}</h1>
-      <h3>{product.product.name}</h3>
-      <p>{product.product.category}</p>
-      <p>$ {product.product.unitPrice}</p>
-
-      <AddToCart product={product} />
+      <Navbar />
+      <div className={classes.main}>
+        <div className={classes.imgBox}>
+          <img src={product.product.imageUrl} alt="product image" />
+        </div>
+        <div className={classes.details}>
+          <h1>{product.product.name}</h1>
+          <h2>$ {product.product.unitPrice}</h2>
+          <h3>Choose a Flavor</h3>
+          <ConfigAddToCart product={product} />
+        </div>
+      </div>
     </div>
   );
 }
