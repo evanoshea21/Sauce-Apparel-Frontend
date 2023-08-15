@@ -1,6 +1,11 @@
 "use client";
 import React from "react";
-import { addToSaved, getSavedItems, removeFromSaved } from "../utils";
+import {
+  addToSaved,
+  getCartItems,
+  getSavedItems,
+  removeFromSaved,
+} from "../utils";
 import type { SavedItem } from "@/scripts/Types";
 import classes from "@/styles/ClientElements.module.css";
 import navClasses from "@/styles/NavBar.module.css";
@@ -10,6 +15,8 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { Context } from "../Context";
 import { useRouter } from "next/navigation";
 import Badge from "@mui/material/Badge";
+import Link from "next/link";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
 // savedItemsGlobal, setSavedItemsGlobal
 
@@ -152,6 +159,31 @@ export function SavedNav() {
           )}
         </div>
       )}
+    </div>
+  );
+}
+
+export function CartNav() {
+  const [itemsCount, setItemsCount] = React.useState<number>(
+    getCartItems().length
+  );
+
+  return (
+    <div className={navClasses.cart}>
+      <Link href="/checkout">
+        {itemsCount > 0 ? (
+          <Badge
+            className={navClasses.badge}
+            badgeContent={itemsCount}
+            color="primary"
+          >
+            <ShoppingCartIcon className={navClasses.icon} />
+          </Badge>
+        ) : (
+          <ShoppingCartIcon className={navClasses.icon} />
+        )}
+        {/* <span className={classes.text}>Cart</span> */}
+      </Link>
     </div>
   );
 }

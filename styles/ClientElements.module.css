@@ -35,6 +35,10 @@
   align-items: center;
   justify-content: space-between;
   padding: 10px;
+  cursor: pointer;
+}
+.savedNavRow:hover {
+  background-color: rgba(186, 186, 186, 0.153);
 }
 
 .savedNavRow span {

@@ -6,7 +6,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import Badge from "@mui/material/Badge";
 import Drawer from "./Drawer";
-import { SavedNav } from "./ClientElements";
+import { SavedNav, CartNav } from "./ClientElements";
 
 export default function Navbar() {
   return (
@@ -43,14 +43,7 @@ export default function Navbar() {
             <PersonOutlineIcon className={classes.icon} />
             <span className={classes.text}>Profile</span>
           </div>
-          <div className={classes.cart}>
-            <Link href="/checkout">
-              <Badge className={classes.badge} badgeContent={2} color="primary">
-                <ShoppingCartIcon className={classes.icon} />
-              </Badge>
-              {/* <span className={classes.text}>Cart</span> */}
-            </Link>
-          </div>
+          <CartNav />
           <div className={classes.drawer}>
             <Drawer />
           </div>
