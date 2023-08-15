@@ -55,10 +55,9 @@ export default function Dropdown({ values, handleChange }: Props) {
           style={{ display: open ? "block" : "none" }}
         >
           {values.map((flavor, i) => (
-            <>
+            <div key={flavor}>
               <div
                 className={classes.option}
-                key={flavor}
                 style={{
                   backgroundColor:
                     selection === flavor ? "rgba(188, 185, 185, 0.335)" : "",
@@ -68,7 +67,7 @@ export default function Dropdown({ values, handleChange }: Props) {
                 {flavor}
               </div>
               <div className={classes.border}></div>
-            </>
+            </div>
           ))}
           <div className={classes.fade}></div>
         </div>

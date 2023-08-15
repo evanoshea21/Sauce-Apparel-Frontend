@@ -88,11 +88,13 @@ export default function AddToCart({ product }: Props) {
     <div>
       <div className={classes.configFlavorAndQuantity}>
         <Dropdown handleChange={setChosenFlavor} values={flavorsArr} />
-        <QSelect
-          value={chosenQuantity}
-          changeQuantity={setChosenQuantity}
-          maxQuantity={inventory ?? 1}
-        />
+        <div style={{ zIndex: "0" }}>
+          <QSelect
+            value={chosenQuantity}
+            changeQuantity={setChosenQuantity}
+            maxQuantity={inventory ?? 1}
+          />
+        </div>
       </div>
 
       <p

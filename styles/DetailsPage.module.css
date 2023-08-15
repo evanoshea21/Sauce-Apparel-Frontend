@@ -3,7 +3,8 @@
   max-width: 1000px;
   margin-left: auto;
   margin-right: auto;
-  border: 1px solid grey;
+  margin-bottom: 80px;
+  /* border: 1px solid rgba(128, 128, 128, 0.226); */
   display: flex;
 }
 .main > * {
@@ -17,8 +18,27 @@
 .configFlavorAndQuantity {
   display: flex;
   gap: 30px;
+  flex-wrap: wrap;
 
   margin: 20px 0 5px 0;
+}
+@media (max-width: 910px) {
+  .configFlavorAndQuantity {
+    /* flex-direction: column; */
+  }
+}
+@media (max-width: 575px) {
+  .main {
+    flex-direction: column;
+  }
+  .imgBox {
+    max-width: 350px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .main h1 {
+    /* margin: 10px; */
+  }
 }
 .menuItemBox > * {
   display: flex;
