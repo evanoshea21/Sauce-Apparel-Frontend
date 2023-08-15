@@ -13,6 +13,7 @@ import classes from "@/styles/DetailsPage.module.css";
 import classes2 from "@/styles/ProductCard.module.css";
 import Dropdown from "@/app/components/ui/Dropdown";
 import QSelect from "@/app/components/ui/QSelect";
+import { SaveBtn } from "../../components/ClientElements";
 
 /*
 Purpose:
@@ -109,14 +110,22 @@ export default function AddToCart({ product }: Props) {
         {inventory && inventory < 7 ? `Only ${inventory} Left!` : ""}
       </p>
 
-      <div
-        style={{
-          backgroundColor: chosenFlavor.length !== 0 ? "" : "grey",
-        }}
-        className={classes2.addToCartBtn}
-        onClick={addItemToCart}
-      >
-        Add to Cart
+      <div style={{ display: "flex", gap: "20px", alignItems: "center" }}>
+        <div
+          style={{
+            backgroundColor: chosenFlavor.length !== 0 ? "" : "grey",
+          }}
+          className={classes2.addToCartBtn}
+          onClick={addItemToCart}
+        >
+          Add to Cart
+        </div>
+        <SaveBtn
+          product={{
+            name: product.product.name,
+            img: product.product.imageUrl,
+          }}
+        />
       </div>
     </div>
   );

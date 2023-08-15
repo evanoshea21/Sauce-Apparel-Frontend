@@ -9,6 +9,8 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { Context } from "../Context";
 import { useRouter } from "next/navigation";
+import Badge from "@mui/material/Badge";
+
 // savedItemsGlobal, setSavedItemsGlobal
 
 interface Props {
@@ -88,7 +90,13 @@ export function SavedNav() {
       onClick={() => setIsOpen((prev) => !prev)}
       className={`${navClasses.saved} ${classes.savedNav}`}
     >
-      <FavoriteBorderIcon className={navClasses.icon} />
+      {savedItemsGlobal.length > 0 ? (
+        <Badge color="primary" badgeContent={savedItemsGlobal.length}>
+          <FavoriteIcon className={navClasses.icon} />
+        </Badge>
+      ) : (
+        <FavoriteBorderIcon className={navClasses.icon} />
+      )}
       {isOpen && (
         <div className={classes.savedNavDropdown}>
           {savedArr.map((item, i) => {
