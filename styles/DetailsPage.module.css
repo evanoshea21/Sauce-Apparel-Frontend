@@ -15,12 +15,16 @@
   height: 100%;
   object-fit: contain;
 }
+.chooseFlavorText {
+  margin-top: 15px;
+  margin-bottom: 0px;
+}
 .configFlavorAndQuantity {
   display: flex;
   gap: 30px;
   flex-wrap: wrap;
 
-  margin: 20px 0 5px 0;
+  margin: 14px 0 5px 0;
 }
 .salesPrice {
   display: flex;
@@ -51,6 +55,13 @@
   .main {
     flex-direction: column;
   }
+  .chooseFlavorText {
+    margin: 0;
+  }
+  .configFlavorAndQuantity {
+    margin-top: 10px;
+  }
+
   .imgBox {
     max-width: 350px;
     margin-left: auto;

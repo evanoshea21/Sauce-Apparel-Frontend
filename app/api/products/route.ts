@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import type { Categories, Product, ProductData } from "@/scripts/Types";
 import prisma from "@/lib/prismaClient";
 import { categoryArr } from "@/scripts/Types";
+
+type ProductAlone = Omit<Product, "Flavors_Inventory">;
 interface CreateProduct {
   method: "create";
   data: Product;
@@ -14,6 +16,7 @@ interface UpdateProduct {
 interface ReadProduct {
   method: "read";
   fullProduct?: boolean;
+  excludeOutOfStock?: boolean;
   id?: string;
   name?: string;
   category?: Categories;
@@ -29,15 +32,20 @@ export async function POST(req: NextRequest) {
   // CREATE
   if (reqBody.method === "create") {
     //DONE
+
+    const data: Product = { ...reqBody.data };
+    delete data.Flavors_Inventory;
+    const newData: ProductAlone = data;
+
     try {
       const productResponse = await prisma.products.create({
         data: {
-          ...reqBody.data.product,
+          ...newData,
         },
       });
 
       // build the flavors_inventory array
-      const flavorInventoryArr = [...reqBody.data.flavors_inventory];
+      const flavorInventoryArr = [...(reqBody.data.Flavors_Inventory ?? [])];
       flavorInventoryArr.forEach((obj) => {
         // add productId from productResponse
         obj.productId = productResponse.id;
@@ -57,36 +65,42 @@ export async function POST(req: NextRequest) {
   }
   // READ
   if (reqBody.method === "read") {
-    const productResponse = await prisma.products.findMany({
-      where: {
-        id: reqBody.id,
-        name: reqBody.name,
-        category: reqBody.category,
-        isFeatured: reqBody.isFeatured,
-      },
-    });
-    if (!reqBody.fullProduct) {
+    // if don't need to exclude, nor full product
+    if (!!reqBody.excludeOutOfStock && !!reqBody.fullProduct) {
+      const productResponse = await prisma.products.findMany({
+        where: {
+          id: reqBody.id,
+          name: reqBody.name,
+          category: reqBody.category,
+          isFeatured: reqBody.isFeatured,
+        },
+      });
       return NextResponse.json(productResponse);
+    } else {
+      const productResponse = await prisma.products.findMany({
+        where: {
+          id: reqBody.id,
+          name: reqBody.name,
+          category: reqBody.category,
+          isFeatured: reqBody.isFeatured,
+        },
+        include: {
+          Flavors_Inventory: true,
+        },
+      });
+      if (reqBody.excludeOutOfStock) {
+        // loop through and filter out those with empty flavors
+        const filteredResponse = productResponse.filter((product) => {
+          return (
+            product.Flavors_Inventory != undefined &&
+            product.Flavors_Inventory.length != 0
+          );
+        });
+        return NextResponse.json(filteredResponse);
+      } else {
+        return NextResponse.json(productResponse);
+      }
     }
-    let products: Product[] = [];
-    // for each of these products, run a query to tack on the flavors_inventories
-    for (let i = 0; i < productResponse.length; i++) {
-      let productId = productResponse[i].id;
-      const flavors_inventoryResponse = await prisma.flavors_Inventory.findMany(
-        {
-          where: { productId },
-        }
-      );
-      const flavors_inventory = flavors_inventoryResponse;
-      const product: Product = {
-        product: productResponse[i],
-        flavors_inventory,
-      };
-
-      products.push(product);
-    }
-
-    return NextResponse.json(products);
   }
   // UPDATE
   if (reqBody.method === "update") {

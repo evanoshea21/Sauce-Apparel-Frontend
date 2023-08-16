@@ -6,6 +6,8 @@ import React from "react";
 const Context = React.createContext({
   savedItemsGlobal: [{ name: "", img: "" }],
   setSavedItemsGlobal: function (items: SavedItem[]) {},
+  cartRefreshGlobal: false,
+  refreshCart: function () {},
 });
 
 interface Props {
@@ -18,6 +20,12 @@ const ContextProvider = ({ children }: Props) => {
   const [savedItemsGlobal, setSavedItemsGlobal] = React.useState<SavedItem[]>(
     []
   );
+  const [cartRefreshGlobal, setCartRefreshGlobal] =
+    React.useState<boolean>(false);
+
+  function refreshCart() {
+    setCartRefreshGlobal((prev) => !prev);
+  }
 
   return (
     //value= {} holds global state being passed
@@ -25,6 +33,8 @@ const ContextProvider = ({ children }: Props) => {
       value={{
         savedItemsGlobal,
         setSavedItemsGlobal,
+        cartRefreshGlobal,
+        refreshCart,
       }}
     >
       {children}

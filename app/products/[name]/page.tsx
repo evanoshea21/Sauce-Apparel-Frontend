@@ -36,27 +36,27 @@ export default async function ProductDetails({ params }: Props) {
 
   return (
     <div>
-      <Navbar />
+      {/* <Navbar /> */}
       <div className={classes.main}>
         <div className={classes.imgBox}>
-          <img src={product.product.imageUrl} alt="product image" />
+          <img src={product.imageUrl} alt="product image" />
         </div>
         <div className={classes.details}>
-          <h1>{product.product.name}</h1>
-          {product.product.salesPrice ? (
+          <h1>{product.name}</h1>
+          {product.salesPrice ? (
             <div className={classes.salesPrice}>
               <h2 style={{ color: "red" }}>
-                $ {roundPrice(product.product.salesPrice)}
+                $ {roundPrice(product.salesPrice)}
               </h2>
               <div className={classes.sales}>
-                <h2>${product.product.unitPrice}</h2>
+                <h2>${product.unitPrice}</h2>
                 <div className={classes.strike}></div>
               </div>
             </div>
           ) : (
-            <h2>$ {product.product.unitPrice}</h2>
+            <h2>$ {product.unitPrice}</h2>
           )}
-          <h3>Choose a Flavor</h3>
+          <h3 className={classes.chooseFlavorText}>Choose a Flavor</h3>
           <ConfigAddToCart product={product} />
         </div>
       </div>

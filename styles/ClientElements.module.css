@@ -9,6 +9,7 @@
   align-items: center;
   cursor: pointer;
   box-sizing: border-box;
+  cursor: pointer;
 }
 .saveBtn * {
   font-size: 1.5rem;
@@ -18,6 +19,7 @@
 
 .savedNav {
   position: relative;
+  cursor: pointer;
 }
 .savedNavDropdown {
   position: absolute;

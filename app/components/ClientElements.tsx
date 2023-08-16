@@ -3,6 +3,7 @@ import React from "react";
 import {
   addToSaved,
   getCartItems,
+  getCartSumAndCount,
   getSavedItems,
   removeFromSaved,
 } from "../utils";
@@ -89,6 +90,10 @@ export function SavedNav() {
     }
   }, [savedItemsGlobal]);
 
+  React.useEffect(() => {
+    setSavedItemsGlobal(getSavedItems());
+  }, []);
+
   function removeSaved(e: any, name: string) {
     e.stopPropagation();
     removeFromSaved(name);
@@ -168,12 +173,16 @@ export function SavedNav() {
 }
 
 export function CartNav() {
+  const { cartRefreshGlobal } = React.useContext(Context);
   const [itemsCount, setItemsCount] = React.useState<number | undefined>();
 
   React.useEffect(() => {
-    setItemsCount(getCartItems().length);
+    setItemsCount(getCartSumAndCount().count);
   }, []);
-  // TODO: flicker when change pages..
+
+  React.useEffect(() => {
+    setItemsCount(getCartSumAndCount().count);
+  }, [cartRefreshGlobal]);
 
   return (
     <div className={navClasses.cart}>

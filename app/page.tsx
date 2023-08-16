@@ -7,7 +7,7 @@ import ProductSlider from "./components/ProductSlider";
 export default function Home() {
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
       <div className={classes.main}>
         <ProductGrid />
         <ProductSlider />

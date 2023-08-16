@@ -9,6 +9,7 @@
   border-radius: 5px;
   display: flex;
   align-items: center;
+  cursor: pointer;
   /* justify-content: center; */
 }
 .select p {
@@ -41,6 +42,9 @@
 .option {
   padding: 18px;
   /* height: 30px; */
+}
+.option:hover {
+  background-color: rgba(199, 199, 199, 0.227);
 }
 .border {
   width: 80%;

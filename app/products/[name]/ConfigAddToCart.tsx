@@ -1,20 +1,16 @@
 "use client";
 import React from "react";
 import type { Product, FlavorsInventoryObj, CartItem } from "@/scripts/Types";
-import { getCartItems, addToCart } from "@/app/utils";
+import { addToCart } from "@/app/utils";
 //MUI
-import Button from "@mui/material/Button";
-import Box from "@mui/material/Box";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
+
 import classes from "@/styles/DetailsPage.module.css";
 import classes2 from "@/styles/ProductCard.module.css";
 import Dropdown from "@/app/components/ui/Dropdown";
 import QSelect from "@/app/components/ui/QSelect";
 import { SaveBtn } from "../../components/ClientElements";
 import { useRouter } from "next/navigation";
+import { Context } from "@/app/Context";
 
 /*
 Purpose:
@@ -29,6 +25,7 @@ interface Props {
 }
 export default function AddToCart({ product }: Props) {
   const router = useRouter();
+  const { refreshCart } = React.useContext(Context);
   const [chosenFlavor, setChosenFlavor] = React.useState<string>("");
   const [chosenSku, setChosenSku] = React.useState<string>("");
   const [chosenQuantity, setChosenQuantity] = React.useState<number>(1);
@@ -39,13 +36,14 @@ export default function AddToCart({ product }: Props) {
   const [flavorsArr, setFlavorsArr] = React.useState<string[]>([]);
 
   React.useEffect(() => {
-    if (chosenFlavor?.length === 0) return;
+    if (chosenFlavor?.length === 0 || !product.Flavors_Inventory) return;
     setDisabled(false);
     setChosenQuantity(1);
     //set sku, AND inventory (for cart later)
-    let flavorRow = product.flavors_inventory.find(
-      (product) => chosenFlavor === product.flavor
-    );
+    let flavorRow: FlavorsInventoryObj | undefined =
+      product.Flavors_Inventory.find(
+        (product) => chosenFlavor === product.flavor
+      );
     setInventory(Number(flavorRow?.inventory));
     setChosenSku(flavorRow?.sku ?? "");
   }, [chosenFlavor]);
@@ -53,13 +51,14 @@ export default function AddToCart({ product }: Props) {
   React.useEffect(() => {
     if (product) {
       setDeterminedPrice(
-        product.product.salesPrice && product.product.salesPrice.length
-          ? product.product.salesPrice
-          : product.product.unitPrice
+        product.salesPrice && product.salesPrice.length
+          ? product.salesPrice
+          : product.unitPrice
       );
       // set flavors array (for dropdown)
       const arr: string[] = [];
-      product.flavors_inventory.forEach((flavorInv) => {
+      if (!product.Flavors_Inventory) return;
+      product.Flavors_Inventory.forEach((flavorInv) => {
         if (flavorInv.inventory > 0) {
           arr.push(flavorInv.flavor);
         }
@@ -73,19 +72,33 @@ export default function AddToCart({ product }: Props) {
     //transmute data
     const cartItem: CartItem = {
       sku: chosenSku,
-      name: product.product.name,
+      name: product.name,
       quantity: String(chosenQuantity),
       unitPrice: determinedPrice,
       description: `Flavor: ${chosenFlavor}`,
-      img: product.product.imageUrl,
+      img: product.imageUrl,
       maxQuantity: String(inventory),
     };
 
     //add to cart
-    console.log("OG ITEMS: ", getCartItems());
     addToCart(cartItem);
+    // refresh cart global
+    refreshCart();
     router.push("/");
-    console.log("NEW ITEMS: ", getCartItems());
+  }
+
+  if (flavorsArr.length === 0) {
+    return (
+      <div
+        style={{
+          margin: "30px 0",
+          color: "red",
+          fontSize: "1.4rem",
+        }}
+      >
+        Product Out of stock.
+      </div>
+    );
   }
 
   return (
@@ -125,8 +138,8 @@ export default function AddToCart({ product }: Props) {
         </div>
         <SaveBtn
           product={{
-            name: product.product.name,
-            img: product.product.imageUrl,
+            name: product.name,
+            img: product.imageUrl,
           }}
         />
       </div>

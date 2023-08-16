@@ -5,6 +5,8 @@ import { changeQuantityCart, getCartItems } from "@/app/utils";
 import type { CartItem } from "@/scripts/Types";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import type { InvIssues } from "./CheckoutBox";
+import Link from "next/link";
+import { Context } from "@/app/Context";
 /*
 Sole purpose: GET/EDIT cart items from localStorage
 
@@ -27,6 +29,7 @@ export default function Cart({
   setRefreshCart,
   invIssues,
 }: Props) {
+  const { refreshCart } = React.useContext(Context);
   const [cartItems, setCartItems] = React.useState<CartItem[]>([]);
   const [quantities, setQuantities] = React.useState<{ [key: string]: string }>(
     {}
@@ -55,6 +58,7 @@ export default function Cart({
     setCartItems(newCartItems);
     // set new
     localStorage.setItem("cart_items", JSON.stringify(newCartItems));
+    refreshCart();
     setRefreshCart((prev) => !prev);
   }
 
@@ -74,6 +78,18 @@ export default function Cart({
     return (
       <div className={`${classes.main} ${classes.cartEmpty}`}>
         <h2>It appears your cart is empty</h2>
+        <Link href="/">
+          <div
+            style={{
+              padding: "10px 20px",
+              backgroundColor: "green",
+              color: "white",
+              borderRadius: "5px",
+            }}
+          >
+            Continue Shopping
+          </div>
+        </Link>
       </div>
     );
   }

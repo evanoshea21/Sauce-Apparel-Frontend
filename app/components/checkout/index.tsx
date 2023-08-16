@@ -74,12 +74,12 @@ export default function CheckoutPage() {
       )}
       {Array.isArray(screen) && (
         <div className={`${classes.screen} ${classes.success}`}>
-          <img src="https://i.gifer.com/CGQ.gif" width="350px" />
+          <img src="https://i.gifer.com/CGQ.gif" width="250px" />
           <h2>Your Order has been placed!</h2>
           <h3>Order #: {screen[1]}</h3>
           <p>
-            At ECigCity we greatly value our patrons as they keep our business
-            alive.
+            Thank you! At ECigCity we greatly value our patrons as they keep our
+            business alive.
           </p>
           <Link href="/">Return Home</Link>
         </div>

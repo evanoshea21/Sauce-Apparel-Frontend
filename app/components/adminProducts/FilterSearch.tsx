@@ -48,7 +48,7 @@ export default function FilterSearch({ allProducts, setProductsShown }: Props) {
     for (let i = 0; i < allProducts.length; i++) {
       let product = allProducts[i];
       let searchTermUpper = searchTerm.toUpperCase();
-      let productNameUpper = product.product.name.toUpperCase();
+      let productNameUpper = product.name.toUpperCase();
 
       if (
         searchTerm.length &&
@@ -57,17 +57,21 @@ export default function FilterSearch({ allProducts, setProductsShown }: Props) {
         continue;
       }
 
-      if (featured && product.product.isFeatured === false) {
+      if (featured && product.isFeatured === false) {
         continue;
       }
-      if (onSale && !product.product.salesPrice) {
+      if (onSale && !product.salesPrice) {
         continue;
       }
-      if (lowInv && !flavorsHasLowInventory(product.flavors_inventory, 8)) {
+      if (
+        lowInv &&
+        product.Flavors_Inventory &&
+        !flavorsHasLowInventory(product.Flavors_Inventory, 8)
+      ) {
         continue;
       }
-      if (categories.length && product.product.category) {
-        if (!categories.includes(product.product.category)) {
+      if (categories.length && product.category) {
+        if (!categories.includes(product.category)) {
           continue;
         }
       }

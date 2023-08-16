@@ -9,6 +9,7 @@ export default async function ProductDisplay() {
     method: "POST",
     data: {
       method: "read",
+      excludeOutOfStock: true,
     },
   });
   const products: ProductData[] = productsRes.data;

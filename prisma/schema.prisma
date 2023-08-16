@@ -65,7 +65,8 @@ model CustomerProfile {
 model Orders {
   //for refund
   refTransId      String           @id @unique
-  amount          String
+  amountCharged   String
+  subtotal        String
   cardNum         String
   expDate         String
   //to ref customer who purchased

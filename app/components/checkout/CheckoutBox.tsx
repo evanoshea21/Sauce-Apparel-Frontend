@@ -14,6 +14,7 @@ import LockIcon from "@mui/icons-material/Lock";
 import type { Payment } from "./index";
 import { SaveOrderReq } from "@/app/api/orders/route";
 import { useSession } from "next-auth/react";
+import { Context } from "@/app/Context";
 
 const TAX_PERCENT = Number(process.env.NEXT_PUBLIC_STATE_TAX_AS_DECIMAL);
 
@@ -64,6 +65,7 @@ export default function CheckoutBtn({
   setScreen,
 }: Props) {
   const { data: session, status } = useSession();
+  const globals = React.useContext(Context);
 
   const [purchaseResponse, setPurchaseResponse] = React.useState<{
     success: boolean;
@@ -91,7 +93,6 @@ export default function CheckoutBtn({
         cursor: "not-allowed",
       });
     } else if (payment) {
-      console.log("pay", payment);
       setButtonProps({
         text: "Order for Pickup",
         color: "green",
@@ -186,7 +187,8 @@ export default function CheckoutBtn({
           method: "save-order",
           order: {
             refTransId,
-            amount: total,
+            amountCharged: total,
+            subtotal,
             cardNum: payment.cardNumber,
             expDate: payment.expDate,
             userId: session?.user.id!,
@@ -199,6 +201,7 @@ export default function CheckoutBtn({
       const orderRes = await axios(saveOrderReqConfig);
       console.log("Save Order response: ", orderRes.data);
       //REDIRECT TO THANK YOU PAGE (or component)
+      globals.refreshCart();
       setScreen(["successful transaction", refTransId]);
       setPurchaseResponse({
         success: true,

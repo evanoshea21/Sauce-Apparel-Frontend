@@ -9,8 +9,13 @@
 .cartEmpty {
   height: 200px;
   display: flex;
+  flex-direction: column;
+  gap: 10px;
   justify-content: center;
   align-items: center;
+}
+.cartEmpty a {
+  text-decoration: none;
 }
 .cartEmpty h2 {
   margin: 0;
@@ -112,6 +117,7 @@
   align-items: center;
   /* border: 1px solid red; */
   padding: 0 5px;
+  cursor: pointer;
 }
 
 /* CART MOBILE */

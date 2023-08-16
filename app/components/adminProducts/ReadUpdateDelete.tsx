@@ -43,13 +43,13 @@ export default function Read({ refreshList }: { refreshList: boolean }) {
     if (isDelete) {
       setProductsShown((prevProductArr) => {
         let arr = prevProductArr.slice().filter((product) => {
-          return product.product.id !== productId;
+          return product.id !== productId;
         });
         return arr;
       });
       setAllProducts((prevProductArr) => {
         let arr = prevProductArr.slice().filter((product) => {
-          return product.product.id !== productId;
+          return product.id !== productId;
         });
         return arr;
       });
@@ -76,7 +76,7 @@ export default function Read({ refreshList }: { refreshList: boolean }) {
       // find index where name = name
       let foundIndex: number = 0;
       for (let i = 0; i < arr.length; i++) {
-        if (arr[i].product.id === productId) {
+        if (arr[i].id === productId) {
           foundIndex = i;
           foundIndexGlobal = i;
           break;
@@ -128,27 +128,23 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
   const [successMessage, setSuccessMessage] = React.useState<
     string | undefined
   >();
-  const [name, setName] = React.useState<string>(product.product.name);
-  const [unitPrice, setUnitPrice] = React.useState<string>(
-    product.product.unitPrice
-  );
-  const [imageUrl, setImageUrl] = React.useState<string>(
-    product.product.imageUrl
-  );
+  const [name, setName] = React.useState<string>(product.name);
+  const [unitPrice, setUnitPrice] = React.useState<string>(product.unitPrice);
+  const [imageUrl, setImageUrl] = React.useState<string>(product.imageUrl);
   const [inventory, setInventory] = React.useState<number | null>(
-    product.product.inventory
+    product.inventory
   );
   const [description, setDescription] = React.useState<string | null>(
-    product.product.description
+    product.description
   );
   const [salesPrice, setSalesPrice] = React.useState<string | null>(
-    product.product.salesPrice
+    product.salesPrice
   );
   const [category, setCategory] = React.useState<string | null>(
-    product.product.category
+    product.category
   );
   const [isFeatured, setIsFeatured] = React.useState<boolean>(
-    product.product.isFeatured || false
+    product.isFeatured || false
   );
 
   const [categoryColor, setCategoryColor] = React.useState("grey");
@@ -162,7 +158,7 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
 
   // [TODO] -- set category tags color
   React.useEffect(() => {
-    let category: string | null = product.product.category;
+    let category: string | null = product.category;
     if (category === "Disposable") {
       setCategoryColor("blue");
     } else if (category === "60ml") {
@@ -184,7 +180,7 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
     axios({
       url: "api/products",
       method: "DELETE",
-      data: { id: product.product.id },
+      data: { id: product.id },
     })
       .then((res) => {
         console.log("IT WORKED! deleted");
@@ -192,7 +188,7 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
         // SPLICE row
         setDisplay("product");
         setIsLoadingAjax(false);
-        refreshRow(true, product.product.id || "");
+        refreshRow(true, product.id || "");
       })
       .catch((err) => {
         setIsLoadingAjax(false);
@@ -244,7 +240,7 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
       method: "POST",
       data: {
         method: "update",
-        productId: product.product.id || "",
+        productId: product.id || "",
         data: payload,
       },
     })
@@ -252,7 +248,7 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
         console.log("Updated Product");
         console.log(res.data);
         // SPLICE row
-        refreshRow(false, product.product.id || "");
+        refreshRow(false, product.id || "");
         // setDisplay("product");
         setErrorMessage(undefined);
         setIsLoadingAjax(false);
@@ -292,7 +288,7 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
   }
 
   // React.useEffect(() => {
-  //   setHeight(product.product.id ?? "", true);
+  //   setHeight(product.id ?? "", true);
   // }, []);
 
   if (!product) return <></>;
@@ -300,7 +296,7 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
   return (
     <div>
       <div
-        className={`${classes.main} productRow-${product.product.id}`}
+        className={`${classes.main} productRow-${product.id}`}
         style={
           {
             // height: rowHeight,
@@ -312,15 +308,15 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
         {/* PIC */}
         <div className={classes.picLeft}>
           <div className={classes.imgBox}>
-            <img src={product.product.imageUrl} alt="product-image" />
+            <img src={product.imageUrl} alt="product-image" />
           </div>
         </div>
 
         {/* INFO */}
         <div className={classes.info}>
-          <p className={classes.id}>id: {product.product.id}</p>
+          <p className={classes.id}>id: {product.id}</p>
           <div className={classes.title}>
-            <h2>{product.product.name}</h2>
+            <h2>{product.name}</h2>
             <EditTwoToneIcon
               sx={{
                 fontSize: "2rem",
@@ -332,7 +328,7 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
                 setDisplay(
                   display === "edit product" ? "product" : "edit product"
                 );
-                // setHeight(product.product.id ?? "");
+                // setHeight(product.id ?? "");
               }}
             />
           </div>
@@ -341,9 +337,9 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
               style={{ backgroundColor: categoryColor }}
               className={classes.category}
             >
-              {product.product.category}
+              {product.category}
             </div>
-            {product.product.isFeatured && (
+            {product.isFeatured && (
               <div className={classes.featured}>Featured</div>
             )}
           </div>
@@ -365,23 +361,24 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
               ? "Hide Flavors"
               : "Configure Flavors"}
           </Button>
-          {flavorsHasLowInventory(product.flavors_inventory, 8) && (
-            <p style={{ color: "orange", marginTop: "6px" }}>
-              Low Inventory Warning
-            </p>
-          )}
+          {product.Flavors_Inventory &&
+            flavorsHasLowInventory(product.Flavors_Inventory, 8) && (
+              <p style={{ color: "orange", marginTop: "6px" }}>
+                Low Inventory Warning
+              </p>
+            )}
         </div>
 
         {/* PRICE */}
         <div className={classes.price}>
           <h3>
-            $ {product.product.unitPrice}
-            {product.product.unitPrice.length === 2 ? ".00" : ""}
+            $ {product.unitPrice}
+            {product.unitPrice.length === 2 ? ".00" : ""}
           </h3>
-          {product.product.salesPrice && (
+          {product.salesPrice && (
             <div className={classes.salesPrice}>
-              $ {product.product.salesPrice}{" "}
-              {product.product.salesPrice.length === 2 ? ".00" : ""}
+              $ {product.salesPrice}{" "}
+              {product.salesPrice.length === 2 ? ".00" : ""}
             </div>
           )}
         </div>
@@ -392,15 +389,15 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
         <div style={{ margin: "0px 0 40px 0" }}>
           <ProductForm
             defaultValues={{
-              name: product.product.name,
-              unitPrice: product.product.unitPrice,
-              imageUrl: product.product.imageUrl,
+              name: product.name,
+              unitPrice: product.unitPrice,
+              imageUrl: product.imageUrl,
 
-              description: product.product.description,
-              inventory: product.product.inventory, //if no flavors
-              salesPrice: product.product.salesPrice, // if no flavors
-              category: product.product.category,
-              isFeatured: product.product.isFeatured,
+              description: product.description,
+              inventory: product.inventory, //if no flavors
+              salesPrice: product.salesPrice, // if no flavors
+              category: product.category,
+              isFeatured: product.isFeatured,
             }}
             setName={setName}
             setUnitPrice={setUnitPrice}
@@ -442,11 +439,11 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
       )}
       {/* SHOW CONFIG FLAVORS */}
       {display === "configure flavors" && (
-        <div className={`flavorsCRUD-${product.product.id}`}>
+        <div className={`flavorsCRUD-${product.id}`}>
           <FlavorsCrud
             refreshRow={refreshRow}
-            productData={product.product}
-            flavors_inventory={product.flavors_inventory}
+            productData={product}
+            flavors_inventory={product.Flavors_Inventory ?? []}
           />
         </div>
       )}

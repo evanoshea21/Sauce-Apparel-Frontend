@@ -106,17 +106,15 @@ export default function Create({ formValues, setRefreshList }: CreateProps) {
     }
 
     const dataPayload: Product = {
-      product: {
-        name,
-        unitPrice,
-        imageUrl,
-        description,
-        inventory,
-        salesPrice,
-        category: category ?? "Uncategorized",
-        isFeatured,
-      },
-      flavors_inventory: validFlavorArr,
+      name,
+      unitPrice,
+      imageUrl,
+      description,
+      inventory,
+      salesPrice,
+      category: category ?? "Uncategorized",
+      isFeatured,
+      Flavors_Inventory: validFlavorArr,
     };
 
     // console.log("Data payload: \n", dataPayload);

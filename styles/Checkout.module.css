@@ -19,6 +19,22 @@
   justify-content: center;
   align-items: center;
 }
+.screen h2 {
+  text-align: center;
+  color: black;
+  padding: 10px;
+  text-shadow: 0 0 20px white;
+}
+.screen p {
+  width: 95vw;
+  max-width: 320px;
+  padding: 5px;
+}
+@media (max-width: 300px) {
+  .screen p {
+    max-width: 280px;
+  }
+}
 .success {
   background-color: rgba(255, 255, 255, 0.769);
 }

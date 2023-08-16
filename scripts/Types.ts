@@ -27,9 +27,8 @@ export interface SavedItem {
   img: string;
 }
 
-export interface Product {
-  product: ProductData;
-  flavors_inventory: FlavorsInventoryObj[];
+export interface Product extends ProductData {
+  Flavors_Inventory?: FlavorsInventoryObj[];
 }
 export interface ProductData {
   id?: string; //optional bc CREATE payload doesn't need it
@@ -55,7 +54,8 @@ export interface FlavorsInventoryObj {
 export interface Order {
   //for refund
   refTransId: string;
-  amount: string;
+  amountCharged: string;
+  subtotal: string;
   cardNum: string;
   expDate: string;
   //to ref customer who purchased
