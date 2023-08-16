@@ -16,13 +16,15 @@ import type { FlavorsInventoryObj } from "@/scripts/Types";
 import Button from "@mui/material/Button";
 import EditTwoToneIcon from "@mui/icons-material/EditTwoTone";
 import FilterSearch from "./FilterSearch";
-import { Category } from "@mui/icons-material";
+import Create from "./Create";
 //Product (everything) vs ProductData (only the product's data)
 
-export default function Read({ refreshList }: { refreshList: boolean }) {
+export default function Read() {
   const [update, setUpdate] = React.useState<boolean>(false);
   const [allProducts, setAllProducts] = React.useState<Product[]>([]);
   const [productsShown, setProductsShown] = React.useState<Product[]>([]);
+  const [display, setDisplay] = React.useState<"read" | "add">("read");
+  const [refreshList, setRefreshList] = React.useState<boolean>(false);
 
   // get ALL products
   React.useEffect(() => {
@@ -32,7 +34,6 @@ export default function Read({ refreshList }: { refreshList: boolean }) {
         method: "POST",
         data: { method: "read", fullProduct: true },
       });
-      console.log("Products READ: \n", productResponse.data);
       setProductsShown(productResponse.data.reverse());
       setAllProducts(productResponse.data.reverse());
     })();
@@ -94,20 +95,47 @@ export default function Read({ refreshList }: { refreshList: boolean }) {
     });
   }
 
+  if (display === "add") {
+    return <Create setDisplay={setDisplay} setRefreshList={setRefreshList} />;
+  }
+
   return (
     <div>
-      <h1
-        style={{ marginLeft: "10px", marginTop: "50px", textAlign: "center" }}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          maxWidth: "800px",
+          marginLeft: "auto",
+          marginRight: "auto",
+        }}
       >
-        Products & Inventory
-      </h1>
+        <h1
+          style={{ marginLeft: "10px", marginTop: "50px", textAlign: "center" }}
+        >
+          Products & Inventory
+        </h1>
+        <div
+          onClick={() => setDisplay("add")}
+          style={{
+            fontSize: "1.1rem",
+            padding: "10px 20px",
+            backgroundColor: "green",
+            color: "white",
+            cursor: "pointer",
+          }}
+        >
+          Add Product
+        </div>
+      </div>
       <FilterSearch
         allProducts={allProducts}
         setProductsShown={setProductsShown}
       />
       <button onClick={() => setUpdate((prev) => !prev)}>Refresh</button>
       {productsShown.map((item, i) => (
-        <ProductRow refreshRow={refreshRow} product={item} key={i} />
+        <ProductRow refreshRow={refreshRow} product={item} key={item.id ?? i} />
       ))}
       <div style={{ height: "600px" }}></div>
     </div>
@@ -287,16 +315,12 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
     }
   }
 
-  // React.useEffect(() => {
-  //   setHeight(product.id ?? "", true);
-  // }, []);
-
   if (!product) return <></>;
 
   return (
     <div>
       <div
-        className={`${classes.main} productRow-${product.id}`}
+        className={classes.main}
         style={
           {
             // height: rowHeight,

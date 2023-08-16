@@ -6,10 +6,17 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import Badge from "@mui/material/Badge";
 import Drawer from "./Drawer";
 import { SavedNav, CartNav, LoginNav } from "./ClientElements";
+import { usePathname } from "next/navigation";
 
 export default function Navbar() {
+  const pathname = usePathname();
   return (
-    <div className={classes.main}>
+    <div
+      className={classes.main}
+      style={{
+        display: pathname === "/admin" ? "none" : "",
+      }}
+    >
       <nav className={classes.nav}>
         <Link href="/">
           <div className={classes.logo}>

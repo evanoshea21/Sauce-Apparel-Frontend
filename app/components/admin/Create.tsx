@@ -14,9 +14,14 @@ import {
 interface CreateProps {
   formValues?: Product;
   setRefreshList: React.Dispatch<React.SetStateAction<boolean>>;
+  setDisplay: React.Dispatch<React.SetStateAction<"add" | "read">>;
 }
 
-export default function Create({ formValues, setRefreshList }: CreateProps) {
+export default function Create({
+  formValues,
+  setRefreshList,
+  setDisplay,
+}: CreateProps) {
   const [errorMessage, setErrorMessage] = React.useState<string | undefined>();
   const [successMessage, setSuccessMessage] = React.useState<
     string | undefined
@@ -138,6 +143,7 @@ export default function Create({ formValues, setRefreshList }: CreateProps) {
         setSuccessMessage("Successfully Added!");
         timeoutSuccess();
         setIsLoadingAjax(false);
+        setDisplay("read");
       })
       .catch((err) => {
         // account for DUPLICATE ROW
@@ -154,18 +160,31 @@ export default function Create({ formValues, setRefreshList }: CreateProps) {
   }
 
   return (
-    <div
-      style={{
-        border: "1px solid grey",
-        borderRadius: "20px",
-        paddingTop: "20px",
-        paddingBottom: "40px",
-        maxWidth: "970px",
-        marginLeft: "auto",
-        marginRight: "auto",
-      }}
-    >
-      <h1 style={{ textAlign: "center" }}>Add New Product</h1>
+    <div className={classes.createBox}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          maxWidth: "700px",
+          marginLeft: "auto",
+          marginRight: "auto",
+        }}
+      >
+        <h1>Add New Product</h1>
+        <div
+          onClick={() => setDisplay("read")}
+          style={{
+            fontSize: "1.1rem",
+            padding: "10px 20px",
+            backgroundColor: "green",
+            color: "white",
+            cursor: "pointer",
+          }}
+        >
+          Back to List
+        </div>
+      </div>
       <div className={classes.createForms}>
         <div>
           <ProductForm

@@ -1,4 +1,6 @@
-import AdminProductsCRUD from "../components/adminProducts";
+import AdminClient from "../components/admin";
+import Header from "../components/admin/Header";
+import classes from "@/styles/Admin.module.css";
 
 export default function AdminPage() {
   const adminList = process.env.ADMINS?.split(",");
@@ -9,7 +11,7 @@ export default function AdminPage() {
       <div
         style={{
           width: "100%",
-          height: "100vh",
+          height: "60vh",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
@@ -29,8 +31,11 @@ export default function AdminPage() {
 
   return (
     <div>
-      <h1>Admin Page</h1>
-      <AdminProductsCRUD />
+      {/* <h1 style={{ textAlign: "center", fontSize: "3rem" }}>Admin Page</h1> */}
+      <div className={classes.main}>
+        <Header />
+        <AdminClient />
+      </div>
     </div>
   );
 }
