@@ -4,16 +4,16 @@
   /* padding: 20px; */
   /* background-color: yellow; */
 }
-/* .clientBox {
+.clientBox {
   display: flex;
+  gap: 10px;
 }
-.clientBox *:nth-child(1) {
-  flex: 1.5;
-  min-width: 225px;
+.clientBox > *:nth-child(1) {
+  width: 250px;
 }
-.clientBox *:nth-child(2) {
-  flex: 7;
-} */
+.clientBox > *:nth-child(2) {
+  flex: 1;
+}
 .header {
   height: 230px;
   background-color: black;
@@ -26,10 +26,11 @@
 .header h1 {
   margin-left: 140px;
 }
-/* .sidebar {
+.sidebar {
   background-color: black;
   color: white;
   height: 350px;
+
   display: flex;
   justify-content: center;
   align-items: center;
@@ -45,17 +46,23 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  width: 90%;
 }
 .sideItem {
-  border: 1px solid green;
-  width: 70%;
+  border: 1px solid white;
+  width: 100%;
   margin-left: auto;
   margin-right: auto;
   font-size: 1.3rem;
   text-align: right;
   padding: 5px 10px;
   border-radius: 15px;
-} */
+  box-sizing: border-box;
+}
+.sideItemSelect {
+  background-color: white;
+  color: black;
+}
 .createBox {
   /* border: 1px solid green; */
   background-color: aliceblue;

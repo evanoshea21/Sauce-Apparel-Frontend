@@ -6,6 +6,7 @@ import {
   isValidPrice,
   isPositiveInteger,
   flavorsHasLowInventory,
+  roundPrice,
 } from "@/app/utils";
 import classes from "@/styles/AdminProducts.module.css";
 import {
@@ -142,6 +143,14 @@ export default function Read() {
   );
 }
 
+//
+
+//
+
+//
+
+//
+
 interface ProductRowProps {
   product: Product;
   refreshRow: (isDelete: boolean, productId: string) => Promise<void>;
@@ -151,7 +160,6 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
   const [display, setDisplay] = React.useState<
     "product" | "edit product" | "configure flavors"
   >("product");
-  const [rowHeight, setRowHeight] = React.useState<string>("");
   const [errorMessage, setErrorMessage] = React.useState<string | undefined>();
   const [successMessage, setSuccessMessage] = React.useState<
     string | undefined
@@ -188,9 +196,9 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
   React.useEffect(() => {
     let category: string | null = product.category;
     if (category === "Disposable") {
-      setCategoryColor("blue");
+      setCategoryColor("gold");
     } else if (category === "60ml") {
-      setCategoryColor("purple");
+      setCategoryColor("lightblue");
     } else if (category === "120ml") {
       setCategoryColor("orange");
     } else if (category === "Salt Nic") {
@@ -297,24 +305,6 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
       });
   }
 
-  function setHeight(id: string, initial?: boolean) {
-    let flavorCRUD: HTMLElement | null = document.querySelector(
-      `.flavorsCRUD-${id}`
-    );
-    let productRow: HTMLElement | null = document.querySelector(`.productRow`);
-    if (initial && productRow) {
-      setRowHeight(`${productRow.offsetHeight}px`);
-    } else {
-      if (flavorCRUD && productRow) {
-        console.log("Flavors(pid) Height: \n", flavorCRUD.offsetHeight);
-        console.log("ProductRow Height: \n", productRow.offsetHeight);
-        setRowHeight(`${flavorCRUD.offsetHeight + productRow.offsetHeight}px`);
-      } else {
-        console.log("oops, couldnt find elements for height");
-      }
-    }
-  }
-
   if (!product) return <></>;
 
   return (
@@ -341,20 +331,6 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
           <p className={classes.id}>id: {product.id}</p>
           <div className={classes.title}>
             <h2>{product.name}</h2>
-            <EditTwoToneIcon
-              sx={{
-                fontSize: "2rem",
-                backgroundColor:
-                  display === "edit product" ? "rgb(216, 216, 216)" : "",
-              }}
-              className={classes.editIcon}
-              onClick={() => {
-                setDisplay(
-                  display === "edit product" ? "product" : "edit product"
-                );
-                // setHeight(product.id ?? "");
-              }}
-            />
           </div>
           <div className={classes.tags}>
             <div
@@ -371,38 +347,47 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
 
         {/* CONFIG */}
         <div className={classes.config}>
-          <Button
-            variant="outlined"
-            onClick={() =>
-              setDisplay(
-                display === "configure flavors"
-                  ? "product"
-                  : "configure flavors"
-              )
-            }
-          >
-            {display === "configure flavors"
-              ? "Hide Flavors"
-              : "Configure Flavors"}
-          </Button>
+          <div className={classes.configBtns}>
+            <EditTwoToneIcon
+              sx={{
+                fontSize: "2rem",
+                backgroundColor:
+                  display === "edit product" ? "rgb(216, 216, 216)" : "",
+              }}
+              className={classes.editIcon}
+              onClick={() => {
+                setDisplay(
+                  display === "edit product" ? "product" : "edit product"
+                );
+              }}
+            />
+            <Button
+              variant="outlined"
+              onClick={() =>
+                setDisplay(
+                  display === "configure flavors"
+                    ? "product"
+                    : "configure flavors"
+                )
+              }
+            >
+              {display === "configure flavors"
+                ? "Hide Flavors"
+                : "Edit Flavors"}
+            </Button>
+          </div>
           {product.Flavors_Inventory &&
             flavorsHasLowInventory(product.Flavors_Inventory, 8) && (
-              <p style={{ color: "orange", marginTop: "6px" }}>
-                Low Inventory Warning
-              </p>
+              <p className={classes.lowInvWarning}>Low Inventory Warning</p>
             )}
         </div>
 
         {/* PRICE */}
         <div className={classes.price}>
-          <h3>
-            $ {product.unitPrice}
-            {product.unitPrice.length === 2 ? ".00" : ""}
-          </h3>
+          <h3>$ {roundPrice(product.unitPrice)}</h3>
           {product.salesPrice && (
             <div className={classes.salesPrice}>
-              $ {product.salesPrice}{" "}
-              {product.salesPrice.length === 2 ? ".00" : ""}
+              $ {roundPrice(product.salesPrice)}
             </div>
           )}
         </div>

@@ -1,25 +1,13 @@
 .main {
-  border: 2px solid rgb(190, 190, 190);
-  border-radius: 10px;
-
+  border-bottom: 1px solid rgba(128, 128, 128, 0.288);
   display: flex;
-  padding: 20px;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 4px;
-  max-width: 1000px;
-}
+  gap: 10px;
 
-@media (max-width: 780px) {
-  .main {
-    flex-direction: column;
-    max-width: 320px;
-  }
-  .config {
-    justify-content: left !important;
-    margin-top: 20px;
-    margin-bottom: 20px;
-  }
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+}
+.main * {
+  /* border: 1px solid blue; */
 }
 
 /* PIC LEFT */
@@ -27,39 +15,59 @@
   flex: 1;
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 .imgBox {
-  width: 100px;
-  height: 100px;
-  object-fit: contain;
+  width: 90%;
+  height: 90%;
+  /* padding: 20px; */
 }
 .imgBox img {
-  width: 100%;
+  object-fit: contain;
   height: 100%;
+  width: 100%;
 }
 
 /* INFO */
 .info {
-  flex: 2;
+  flex: 2.5;
 }
-.title,
 .tags {
   display: flex;
+  justify-content: flex-start;
 }
 .title h2 {
+  flex: 1;
   /* border: 1px solid green; */
-  inline-size: 200px;
-  overflow-wrap: break-word;
+  /* inline-size: 300px; */
+  /* overflow-wrap: break-word; */
 }
 
 /* CONFIG */
 .config {
-  flex: 2;
+  flex: 1.6;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  /* border: 1px solid green; */
+  min-width: 187px;
+}
+.configBtns {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+.configBtns > *:nth-child(1) {
+  /* background-color: yellow; */
+}
+.configBtns > *:nth-child(2) {
+  /* background-color: orange; */
+  /* margin: 0 !important; */
+}
+.lowInvWarning {
+  color: orange;
+  margin-top: 6px;
+  text-align: center;
 }
 
 /* PRICE */
@@ -70,14 +78,35 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  min-width: 112px;
 }
 .salesPrice {
   background-color: rgba(255, 0, 0, 0.859);
   color: white;
   width: fit-content;
+  /* height: fit-content; */
   padding: 5px;
   border-radius: 8px;
   font-size: 1rem;
+}
+
+@media (max-width: 900px) {
+  .main {
+    flex-direction: column;
+    max-width: 320px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+  }
+  .config {
+    align-items: flex-start;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  .imgBox {
+    width: 40%;
+  }
 }
 
 /* INDIVIDUAL ELEMENTS */
@@ -92,12 +121,8 @@
   color: grey;
 }
 .title {
-  padding-top: 20px;
-  padding-bottom: 20px;
-  font-size: 1.4rem;
-}
-.title h2 {
-  margin-right: 20px;
+  padding: 5px;
+  font-size: 0.9rem;
 }
 
 .editIcon {
@@ -105,6 +130,7 @@
   padding: 3px;
   cursor: pointer;
   color: rgb(0, 72, 255);
+  /* max-width: 80px; */
 }
 
 .editIcon:hover {
@@ -116,6 +142,7 @@
   padding: 5px;
   border-radius: 5px;
   margin: 2px;
+  max-width: fit-content;
 }
 .featured {
   background-color: rgb(1, 128, 1);
@@ -167,7 +194,8 @@
 }
 .flavorName {
   /* background-color: rgb(125, 159, 190); */
-  width: 180px;
+  /* border: 1px solid red; */
+  /* width: 180px; */
   /* white-space: normal; */
   font-size: 1.3rem;
   color: grey;
