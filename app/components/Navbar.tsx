@@ -1,12 +1,11 @@
 "use client";
 import Link from "next/link";
 import classes from "@/styles/NavBar.module.css";
-import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import Badge from "@mui/material/Badge";
 import Drawer from "./Drawer";
-import { SavedNav, CartNav } from "./ClientElements";
+import { SavedNav, CartNav, LoginNav } from "./ClientElements";
 
 export default function Navbar() {
   return (
@@ -39,10 +38,7 @@ export default function Navbar() {
         </ul>
         <div className={classes.rightBtns}>
           <SavedNav />
-          <div className={classes.profile}>
-            <PersonOutlineIcon className={classes.icon} />
-            <span className={classes.text}>Profile</span>
-          </div>
+          <LoginNav />
           <CartNav />
           <div className={classes.drawer}>
             <Drawer />

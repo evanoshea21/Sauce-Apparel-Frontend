@@ -17,6 +17,10 @@ import { useRouter } from "next/navigation";
 import Badge from "@mui/material/Badge";
 import Link from "next/link";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { signOut, signIn, useSession } from "next-auth/react";
+import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
+import Dialog from "@mui/material/Dialog";
+import SignIn from "@/app/components/checkout/paymentComponents/SignIn";
 
 // savedItemsGlobal, setSavedItemsGlobal
 
@@ -184,6 +188,44 @@ export function CartNav() {
         )}
         {/* <span className={classes.text}>Cart</span> */}
       </Link>
+    </div>
+  );
+}
+
+export function LoginNav() {
+  const { data: session, status } = useSession();
+  const [openD, setOpenD] = React.useState<boolean>(false);
+  const [display, setDisplay] = React.useState<"loading" | undefined>();
+
+  if (status === "loading" && false) {
+    return <></>;
+  } else if (status === "unauthenticated") {
+    return (
+      <div className={navClasses.profile}>
+        <div onClick={() => setOpenD(true)} className={classes.logIn}>
+          Log in
+        </div>
+        <div className={classes.dialogContainer}>
+          <Dialog onClose={() => setOpenD(false)} open={openD}>
+            <div className={classes.logInDialog}>
+              {display === "loading" ? (
+                <h2 style={{ textAlign: "center" }}>Logging you in...</h2>
+              ) : (
+                <SignIn setDisplayHome={setDisplay} />
+              )}
+            </div>
+          </Dialog>
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div className={navClasses.profile}>
+      <PersonOutlineIcon className={navClasses.icon} />
+      <span className={navClasses.text}>Profile</span>
+      <div onClick={() => signOut()} className={navClasses.signOut}>
+        sign out
+      </div>
     </div>
   );
 }

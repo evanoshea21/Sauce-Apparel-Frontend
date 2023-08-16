@@ -68,3 +68,23 @@
   height: 100%;
   object-fit: contain;
 }
+
+/* LOG IN & PROFILE */
+.logIn {
+  width: 70px;
+  border: 1px solid rgba(128, 128, 128, 0.21);
+  padding: 7px 10px;
+  text-align: center;
+  cursor: pointer;
+}
+.logIn:hover {
+  border: 1px solid green;
+}
+.logInDialog {
+  width: 350px;
+  height: 300px;
+  padding: 20px;
+}
+.dialogContainer > * {
+  margin: 0;
+}

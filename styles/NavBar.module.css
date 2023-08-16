@@ -54,6 +54,7 @@
   padding-left: 5px;
   padding-right: 5px;
 }
+
 .cart a {
   text-decoration: none;
   color: black;
@@ -113,13 +114,34 @@
 
 .rightBtns .text {
   font-size: 1.1rem;
+  transform: translateY(2px);
 }
+.profile {
+  position: relative;
+}
+.rightBtns .signOut {
+  font-size: 0.8rem;
+  text-decoration: underline;
+  position: absolute;
+  bottom: 8px;
+  transform: translate(0, -1px);
+  cursor: pointer;
+}
+.rightBtns .signOut:hover {
+  color: green;
+}
+
 .saved {
   color: green;
 }
 @media (max-width: 820px) {
   .profile span {
     display: none;
+  }
+  .signOut {
+    transform: translate(0, 0px);
+    width: 55px;
+    /* background-color: yellow; */
   }
   .nav {
     padding-left: 20px;
