@@ -77,7 +77,11 @@ export default function CheckoutBtn({
     text: string;
     color: string;
     cursor: "not-allowed" | "pointer";
-  }>({ text: "Order for Pickup", color: "green", cursor: "pointer" });
+  }>({
+    text: "Add Payment",
+    color: "grey",
+    cursor: "not-allowed",
+  });
 
   React.useEffect(() => {
     if (customerProfileId.length === 0 || !payment) {
@@ -86,7 +90,8 @@ export default function CheckoutBtn({
         color: "grey",
         cursor: "not-allowed",
       });
-    } else {
+    } else if (payment) {
+      console.log("pay", payment);
       setButtonProps({
         text: "Order for Pickup",
         color: "green",

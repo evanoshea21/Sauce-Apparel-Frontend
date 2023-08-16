@@ -168,14 +168,17 @@ export function SavedNav() {
 }
 
 export function CartNav() {
-  const [itemsCount, setItemsCount] = React.useState<number>(
-    getCartItems().length
-  );
+  const [itemsCount, setItemsCount] = React.useState<number | undefined>();
+
+  React.useEffect(() => {
+    setItemsCount(getCartItems().length);
+  }, []);
+  // TODO: flicker when change pages..
 
   return (
     <div className={navClasses.cart}>
       <Link href="/checkout">
-        {itemsCount > 0 ? (
+        {itemsCount && itemsCount > 0 ? (
           <Badge
             className={navClasses.badge}
             badgeContent={itemsCount}
@@ -186,7 +189,6 @@ export function CartNav() {
         ) : (
           <ShoppingCartIcon className={navClasses.icon} />
         )}
-        {/* <span className={classes.text}>Cart</span> */}
       </Link>
     </div>
   );
