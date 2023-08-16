@@ -14,6 +14,7 @@ import classes2 from "@/styles/ProductCard.module.css";
 import Dropdown from "@/app/components/ui/Dropdown";
 import QSelect from "@/app/components/ui/QSelect";
 import { SaveBtn } from "../../components/ClientElements";
+import { useRouter } from "next/navigation";
 
 /*
 Purpose:
@@ -27,6 +28,7 @@ interface Props {
   product: Product;
 }
 export default function AddToCart({ product }: Props) {
+  const router = useRouter();
   const [chosenFlavor, setChosenFlavor] = React.useState<string>("");
   const [chosenSku, setChosenSku] = React.useState<string>("");
   const [chosenQuantity, setChosenQuantity] = React.useState<number>(1);
@@ -82,6 +84,7 @@ export default function AddToCart({ product }: Props) {
     //add to cart
     console.log("OG ITEMS: ", getCartItems());
     addToCart(cartItem);
+    router.push("/");
     console.log("NEW ITEMS: ", getCartItems());
   }
 

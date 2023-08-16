@@ -1,6 +1,7 @@
 import type { CartItem, SavedItem, FlavorsInventoryObj } from "@/scripts/Types";
 
 export function getCartItems() {
+  if (typeof window === "undefined") return [];
   const cart_itemsJSON = localStorage.getItem("cart_items") || "[]";
   return JSON.parse(cart_itemsJSON);
 }
