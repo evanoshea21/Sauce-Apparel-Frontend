@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import type { Categories, Product, ProductData } from "@/scripts/Types";
 import prisma from "@/lib/prismaClient";
-
+import { categoryArr } from "@/scripts/Types";
 interface CreateProduct {
   method: "create";
   data: Product;

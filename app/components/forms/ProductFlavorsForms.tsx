@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import type { Categories, FlavorsInventoryObj } from "@/scripts/Types";
+import type { FlavorsInventoryObj } from "@/scripts/Types";
 import classes from "@/styles/Admin.module.css";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -11,6 +11,7 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Tooltip from "@mui/material/Tooltip";
 import Button from "@mui/material/Button";
 import HelpOutlineTwoToneIcon from "@mui/icons-material/HelpOutlineTwoTone";
+import { categoryArr as categoryNames } from "@/scripts/Types";
 
 interface ProductFormProps {
   defaultValues?: {
@@ -222,11 +223,9 @@ export function ProductForm(props: ProductFormProps) {
             label="CategoryLabel"
             onChange={(e: any) => props.setCategory(e.target.value)}
           >
-            <MenuItem value={"Uncategorized"}>Uncategorized</MenuItem>
-            <MenuItem value={"Non-Disposable"}>Non-Disposable</MenuItem>
-            <MenuItem value={"Disposable"}>Disposable</MenuItem>
-            <MenuItem value={"Vape"}>Vape</MenuItem>
-            <MenuItem value={"Other Vapes"}>Other Vapes</MenuItem>
+            {categoryNames.map((category) => (
+              <MenuItem value={category!}>{category}</MenuItem>
+            ))}
           </Select>
         </div>
       </form>
@@ -317,33 +316,3 @@ export function FlavorsInventoryForm(props: FlavorsInventoryProps) {
     </div>
   );
 }
-
-/*
-
-in order to SET the array, onChange should call a function, that get's the current rows data, then inputs it into the INDEX of the setArray prop.
-
-
-For flavors-inventories-salesprice
-SHAPE:
-
-[
-  {
-    flavor: 'apple'
-    inventory: 24
-    salesPrice: null
-  },
-  {
-    flavor: 'peach'
-    inventory: 94
-    salesPrice: '14.89'
-  },
-  {
-    flavor: 'orange'
-    inventory: 47
-    salesPrice: null
-  },
-
-]
-
-
-*/

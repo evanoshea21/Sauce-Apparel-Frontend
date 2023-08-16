@@ -1,10 +1,17 @@
 export type Categories =
-  | "Uncategorized"
   | "Disposable"
-  | "Non-Disposable"
-  | "Vape"
-  | "Other Vapes"
+  | "60ml"
+  | "120ml"
+  | "Salt Nic"
+  | "Other"
   | null;
+export const categoryArr: Categories[] = [
+  "Disposable",
+  "60ml",
+  "120ml",
+  "Salt Nic",
+  "Other",
+];
 export interface CartItem {
   sku: string;
   name: string;

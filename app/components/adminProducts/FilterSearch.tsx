@@ -14,12 +14,7 @@ import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import { flavorsHasLowInventory } from "@/app/utils";
 
-const categoryNames: Categories[] = [
-  "Disposable",
-  "Non-Disposable",
-  "Vape",
-  "Other Vapes",
-];
+import { categoryArr as categoryNames } from "@/scripts/Types";
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {

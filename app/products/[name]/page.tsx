@@ -4,6 +4,7 @@ import type { Product } from "@/scripts/Types";
 import ConfigAddToCart from "./ConfigAddToCart";
 import Navbar from "@/app/components/Navbar";
 import classes from "@/styles/DetailsPage.module.css";
+import { roundPrice } from "@/app/utils";
 
 interface Props {
   params: any;
@@ -42,7 +43,19 @@ export default async function ProductDetails({ params }: Props) {
         </div>
         <div className={classes.details}>
           <h1>{product.product.name}</h1>
-          <h2>$ {product.product.unitPrice}</h2>
+          {product.product.salesPrice ? (
+            <div className={classes.salesPrice}>
+              <h2 style={{ color: "red" }}>
+                $ {roundPrice(product.product.salesPrice)}
+              </h2>
+              <div className={classes.sales}>
+                <h2>${product.product.unitPrice}</h2>
+                <div className={classes.strike}></div>
+              </div>
+            </div>
+          ) : (
+            <h2>$ {product.product.unitPrice}</h2>
+          )}
           <h3>Choose a Flavor</h3>
           <ConfigAddToCart product={product} />
         </div>

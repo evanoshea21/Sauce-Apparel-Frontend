@@ -28,9 +28,16 @@ export default function ProductCard({ product }: Props) {
 
   let dollar: string = product.unitPrice.split(".")[0];
   let cents: string = `.${product.unitPrice.split(".")[1] ?? "00"}`;
+  let dollarSale: string | undefined = undefined;
+  let centsSale: string | undefined = undefined;
+  if (product.salesPrice) {
+    dollarSale = product.salesPrice.split(".")[0];
+    centsSale = `.${product.salesPrice.split(".")[1] ?? "00"}`;
+  }
   return (
     <div className={classes.main}>
       <div className={classes.imgBox}>
+        {product.salesPrice && <div className={classes.onSaleTag}>On Sale</div>}
         <img src={product.imageUrl} alt="product image" />
       </div>
       <div className={classes.info}>
@@ -39,9 +46,43 @@ export default function ProductCard({ product }: Props) {
             {name}
           </p>
           <div className={classes.price}>
-            <span>$</span>
-            <p>{dollar}</p>
-            <span>{cents}</span>
+            {product.salesPrice ? (
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <div style={{ display: "flex", color: "red" }}>
+                  <span>$</span>
+                  <p>{dollarSale}</p>
+                  <span>{centsSale}</span>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    fontSize: "1.3rem",
+                    position: "relative",
+                  }}
+                >
+                  <div
+                    style={{
+                      position: "absolute",
+                      width: "75%",
+                      height: "2px",
+                      borderBottom: "2px solid red",
+                      top: "40%",
+                      transform: "rotate(-5deg)",
+                    }}
+                  ></div>
+                  <span>$</span>
+                  <p>{dollar}</p>
+                  <span>{cents}</span>
+                </div>
+              </div>
+            ) : (
+              <>
+                <span>$</span>
+                <p>{dollar}</p>
+                <span>{cents}</span>
+              </>
+            )}
           </div>
         </div>
         <div className={classes.bottomLinks}>

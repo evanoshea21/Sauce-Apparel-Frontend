@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import type { Categories, Product, ProductData } from "@/scripts/Types";
+import type { Product, ProductData } from "@/scripts/Types";
 import axios from "axios";
 import {
   isValidPrice,
@@ -163,15 +163,15 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
   // [TODO] -- set category tags color
   React.useEffect(() => {
     let category: string | null = product.product.category;
-    if (category === "Uncategorized") {
-      setCategoryColor("grey");
-    } else if (category === "Disposable") {
-      setCategoryColor("grey");
-    } else if (category === "Non-Disposable") {
-      setCategoryColor("grey");
-    } else if (category === "Vape") {
-      setCategoryColor("grey");
-    } else if (category === "Other Vapes") {
+    if (category === "Disposable") {
+      setCategoryColor("blue");
+    } else if (category === "60ml") {
+      setCategoryColor("purple");
+    } else if (category === "120ml") {
+      setCategoryColor("orange");
+    } else if (category === "Salt Nic") {
+      setCategoryColor("voilet");
+    } else if (category === "Other") {
       setCategoryColor("grey");
     } else {
       setCategoryColor("grey");

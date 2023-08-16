@@ -29,9 +29,7 @@ export default function Create({ formValues, setRefreshList }: CreateProps) {
   const [inventory, setInventory] = React.useState<number | null>(null);
   const [description, setDescription] = React.useState<string | null>(null);
   const [salesPrice, setSalesPrice] = React.useState<string | null>(null);
-  const [category, setCategory] = React.useState<string | null>(
-    "Uncategorized"
-  );
+  const [category, setCategory] = React.useState<string | null>("Other");
   const [isFeatured, setIsFeatured] = React.useState<boolean>(false);
   const [flavorsInvSalesPriceArr, setFlavorsInvSalesPriceArr] = React.useState<
     FlavorsInventoryObj[]
