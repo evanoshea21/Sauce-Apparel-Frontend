@@ -110,7 +110,7 @@ export default function Read() {
           alignItems: "center",
           justifyContent: "space-between",
           maxWidth: "800px",
-          margin: "50px auto 0 auto",
+          margin: "70px auto 50px auto",
           padding: "0 10px",
         }}
       >
