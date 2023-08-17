@@ -31,12 +31,11 @@ export default function Create({
   const [name, setName] = React.useState<string>("");
   const [unitPrice, setUnitPrice] = React.useState<string>("");
   const [imageUrl, setImageUrl] = React.useState<string>("");
-  const [inventory, setInventory] = React.useState<number | null>(null);
   const [description, setDescription] = React.useState<string | null>(null);
   const [salesPrice, setSalesPrice] = React.useState<string | null>(null);
   const [category, setCategory] = React.useState<string | null>("Other");
   const [isFeatured, setIsFeatured] = React.useState<boolean>(false);
-  const [flavorsInvSalesPriceArr, setFlavorsInvSalesPriceArr] = React.useState<
+  const [flavorsInvArr, setFlavorsInvArr] = React.useState<
     FlavorsInventoryObj[]
   >([]);
 
@@ -68,18 +67,13 @@ export default function Create({
       setIsLoadingAjax(false);
       return;
     }
-    if (inventory && !isPositiveInteger(inventory)) {
-      setErrorMessage("Inventory must be a positive integer");
-      setIsLoadingAjax(false);
-      return;
-    }
 
     // check for valid Flavor-Inventory Entries
-    console.log("flavors: \n", flavorsInvSalesPriceArr);
+    console.log("flavors: \n", flavorsInvArr);
     const validFlavorArr: FlavorsInventoryObj[] = [];
     const duplicateFlavors: { [key: string]: boolean } = {};
-    for (let i = 0; i < flavorsInvSalesPriceArr.length; i++) {
-      let item = flavorsInvSalesPriceArr[i];
+    for (let i = 0; i < flavorsInvArr.length; i++) {
+      let item = flavorsInvArr[i];
       if (!item) continue;
       //if only 1..
       if (
@@ -115,9 +109,8 @@ export default function Create({
       unitPrice,
       imageUrl,
       description,
-      inventory,
       salesPrice,
-      category: category ?? "Uncategorized",
+      category: category ?? "Other",
       isFeatured,
       Flavors_Inventory: validFlavorArr,
     };
@@ -139,7 +132,7 @@ export default function Create({
         console.log("Create Res: ", res.data);
         setRefreshList((prev) => !prev);
         setErrorMessage(undefined);
-        setFlavorsInvSalesPriceArr([]);
+        setFlavorsInvArr([]);
         setSuccessMessage("Successfully Added!");
         timeoutSuccess();
         setIsLoadingAjax(false);
@@ -169,6 +162,7 @@ export default function Create({
           maxWidth: "700px",
           marginLeft: "auto",
           marginRight: "auto",
+          padding: "10px",
         }}
       >
         <h1>Add New Product</h1>
@@ -191,7 +185,6 @@ export default function Create({
             setName={setName}
             setUnitPrice={setUnitPrice}
             setImageUrl={setImageUrl}
-            setInventory={setInventory}
             setDescription={setDescription}
             setSalesPrice={setSalesPrice}
             setCategory={setCategory}
@@ -212,15 +205,13 @@ export default function Create({
           <Button
             variant="contained"
             onClick={handleForms}
-            style={{ marginLeft: "20px" }}
+            style={{ margin: "20px 0 0 12px" }}
             disabled={isLoadingAjax}
           >
             {isLoadingAjax ? "Sending.." : "Submit Product"}
           </Button>
         </div>
-        <FlavorsInventoryForm
-          setFlavorsInvSalesPriceArr={setFlavorsInvSalesPriceArr}
-        />
+        <FlavorsInventoryForm setFlavorsInvArr={setFlavorsInvArr} />
       </div>
     </div>
   );

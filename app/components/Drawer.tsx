@@ -14,9 +14,11 @@ import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import MenuIcon from "@mui/icons-material/Menu";
 import classes from "@/styles/NavBar.module.css";
+import { useRouter } from "next/navigation";
 
 export default function TemporaryDrawer() {
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
+  const router = useRouter();
 
   const toggleDrawer =
     (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
@@ -33,26 +35,39 @@ export default function TemporaryDrawer() {
 
   const list = () => (
     <Box
-      sx={{ width: 250 }}
+      sx={{ width: 250, pt: 2 }}
       role="presentation"
       onClick={toggleDrawer(false)}
       onKeyDown={toggleDrawer(false)}
     >
       <List>
-        {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
+        {["Disposable", "Salt Nic", "60ml", "120ml"].map((text, index) => (
           <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
+            <ListItemButton sx={{ m: 0, p: 0 }}>
+              {/* <ListItemIcon>
                 {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
+              </ListItemIcon> */}
+              <ListItemText
+                onClick={() =>
+                  router.push(`/products/category/${text.split(" ").join("-")}`)
+                }
+                primary={text}
+                sx={{
+                  textAlign: "center",
+                  borderBottom: "1px solid rgba(152, 152, 152, 0.242)",
+                  pt: 2.2,
+                  pb: 2.2,
+                  boxSizing: "border-box",
+                  m: 0,
+                }}
+              />
             </ListItemButton>
           </ListItem>
         ))}
       </List>
-      <Divider />
+      {/* <Divider /> */}
       <List>
-        {["All mail", "Trash", "Spam"].map((text, index) => (
+        {[].map((text, index) => (
           <ListItem key={text} disablePadding>
             <ListItemButton>
               <ListItemIcon>

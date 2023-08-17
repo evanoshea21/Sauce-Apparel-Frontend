@@ -1,11 +1,10 @@
 "use client";
 import React from "react";
-import type { FlavorsInventoryObj } from "@/scripts/Types";
+import type { FlavorsInventoryObj, ProductData } from "@/scripts/Types";
 import classes from "@/styles/Admin.module.css";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import Checkbox from "@mui/material/Checkbox";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Tooltip from "@mui/material/Tooltip";
@@ -14,23 +13,12 @@ import HelpOutlineTwoToneIcon from "@mui/icons-material/HelpOutlineTwoTone";
 import { categoryArr as categoryNames } from "@/scripts/Types";
 
 interface ProductFormProps {
-  defaultValues?: {
-    name: string;
-    unitPrice: string;
-    imageUrl: string;
-
-    description: string | null;
-    inventory: number | null; //if no flavors
-    salesPrice: string | null; // if no flavors
-    category: string | null;
-    isFeatured?: boolean;
-  };
+  defaultValues?: ProductData;
   setName: React.Dispatch<React.SetStateAction<string>>;
   setUnitPrice: React.Dispatch<React.SetStateAction<string>>;
   setImageUrl: React.Dispatch<React.SetStateAction<string>>;
 
   setDescription: React.Dispatch<React.SetStateAction<string | null>>;
-  setInventory: React.Dispatch<React.SetStateAction<number | null>>;
   setSalesPrice: React.Dispatch<React.SetStateAction<string | null>>;
   setCategory: React.Dispatch<React.SetStateAction<string | null>>;
   setIsFeatured: React.Dispatch<React.SetStateAction<boolean>>;
@@ -143,29 +131,6 @@ export function ProductForm(props: ProductFormProps) {
         <div className={classes.optional}>
           {/* optional fields go here */}
           <h3>Optional Fields</h3>
-          <Tooltip title="For Products with no flavor options">
-            <label
-              htmlFor={`adminProductCreate_inventory-${
-                isCreateForm ? "create" : "update"
-              }`}
-            >
-              Inventory
-              <HelpOutlineTwoToneIcon style={{ fontSize: "1rem" }} />
-            </label>
-          </Tooltip>
-          <input
-            className={classes.invInput}
-            id={`adminProductCreate_inventory-${
-              isCreateForm ? "create" : "update"
-            }`}
-            placeholder="Inventory"
-            name="inventory"
-            type="number"
-            min="1"
-            step="1"
-            defaultValue={props.defaultValues?.inventory ?? ""}
-            onChange={(e) => props.setInventory(Number(e.target.value))}
-          />
 
           <div className={classes.unitPriceBox}>
             <label
@@ -219,12 +184,14 @@ export function ProductForm(props: ProductFormProps) {
             id={`adminProductCreate_category-${
               isCreateForm ? "create" : "update"
             }`}
-            defaultValue={props.defaultValues?.category ?? "Uncategorized"}
+            defaultValue={props.defaultValues?.category ?? "Other"}
             label="CategoryLabel"
             onChange={(e: any) => props.setCategory(e.target.value)}
           >
             {categoryNames.map((category) => (
-              <MenuItem value={category!}>{category}</MenuItem>
+              <MenuItem key={category} value={category!}>
+                {category}
+              </MenuItem>
             ))}
           </Select>
         </div>
@@ -235,9 +202,7 @@ export function ProductForm(props: ProductFormProps) {
 
 interface FlavorsInventoryProps {
   productId?: string;
-  setFlavorsInvSalesPriceArr: React.Dispatch<
-    React.SetStateAction<FlavorsInventoryObj[]>
-  >;
+  setFlavorsInvArr: React.Dispatch<React.SetStateAction<FlavorsInventoryObj[]>>;
 }
 
 export function FlavorsInventoryForm(props: FlavorsInventoryProps) {
@@ -251,19 +216,14 @@ export function FlavorsInventoryForm(props: FlavorsInventoryProps) {
     let inventoryElem: any = document.querySelector(
       `#inventory-${rowIndex}-${props.productId ?? "create"}`
     );
-    let salesPriceElem: any = document.querySelector(
-      `#salesPrice-${rowIndex}-${props.productId ?? "create"}`
-    );
 
     let obj = {
       flavor: flavorElem.value,
       inventory: Number(inventoryElem.value),
-      salesPrice:
-        salesPriceElem.value.length === 0 ? null : salesPriceElem.value,
-      productId: "",
+      productId: props.productId ?? "",
     };
 
-    props.setFlavorsInvSalesPriceArr((prev) => {
+    props.setFlavorsInvArr((prev) => {
       let arr = [...prev];
       arr[rowIndex] = obj;
       return arr;
@@ -273,7 +233,7 @@ export function FlavorsInventoryForm(props: FlavorsInventoryProps) {
   return (
     <div className={classes.main}>
       <form className={classes.flavorForm}>
-        <h3>Add Flavors & Inventories (optional)</h3>
+        <h3>Add Flavors & Inventories</h3>
         {Array.apply(null, Array(rowsCount)).map((_x, i: number) => {
           return (
             <div key={i} className={classes.inputRow}>
@@ -294,14 +254,14 @@ export function FlavorsInventoryForm(props: FlavorsInventoryProps) {
                 placeholder={`Inventory #${i + 1}`}
                 onChange={() => handleChange(i)}
               />
-              <input
+              {/* <input
                 className="flavorInventoryInput"
                 id={`salesPrice-${i}-${props.productId ?? "create"}`}
                 type="text"
                 name="salesPrice"
                 placeholder={`Sales Price #${i + 1}`}
                 onChange={() => handleChange(i)}
-              />
+              /> */}
             </div>
           );
         })}

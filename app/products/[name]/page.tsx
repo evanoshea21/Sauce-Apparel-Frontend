@@ -2,9 +2,10 @@
 import axios from "axios";
 import type { Product } from "@/scripts/Types";
 import ConfigAddToCart from "./ConfigAddToCart";
-import Navbar from "@/app/components/Navbar";
 import classes from "@/styles/DetailsPage.module.css";
 import { roundPrice } from "@/app/utils";
+
+export const revalidate = 1800;
 
 interface Props {
   params: any;

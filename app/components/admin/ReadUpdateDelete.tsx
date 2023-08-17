@@ -19,6 +19,8 @@ import EditTwoToneIcon from "@mui/icons-material/EditTwoTone";
 import FilterSearch from "./FilterSearch";
 import Create from "./Create";
 //Product (everything) vs ProductData (only the product's data)
+import AddIcon from "@mui/icons-material/Add";
+import ProductCard from "@/app/components/ProductCard";
 
 export default function Read() {
   const [update, setUpdate] = React.useState<boolean>(false);
@@ -35,8 +37,8 @@ export default function Read() {
         method: "POST",
         data: { method: "read", fullProduct: true },
       });
-      setProductsShown(productResponse.data.reverse());
-      setAllProducts(productResponse.data.reverse());
+      setProductsShown(productResponse.data);
+      setAllProducts(productResponse.data);
     })();
   }, [update, refreshList]);
 
@@ -108,13 +110,11 @@ export default function Read() {
           alignItems: "center",
           justifyContent: "space-between",
           maxWidth: "800px",
-          marginLeft: "auto",
-          marginRight: "auto",
+          margin: "50px auto 0 auto",
+          padding: "0 10px",
         }}
       >
-        <h1
-          style={{ marginLeft: "10px", marginTop: "50px", textAlign: "center" }}
-        >
+        <h1 style={{ marginLeft: "10px", margin: "0px", textAlign: "center" }}>
           Products & Inventory
         </h1>
         <div
@@ -125,16 +125,24 @@ export default function Read() {
             backgroundColor: "green",
             color: "white",
             cursor: "pointer",
+            textAlign: "center",
+            borderRadius: "4px",
+
+            display: "flex",
+            alignItems: "center",
+            gap: "4px",
           }}
         >
+          <AddIcon />
           Add Product
         </div>
       </div>
       <FilterSearch
         allProducts={allProducts}
         setProductsShown={setProductsShown}
+        setUpdate={setUpdate}
       />
-      <button onClick={() => setUpdate((prev) => !prev)}>Refresh</button>
+
       {productsShown.map((item, i) => (
         <ProductRow refreshRow={refreshRow} product={item} key={item.id ?? i} />
       ))}
@@ -167,9 +175,6 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
   const [name, setName] = React.useState<string>(product.name);
   const [unitPrice, setUnitPrice] = React.useState<string>(product.unitPrice);
   const [imageUrl, setImageUrl] = React.useState<string>(product.imageUrl);
-  const [inventory, setInventory] = React.useState<number | null>(
-    product.inventory
-  );
   const [description, setDescription] = React.useState<string | null>(
     product.description
   );
@@ -254,17 +259,11 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
       setIsLoadingAjax(false);
       return;
     }
-    if (inventory && !isPositiveInteger(inventory)) {
-      setErrorMessage("Inventory must be a positive integer");
-      setIsLoadingAjax(false);
-      return;
-    }
 
     const payload: ProductData = {
       name,
       unitPrice,
       imageUrl,
-      inventory,
       description,
       salesPrice,
       category,
@@ -395,55 +394,71 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
 
       {/* SHOW EDIT PRODUCT */}
       {display === "edit product" && (
-        <div style={{ margin: "0px 0 40px 0" }}>
-          <ProductForm
-            defaultValues={{
-              name: product.name,
-              unitPrice: product.unitPrice,
-              imageUrl: product.imageUrl,
+        <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+          <div style={{ margin: "0px 0 40px 0" }}>
+            <ProductForm
+              defaultValues={{
+                name: product.name,
+                unitPrice: product.unitPrice,
+                imageUrl: product.imageUrl,
 
-              description: product.description,
-              inventory: product.inventory, //if no flavors
-              salesPrice: product.salesPrice, // if no flavors
-              category: product.category,
-              isFeatured: product.isFeatured,
-            }}
-            setName={setName}
-            setUnitPrice={setUnitPrice}
-            setImageUrl={setImageUrl}
-            setInventory={setInventory}
-            setDescription={setDescription}
-            setSalesPrice={setSalesPrice}
-            setCategory={setCategory}
-            setIsFeatured={setIsFeatured}
-          />
-          {errorMessage && (
-            <p style={{ marginLeft: "30px", color: "red", maxWidth: "400px" }}>
-              Error: {errorMessage}
-            </p>
-          )}
-          {successMessage && (
-            <p style={{ marginLeft: "30px", color: "green" }}>
-              Success: {successMessage}
-            </p>
-          )}
-          <Button
-            variant="contained"
-            onClick={updateProduct}
-            className={classes.btn}
-            disabled={isLoadingAjax}
-          >
-            {isLoadingAjax ? "Sending.." : "UPDATE PRODUCT"}
-          </Button>
+                description: product.description,
+                salesPrice: product.salesPrice, // if no flavors
+                category: product.category,
+                isFeatured: product.isFeatured,
+              }}
+              setName={setName}
+              setUnitPrice={setUnitPrice}
+              setImageUrl={setImageUrl}
+              setDescription={setDescription}
+              setSalesPrice={setSalesPrice}
+              setCategory={setCategory}
+              setIsFeatured={setIsFeatured}
+            />
+            {errorMessage && (
+              <p
+                style={{ marginLeft: "30px", color: "red", maxWidth: "400px" }}
+              >
+                Error: {errorMessage}
+              </p>
+            )}
+            {successMessage && (
+              <p style={{ marginLeft: "30px", color: "green" }}>
+                Success: {successMessage}
+              </p>
+            )}
+            <Button
+              variant="contained"
+              onClick={updateProduct}
+              className={classes.btn}
+              disabled={isLoadingAjax}
+            >
+              {isLoadingAjax ? "Sending.." : "UPDATE PRODUCT"}
+            </Button>
 
-          <Button
-            variant="outlined"
-            onClick={deleteEntireProduct}
-            className={classes.btnDelete}
-            disabled={isLoadingAjax}
-          >
-            {isLoadingAjax ? "Sending.." : "Delete ENTIRE Product"}
-          </Button>
+            <Button
+              variant="outlined"
+              onClick={deleteEntireProduct}
+              className={classes.btnDelete}
+              disabled={isLoadingAjax}
+            >
+              {isLoadingAjax ? "Sending.." : "Delete ENTIRE Product"}
+            </Button>
+          </div>
+          <div className={classes.sampleView}>
+            <div style={{ textAlign: "center" }}>Sample View:</div>
+            <ProductCard
+              product={{
+                name,
+                unitPrice,
+                description,
+                imageUrl,
+                salesPrice,
+                category,
+              }}
+              isSample={true}
+            />
+          </div>
         </div>
       )}
       {/* SHOW CONFIG FLAVORS */}
@@ -482,7 +497,7 @@ function FlavorsCrud({
   const [stockResponse, setStockResponse] = React.useState<
     string | undefined
   >();
-  const [flavorsInvSalesPriceArr, setFlavorsInvSalesPriceArr] = React.useState<
+  const [flavorsInvArr, setFlavorsInvArr] = React.useState<
     FlavorsInventoryObj[]
   >([]);
   const [isLoadingAjax, setIsLoadingAjax] = React.useState(false);
@@ -493,8 +508,8 @@ function FlavorsCrud({
     // check for valid Flavor-Inventory Entries
     const validFlavorArr: FlavorsInventoryObj[] = [];
     const duplicateFlavors: { [key: string]: boolean } = {};
-    for (let i = 0; i < flavorsInvSalesPriceArr.length; i++) {
-      let item = flavorsInvSalesPriceArr[i];
+    for (let i = 0; i < flavorsInvArr.length; i++) {
+      let item = flavorsInvArr[i];
       if (!item) continue;
       //if only 1..
       if (
@@ -525,7 +540,7 @@ function FlavorsCrud({
       validFlavorArr.push(item);
     }
 
-    console.log("Payload add FlavorsInv: \n", flavorsInvSalesPriceArr);
+    console.log("Payload add FlavorsInv: \n", flavorsInvArr);
 
     const payload = validFlavorArr;
     payload.forEach((row) => {
@@ -546,7 +561,7 @@ function FlavorsCrud({
 
         console.log("added flavor: ", res);
         refreshRow(false, productData.id || "");
-        setFlavorsInvSalesPriceArr([]);
+        setFlavorsInvArr([]);
         setIsLoadingAjax(false);
         setErrorMessage(undefined);
       })
@@ -689,7 +704,7 @@ function FlavorsCrud({
       <div className={classes.addFlavorForm}>
         <FlavorsInventoryForm
           productId={productData.id}
-          setFlavorsInvSalesPriceArr={setFlavorsInvSalesPriceArr}
+          setFlavorsInvArr={setFlavorsInvArr}
         />
         {errorMessage && (
           <p style={{ marginLeft: "30px", color: "red", maxWidth: "400px" }}>

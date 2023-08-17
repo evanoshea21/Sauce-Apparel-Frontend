@@ -12,6 +12,7 @@ import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import { flavorsHasLowInventory } from "@/app/utils";
 
 import { categoryArr as categoryNames } from "@/scripts/Types";
@@ -29,9 +30,14 @@ const MenuProps = {
 interface Props {
   allProducts: Product[];
   setProductsShown: React.Dispatch<React.SetStateAction<Product[]>>;
+  setUpdate: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function FilterSearch({ allProducts, setProductsShown }: Props) {
+export default function FilterSearch({
+  allProducts,
+  setProductsShown,
+  setUpdate,
+}: Props) {
   const [searchTerm, setSearchTerm] = React.useState<string>("");
   const [featured, setFeatured] = React.useState<boolean>(false);
   const [onSale, setOnSale] = React.useState<boolean>(false);
@@ -114,6 +120,7 @@ export default function FilterSearch({ allProducts, setProductsShown }: Props) {
 
   return (
     <div className={classes.main}>
+      <p className={classes.filterTitle}>Filter Search</p>
       <div className={classes.filters}>
         <input
           className={classes.searchBar}
@@ -122,29 +129,8 @@ export default function FilterSearch({ allProducts, setProductsShown }: Props) {
           placeholder="Search by Name"
           onChange={handleSearchBar}
         />
-        <FormGroup>
-          <FormControlLabel
-            control={
-              <Checkbox checked={featured ?? false} onChange={handleFeatured} />
-            }
-            label="Is Featured"
-          />
-          <FormControlLabel
-            control={
-              <Checkbox checked={onSale ?? false} onChange={handleOnSale} />
-            }
-            label="On Sale"
-          />
-          <FormControlLabel
-            control={
-              <Checkbox checked={lowInv ?? false} onChange={handleLowInv} />
-            }
-            label="Low Inventory"
-          />
-        </FormGroup>
 
-        {/* <FormControl sx={{ m: 1, p: 4, width: 300 }}> */}
-        <div>
+        <div className={classes.categoryFilter}>
           <InputLabel id="demo-multiple-chip-label">
             Categories to filter
           </InputLabel>
@@ -176,11 +162,38 @@ export default function FilterSearch({ allProducts, setProductsShown }: Props) {
           </Select>
         </div>
 
+        <FormGroup className={classes.checks}>
+          <FormControlLabel
+            control={
+              <Checkbox checked={featured ?? false} onChange={handleFeatured} />
+            }
+            label="Is Featured"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox checked={onSale ?? false} onChange={handleOnSale} />
+            }
+            label="On Sale"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox checked={lowInv ?? false} onChange={handleLowInv} />
+            }
+            label="Low Inventory"
+          />
+        </FormGroup>
+
         {/* </FormControl> */}
       </div>
-      <Button onClick={resetFilters} variant="contained">
-        Reset Filters
-      </Button>
+      <div className={classes.filterBtns}>
+        <Button onClick={() => setUpdate((prev) => !prev)} variant="contained">
+          <RefreshIcon />
+          <span style={{ marginLeft: "4px" }}>Refresh List</span>
+        </Button>
+        <Button onClick={resetFilters} variant="outlined" sx={{ ml: 1 }}>
+          Reset Filters
+        </Button>
+      </div>
     </div>
   );
 }

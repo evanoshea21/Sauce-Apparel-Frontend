@@ -1,21 +1,16 @@
-import { ProductData } from "@/scripts/Types";
+import { ProductData, Product } from "@/scripts/Types";
 import classes from "@/styles/ProductDisplay.module.css";
 import axios from "axios";
 import ProductCard from "./ProductCard";
 
-export default async function ProductSlider() {
-  const productsRes = await axios({
-    url: "http://localhost:3000/api/products",
-    method: "POST",
-    data: {
-      method: "read",
-    },
-  });
-  const products: ProductData[] = productsRes.data;
+interface Props {
+  products: Product[] | ProductData[];
+}
 
+export default async function ProductSlider({ products }: Props) {
   return (
     <div className={classes.sliderMain}>
-      <h1>Vapes For You!</h1>
+      {/* <h1>Vapes For You!</h1> */}
       <div className={classes.boxForFade}>
         <div className={classes.sliderDisplay}>
           {products.map((product) => {

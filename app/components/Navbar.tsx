@@ -34,13 +34,16 @@ export default function Navbar() {
         </Link>
         <ul className={classes.links}>
           <li>
-            <Link href="/">Categories</Link>
+            <Link href="/products/category/Disposable">Disposable</Link>
           </li>
           <li>
-            <Link href="/">Deals</Link>
+            <Link href="/products/category/Salt-Nic">Salt Nic</Link>
           </li>
           <li>
-            <Link href="/">What's New</Link>
+            <Link href="/products/category/60ml">60ml</Link>
+          </li>
+          <li>
+            <Link href="/products/category/120ml">120ml</Link>
           </li>
         </ul>
         <div className={classes.rightBtns}>

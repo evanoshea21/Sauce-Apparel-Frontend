@@ -5,9 +5,10 @@ import { SaveBtn } from "./ClientElements";
 
 interface Props {
   product: ProductData;
+  isSample?: boolean;
 }
 
-export default function ProductCard({ product }: Props) {
+export default function ProductCard({ product, isSample }: Props) {
   let name: string;
   let fontSize: string;
   const nameL: number = product.name.length;
@@ -85,12 +86,16 @@ export default function ProductCard({ product }: Props) {
             )}
           </div>
         </div>
-        <div className={classes.bottomLinks}>
-          <Link href={`/products/${product.name.split(" ").join("-")}`}>
-            <div className={classes.addToCartBtn}>Add to Cart</div>
-          </Link>
-          <SaveBtn product={{ name: product.name, img: product.imageUrl }} />
-        </div>
+        {isSample === true ? (
+          <></>
+        ) : (
+          <div className={classes.bottomLinks}>
+            <Link href={`/products/${product.name.split(" ").join("-")}`}>
+              <div className={classes.addToCartBtn}>Add to Cart</div>
+            </Link>
+            <SaveBtn product={{ name: product.name, img: product.imageUrl }} />
+          </div>
+        )}
       </div>
     </div>
   );

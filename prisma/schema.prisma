@@ -104,9 +104,8 @@ model Products {
   id        String @id @default(cuid())
   name      String @unique
   unitPrice String
-  imageUrl  String
+  imageUrl  String @db.VarChar(500)
 
-  inventory         Int? // for if no flavors
   description       String?
   salesPrice        String?
   category          String?
@@ -118,11 +117,10 @@ model Products {
 }
 
 model Flavors_Inventory {
-  sku        String  @id @default(cuid())
-  flavor     String
-  inventory  Int
-  productId  String
-  salesPrice String?
+  sku       String @id @default(cuid())
+  flavor    String
+  inventory Int
+  productId String
 
   product Products @relation(fields: [productId], references: [id], onDelete: Cascade)
 

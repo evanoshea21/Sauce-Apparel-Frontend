@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
   // READ
   if (reqBody.method === "read") {
     // if don't need to exclude, nor full product
-    if (!!reqBody.excludeOutOfStock && !!reqBody.fullProduct) {
+    if (!reqBody.excludeOutOfStock && !reqBody.fullProduct) {
       const productResponse = await prisma.products.findMany({
         where: {
           id: reqBody.id,
