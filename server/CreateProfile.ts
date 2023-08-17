@@ -51,7 +51,7 @@ function createCustomerProfile(data: CreateProfileData, callback: any) {
   customerAddress.setCity(data.billTo.city);
   customerAddress.setState(data.billTo.state);
   customerAddress.setZip(data.billTo.zip_code);
-  customerAddress.setCountry(data.billTo.country);
+  customerAddress.setCountry("US");
   customerAddress.setPhoneNumber(data.billTo.phone);
 
   var customerPaymentProfileType =

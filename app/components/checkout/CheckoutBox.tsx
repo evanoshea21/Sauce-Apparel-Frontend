@@ -2,8 +2,14 @@
 import React from "react";
 import axios from "axios";
 import classes from "@/styles/CheckoutBox.module.css";
-import type { CartItem, Order, PurchasedItem } from "@/scripts/Types";
+import type {
+  CartItem,
+  Order,
+  PurchasedItem,
+  ChargeCardData,
+} from "@/scripts/Types";
 import type { Screens } from "./index";
+import type { GuestPayment } from "./paymentComponents/GuestCard";
 import {
   clearCartItems,
   getCartItems,
@@ -18,22 +24,6 @@ import { Context } from "@/app/Context";
 
 const TAX_PERCENT = Number(process.env.NEXT_PUBLIC_STATE_TAX_AS_DECIMAL);
 
-/*
-Sole purpose:
-- Gather customerId, paymentId, and cartItems, AND SEND PAYLOAD to api '/chargeprofile'
-- show response to customer, redirect to thank you page
-
-Proper flow of purchase:
-- First Check items are in stock, and hold them (decrement items in cart) if they are -- same time on same route
-- Then hit Transaction (ChargeCustomer)
-  - Success:
-    - re-route to thank you
-    - use response to add to ORDER table AND cartItems to PurchasedItems
-  - Error:
-    - re-route to error
-    - UNDO items HOLD (increment all items in cart)
-
-*/
 export interface InvIssues {
   sku: string;
   availableInv: number;
@@ -42,6 +32,7 @@ export interface InvIssues {
 interface Props {
   customerProfileId: string;
   payment: Payment | undefined;
+  guestPayment: GuestPayment | undefined;
   refreshCart: boolean;
   setInvIssues: React.Dispatch<React.SetStateAction<InvIssues[] | undefined>>;
   setScreen: React.Dispatch<React.SetStateAction<Screens>>;
@@ -60,6 +51,7 @@ interface ChargeProfileDataToSend {
 export default function CheckoutBtn({
   customerProfileId,
   payment,
+  guestPayment,
   refreshCart,
   setInvIssues,
   setScreen,
@@ -75,6 +67,7 @@ export default function CheckoutBtn({
   const [subtotal, setSubtotal] = React.useState<string>("0.00");
   const [tax, setTax] = React.useState<string>("0.00");
   const [count, setCount] = React.useState<string>("");
+  const [refreshBtn, setRefreshBtn] = React.useState<boolean>(true);
   const [buttonProps, setButtonProps] = React.useState<{
     text: string;
     color: string;
@@ -86,30 +79,33 @@ export default function CheckoutBtn({
   });
 
   React.useEffect(() => {
-    if (customerProfileId.length === 0 || !payment) {
-      setButtonProps({
-        text: "Add Payment",
-        color: "grey",
-        cursor: "not-allowed",
-      });
-    } else if (payment) {
+    if ((customerProfileId.length !== 0 && payment) || guestPayment) {
+      if (customerProfileId.length !== 0) {
+        console.log("CustomerprofileId: ", customerProfileId);
+        console.log("Payment: ", payment);
+      } else {
+        console.log("Guest Payment: ", guestPayment);
+      }
       setButtonProps({
         text: "Order for Pickup",
         color: "green",
         cursor: "pointer",
       });
+    } else {
+      setButtonProps({
+        text: "Add Payment",
+        color: "grey",
+        cursor: "not-allowed",
+      });
     }
-  }, [customerProfileId, payment]);
+  }, [customerProfileId, payment, guestPayment, refreshBtn]);
 
   React.useEffect(() => {
     const { sum, count } = getCartSumAndCount();
     setSubtotal(roundPrice(sum));
     setCount(String(count));
-    setButtonProps({
-      color: "green",
-      text: "Order for Pickup",
-      cursor: "pointer",
-    });
+    // refresh cart... check btn again
+    setRefreshBtn((prev) => !prev);
   }, [refreshCart]);
   React.useEffect(() => {
     if (subtotal) {

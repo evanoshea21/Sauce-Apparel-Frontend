@@ -39,20 +39,36 @@ export default function SignIn({ setDisplayState, setDisplayHome }: Props) {
   } else {
     // SHOW LOGIN STUFF
     return (
-      <div className={classes.signinMain}>
-        {setDisplayState ? (
-          <h2>Log in to Complete Purchase</h2>
-        ) : (
-          <h2 style={{ margin: "20px", textAlign: "center" }}>
-            Log in to Profile
-          </h2>
+      <>
+        <div className={classes.signinMain}>
+          {setDisplayState ? (
+            <h2>Log in to Complete Purchase</h2>
+          ) : (
+            <h2 style={{ margin: "20px", textAlign: "center" }}>
+              Log in to Profile
+            </h2>
+          )}
+          <button className={classes.githubBtn} onClick={Login}>
+            GITHUB
+          </button>
+          <button className={classes.googleBtn}>GOOGLE (non-op rn)</button>
+          <button className={classes.facebookBtn}>FACEBOOK (non-op rn)</button>
+        </div>
+        {setDisplayState && (
+          <div className={classes.guestCheckout}>
+            <div className={classes.divider}>
+              <span>or</span>
+            </div>
+            <h2>Guest Checkout</h2>
+            <button
+              onClick={() => setDisplayState("guestCard")}
+              className={classes.guestBtn}
+            >
+              Guest Checkout
+            </button>
+          </div>
         )}
-        <button className={classes.githubBtn} onClick={Login}>
-          GITHUB
-        </button>
-        <button className={classes.googleBtn}>GOOGLE (non-op rn)</button>
-        <button className={classes.facebookBtn}>FACEBOOK (non-op rn)</button>
-      </div>
+      </>
     );
   }
 }

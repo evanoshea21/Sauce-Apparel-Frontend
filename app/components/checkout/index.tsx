@@ -9,6 +9,7 @@ import type { InvIssues } from "./CheckoutBox";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import type { GuestPayment } from "./paymentComponents/GuestCard";
 
 export interface Payment {
   paymentProfileId: string;
@@ -27,6 +28,9 @@ export default function CheckoutPage() {
   const { data: session, status } = useSession();
   const [customerProfileId, setCustomerProfileId] = React.useState<string>("");
   const [payment, setPayment] = React.useState<Payment | undefined>();
+  const [guestPayment, setGuestPayment] = React.useState<
+    GuestPayment | undefined
+  >();
   const [refreshCart, setRefreshCart] = React.useState<boolean>(false);
   const [invIssues, setInvIssues] = React.useState<InvIssues[] | undefined>();
   const [cartIsDefined, setCartIsDefined] = React.useState<boolean>(false);
@@ -46,6 +50,19 @@ export default function CheckoutPage() {
       data: obj,
     })
       .then((res) => console.log("Refund Res: ", res.data))
+      .catch((e) => console.error("Error refunding: ", e));
+  }
+
+  function chargeCard() {
+    const payload = {
+      cardNumber: "4242424242242",
+    };
+    axios({
+      url: "http://localhost:1400/chargeCard",
+      method: "POST",
+      data: payload,
+    })
+      .then((res) => console.log("ChargeCard Res: ", res.data))
       .catch((e) => console.error("Error refunding: ", e));
   }
 
@@ -100,6 +117,7 @@ export default function CheckoutPage() {
             customerProfileId={customerProfileId}
             setCustomerProfileId={setCustomerProfileId}
             setPayment={setPayment}
+            setGuestPayment={setGuestPayment}
           />
           <div className={classes.gap}></div>
         </div>
@@ -117,13 +135,14 @@ export default function CheckoutPage() {
             refreshCart={refreshCart}
             customerProfileId={customerProfileId}
             payment={payment}
+            guestPayment={guestPayment}
             setInvIssues={setInvIssues}
             setScreen={setScreen}
           />
         </div>
       </div>
       <button onClick={() => signOut()}>Log out</button>
-      <button onClick={refundProfile}>Refund Profile Hard-coded</button>
+      <button onClick={chargeCard}>ChargeCard Hard-coded</button>
     </>
   );
 }

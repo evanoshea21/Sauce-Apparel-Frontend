@@ -102,3 +102,34 @@ export interface AddCardData {
   expDate: string;
   billTo: Address;
 }
+
+// GUEST CHECKOUT
+interface CartItem2 {
+  sku: string;
+  name: string;
+  description: string;
+  quantity: string;
+  unitPrice: number;
+}
+interface Address2 {
+  firstName: string;
+  lastName: string;
+  address: string;
+  city: string;
+  state: string;
+  zip: string;
+  country: string;
+}
+
+export interface ChargeCardData {
+  creditCard: {
+    cardNumber: string;
+    expDate: string;
+    cvv: string;
+  };
+  invoiceNum: string;
+  description: string;
+  amount: string;
+  billTo: Address2;
+  ordered_items: CartItem2[];
+}

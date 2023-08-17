@@ -11,9 +11,39 @@ const createProfile = require("./CreateProfile");
 const getProfile = require("./GetProfile");
 const addCard = require("./AddCard");
 const chargeProfile = require("./ChargeProfile");
+const chargeCard = require("./ChargeCard");
 const refundProfile = require("./RefundProfile");
 const deleteProfile = require("./DeleteProfile");
 const getPaymentProfile = require("./GetPaymentProfile");
+
+interface CartItem {
+  sku: string;
+  name: string;
+  description: string;
+  quantity: string;
+  unitPrice: number;
+}
+interface Address1 {
+  firstName: string;
+  lastName: string;
+  address: string;
+  city: string;
+  state: string;
+  zip: string;
+  country: string;
+}
+interface ChargeCardData {
+  creditCard: {
+    cardNumber: string;
+    expDate: string;
+    cvv: string;
+  };
+  invoiceNum: string;
+  description: string;
+  amount: string;
+  billTo: Address1;
+  ordered_items: CartItem[];
+}
 
 const app = express(); // init express server
 
@@ -71,6 +101,60 @@ app.post("/getprofile", (req: any, res: any) => {
 app.post("/chargeProfile", (req: any, res: any) => {
   // charge customer profile
   chargeProfile(req.body, function (response: any) {
+    if (response.messages.resultCode === "Error") {
+      res.status(500).send(response);
+    } else {
+      res.send(response);
+    }
+  });
+});
+app.post("/chargeCard", (req: any, res: any) => {
+  const data = req.body;
+  console.log("Payload /chargeCard: \n", data);
+  const data2: ChargeCardData = {
+    creditCard: {
+      cardNumber: "4916049242579854",
+      expDate: "2028-06",
+      cvv: "827",
+    },
+    invoiceNum: "test-Chard-Card",
+    description: "charge card description",
+    amount: "200.00",
+    billTo: {
+      firstName: "Billy",
+      lastName: "Mohobe",
+      address: "1 big street",
+      city: "everett",
+      state: "WA",
+      zip: "98208",
+      country: "USA",
+    },
+    ordered_items: [
+      {
+        sku: "10",
+        name: "Vape1",
+        description: "my vape 1",
+        quantity: "1",
+        unitPrice: 14.0,
+      },
+      {
+        sku: "11",
+        name: "Vape2",
+        description: "my vape 2",
+        quantity: "2",
+        unitPrice: 23.0,
+      },
+      {
+        sku: "13",
+        name: "Vape3",
+        description: "my vape 3",
+        quantity: "3",
+        unitPrice: 33.0,
+      },
+    ],
+  };
+  // charge customer card (GUEST CHECKOUT)
+  chargeCard(data, function (response: any) {
     if (response.messages.resultCode === "Error") {
       res.status(500).send(response);
     } else {

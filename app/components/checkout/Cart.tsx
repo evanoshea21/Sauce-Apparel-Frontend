@@ -53,11 +53,17 @@ export default function Cart({
   }, [cartItems]);
 
   function removeFromCart(sku: string) {
+    // first remove the quantity
+    setQuantities((prev) => {
+      let obj = { ...prev };
+      delete obj[sku];
+      return obj;
+    });
     // filter out the itemId
     const newCartItems = cartItems.filter((item: CartItem) => item.sku !== sku);
-    setCartItems(newCartItems);
     // set new
     localStorage.setItem("cart_items", JSON.stringify(newCartItems));
+    setCartItems(newCartItems);
     refreshCart();
     setRefreshCart((prev) => !prev);
   }
@@ -71,6 +77,7 @@ export default function Cart({
       return newQs;
     });
     changeQuantityCart(sku, newQ);
+    setCartItems(getCartItems());
     setRefreshCart((prev) => !prev);
   }
 

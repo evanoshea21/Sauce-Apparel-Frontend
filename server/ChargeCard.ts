@@ -1,5 +1,11 @@
 "use strict";
 
+var ApiContracts = require("authorizenet").APIContracts;
+var ApiControllers = require("authorizenet").APIControllers;
+var SDKConstants = require("authorizenet").Constants;
+// var utils = require('../utils.js');
+// var constants = require('../constants.js');
+
 interface CartItem {
   sku: string;
   name: string;
@@ -7,37 +13,30 @@ interface CartItem {
   quantity: string;
   unitPrice: number;
 }
-// interface Address {
-//   firstName: string;
-//   lastName: string;
-//   address: string;
-//   city: string;
-//   state: string;
-//   zip: string;
-//   country: string;
-// }
-interface ChargeProfileData {
-  customerProfileId: string;
-  customerPaymentProfileId: string;
-  order: {
-    invoiceNumber: string; // INV-??
-    description?: string; // online order
-  };
-  ordered_items: CartItem[];
-  // shipTo?: Address;
-  amountToCharge: number;
+interface Address1 {
+  firstName: string;
+  lastName: string;
+  address: string;
+  city: string;
+  state: string;
+  zip: string;
+  country: string;
 }
 
-var ApiContracts = require("authorizenet").APIContracts;
-var ApiControllers = require("authorizenet").APIControllers;
-var utils = require("../scripts/utils.js");
-// var constants = require('../constants.js');
-require("dotenv").config();
+interface ChargeCardData {
+  creditCard: {
+    cardNumber: string;
+    expDate: string;
+    cvv: string;
+  };
+  invoiceNum: string;
+  description: string;
+  amount: string;
+  billTo: Address1;
+  ordered_items: CartItem[];
+}
 
-function chargeCustomerProfile(
-  data: ChargeProfileData,
-  callback: (res: {}) => {}
-) {
+function chargeCreditCard(data: ChargeCardData, callback: (res: any) => any) {
   var merchantAuthenticationType =
     new ApiContracts.MerchantAuthenticationType();
   merchantAuthenticationType.setName(process.env.AUTHORIZENET_API_LOGIN_ID);
@@ -45,18 +44,53 @@ function chargeCustomerProfile(
     process.env.AUTHORIZENET_TRANSACTION_KEY
   );
 
-  var profileToCharge = new ApiContracts.CustomerProfilePaymentType();
-  profileToCharge.setCustomerProfileId(data.customerProfileId);
+  var creditCard = new ApiContracts.CreditCardType();
+  creditCard.setCardNumber(data.creditCard.cardNumber);
+  creditCard.setExpirationDate(data.creditCard.expDate);
+  creditCard.setCardCode(data.creditCard.cvv);
 
-  var paymentProfile = new ApiContracts.PaymentProfile();
-  paymentProfile.setPaymentProfileId(data.customerPaymentProfileId);
-  profileToCharge.setPaymentProfile(paymentProfile);
+  var paymentType = new ApiContracts.PaymentType();
+  paymentType.setCreditCard(creditCard);
 
   var orderDetails = new ApiContracts.OrderType();
-  orderDetails.setInvoiceNumber(data.order.invoiceNumber);
-  orderDetails.setDescription(data.order.description);
+  orderDetails.setInvoiceNumber(data.invoiceNum);
+  orderDetails.setDescription(data.description);
 
-  // for loop through all items
+  // var tax = new ApiContracts.ExtendedAmountType();
+  // tax.setAmount("4.26");
+  // tax.setName("level2 tax name");
+  // tax.setDescription("level2 tax");
+
+  // var duty = new ApiContracts.ExtendedAmountType();
+  // duty.setAmount("8.55");
+  // duty.setName("duty name");
+  // duty.setDescription("duty description");
+
+  // var shipping = new ApiContracts.ExtendedAmountType();
+  // shipping.setAmount("8.55");
+  // shipping.setName("shipping name");
+  // shipping.setDescription("shipping description");
+
+  var billTo = new ApiContracts.CustomerAddressType();
+  billTo.setFirstName(data.billTo.firstName);
+  billTo.setLastName(data.billTo.lastName);
+  // billTo.setCompany(data.billTo);
+  billTo.setAddress(data.billTo.address);
+  billTo.setCity(data.billTo.city);
+  billTo.setState(data.billTo.state);
+  billTo.setZip(data.billTo.zip);
+  billTo.setCountry("US");
+
+  // var shipTo = new ApiContracts.CustomerAddressType();
+  // shipTo.setFirstName("China");
+  // shipTo.setLastName("Bayles");
+  // shipTo.setCompany("Thyme for Tea");
+  // shipTo.setAddress("12 Main Street");
+  // shipTo.setCity("Pecan Springs");
+  // shipTo.setState("TX");
+  // shipTo.setZip("44628");
+  // shipTo.setCountry("USA");
+
   var lineItemList: any[] = [];
   data.ordered_items.forEach((item) => {
     var lineItem = new ApiContracts.LineItemType();
@@ -90,26 +124,51 @@ function chargeCustomerProfile(
   var lineItems = new ApiContracts.ArrayOfLineItem();
   lineItems.setLineItem(lineItemList);
 
-  // var shipTo = new ApiContracts.CustomerAddressType();
-  // shipTo.setFirstName("China");
-  // shipTo.setLastName("Bayles");
-  // shipTo.setCompany("Thyme for Tea");
-  // shipTo.setAddress("12 Main Street");
-  // shipTo.setCity("Pecan Springs");
-  // shipTo.setState("TX");
-  // shipTo.setZip("44628");
-  // shipTo.setCountry("USA");
+  // var userField_a = new ApiContracts.UserField();
+  // userField_a.setName("A");
+  // userField_a.setValue("Aval");
+
+  // var userField_b = new ApiContracts.UserField();
+  // userField_b.setName("B");
+  // userField_b.setValue("Bval");
+
+  // var userFieldList = [];
+  // userFieldList.push(userField_a);
+  // userFieldList.push(userField_b);
+
+  // var userFields = new ApiContracts.TransactionRequestType.UserFields();
+  // userFields.setUserField(userFieldList);
+
+  // var transactionSetting1 = new ApiContracts.SettingType();
+  // transactionSetting1.setSettingName("duplicateWindow");
+  // transactionSetting1.setSettingValue("120");
+
+  // var transactionSetting2 = new ApiContracts.SettingType();
+  // transactionSetting2.setSettingName("recurringBilling");
+  // transactionSetting2.setSettingValue("false");
+
+  // var transactionSettingList = [];
+  // transactionSettingList.push(transactionSetting1);
+  // transactionSettingList.push(transactionSetting2);
+
+  // var transactionSettings = new ApiContracts.ArrayOfSetting();
+  // transactionSettings.setSetting(transactionSettingList);
 
   var transactionRequestType = new ApiContracts.TransactionRequestType();
   transactionRequestType.setTransactionType(
     ApiContracts.TransactionTypeEnum.AUTHCAPTURETRANSACTION
   );
-  transactionRequestType.setProfile(profileToCharge);
-  // transactionRequestType.setAmount(utils.getRandomAmount());
-  transactionRequestType.setAmount(data.amountToCharge);
+  transactionRequestType.setPayment(paymentType);
+  transactionRequestType.setAmount(data.amount); //IMPORTANT
   transactionRequestType.setLineItems(lineItems);
+  // transactionRequestType.setUserFields(userFields);
   transactionRequestType.setOrder(orderDetails);
+  // transactionRequestType.setTax(tax);
+  // transactionRequestType.setDuty(duty);
+  // transactionRequestType.setShipping(shipping);
+  transactionRequestType.setBillTo(billTo);
   // transactionRequestType.setShipTo(shipTo);
+  // transactionRequestType.setTransactionSettings(transactionSettings);
 
   var createRequest = new ApiContracts.CreateTransactionRequest();
   createRequest.setMerchantAuthentication(merchantAuthenticationType);
@@ -121,6 +180,8 @@ function chargeCustomerProfile(
   var ctrl = new ApiControllers.CreateTransactionController(
     createRequest.getJSON()
   );
+  //Defaults to sandbox
+  //ctrl.setEnvironment(SDKConstants.endpoint.production);
 
   ctrl.execute(function () {
     var apiResponse = ctrl.getResponse();
@@ -220,10 +281,4 @@ function chargeCustomerProfile(
   });
 }
 
-// if (require.main === module) {
-// 	chargeCustomerProfile('111111', '222222', function(){
-// 		console.log('chargeCustomerProfile call complete.');
-// 	});
-// }
-
-module.exports = chargeCustomerProfile;
+module.exports = chargeCreditCard;

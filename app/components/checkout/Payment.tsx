@@ -8,11 +8,15 @@ import { useSession } from "next-auth/react";
 import AddCardProfile from "./paymentComponents/AddCardProfile";
 import ChooseCard from "./paymentComponents/ChooseCard";
 import SignIn from "./paymentComponents/SignIn";
+import GuestCard, { GuestPayment } from "./paymentComponents/GuestCard";
 import type { Payment } from "./index";
 import Button from "@mui/material/Button";
 
 interface Props {
   setPayment: React.Dispatch<React.SetStateAction<Payment | undefined>>;
+  setGuestPayment: React.Dispatch<
+    React.SetStateAction<GuestPayment | undefined>
+  >;
   setCustomerProfileId: React.Dispatch<React.SetStateAction<string>>;
   customerProfileId: string;
 }
@@ -23,10 +27,12 @@ export type DisplayStates =
   | "invalidCard" // error
   | "networkError" // error
   | "chooseCard" // CHOOSE CARD-add card option inside
-  | "addCard"; // ADD CARD
+  | "addCard" // ADD CARD
+  | "guestCard"; // Guest Checkout
 
 export default function Payment({
   setPayment,
+  setGuestPayment,
   customerProfileId,
   setCustomerProfileId,
 }: Props) {
@@ -201,6 +207,16 @@ export default function Payment({
     return (
       <div className={classes.main}>
         <SignIn setDisplayState={setDisplayState} />
+      </div>
+    );
+  }
+  if (displayState === "guestCard") {
+    return (
+      <div className={classes.main}>
+        <GuestCard
+          setDisplayState={setDisplayState}
+          setGuestPayment={setGuestPayment}
+        />
       </div>
     );
   }
