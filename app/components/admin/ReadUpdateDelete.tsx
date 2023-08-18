@@ -31,6 +31,8 @@ export default function Read() {
 
   // get ALL products
   React.useEffect(() => {
+    setProductsShown([]);
+    setAllProducts([]);
     (async function () {
       let productResponse = await axios({
         url: "/api/products",

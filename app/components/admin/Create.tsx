@@ -80,7 +80,9 @@ export default function Create({
         (item.flavor && !item.inventory) ||
         (!item.flavor && item.inventory)
       ) {
-        setErrorMessage("Every flavor must have a corresponding inventory.");
+        setErrorMessage(
+          "Every flavor must have a corresponding inventory (that is > 0)."
+        );
         setIsLoadingAjax(false);
         return;
       }
