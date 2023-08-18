@@ -126,9 +126,9 @@ export default function ChooseCard({
       </div>
 
       {/* FOR TESTING (DELETE PROFILE) */}
-      {customerProfile && (
+      {/* {customerProfile && (
         <button onClick={deleteProfile}>DELETE PROFILE</button>
-      )}
+      )} */}
     </div>
   );
 }

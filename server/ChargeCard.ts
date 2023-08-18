@@ -11,7 +11,7 @@ interface CartItem {
   name: string;
   description: string;
   quantity: string;
-  unitPrice: number;
+  unitPrice: string;
 }
 interface Address1 {
   firstName: string;

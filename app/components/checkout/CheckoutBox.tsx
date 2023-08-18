@@ -4,6 +4,7 @@ import axios from "axios";
 import classes from "@/styles/CheckoutBox.module.css";
 import type {
   CartItem,
+  CartItem2,
   Order,
   PurchasedItem,
   ChargeCardData,
@@ -15,6 +16,7 @@ import {
   getCartItems,
   getCartSumAndCount,
   roundPrice,
+  toSdkExpDate,
 } from "../../utils";
 import LockIcon from "@mui/icons-material/Lock";
 import type { Payment } from "./index";
@@ -107,6 +109,7 @@ export default function CheckoutBtn({
     // refresh cart... check btn again
     setRefreshBtn((prev) => !prev);
   }, [refreshCart]);
+
   React.useEffect(() => {
     if (subtotal) {
       const amount = Number(subtotal) * TAX_PERCENT;
@@ -118,18 +121,18 @@ export default function CheckoutBtn({
     setTotal(roundPrice(Number(subtotal) + Number(tax)));
   }, [tax]);
 
-  async function completeCheckout() {
+  function initCheckout() {
     //reset some values
     setScreen("sending purchase");
     setInvIssues(undefined);
     setPurchaseResponse({ success: false, text: "" });
     // failsafe if no payment and user
-    if (!payment || !customerProfileId) return;
+    if (!payment && !guestPayment) return;
     //track if re-stocking is needed
     let stockDecremented: boolean = false;
-
     // Parse Cart_Items
     const cart_items: PurchasedItem[] = getCartItems();
+    // const cart_items: PurchasedItem[] = getCartItems();
     cart_items.forEach((item) => {
       let newName = item.name.replaceAll("&", "and");
       if (newName.length > 30) {
@@ -138,7 +141,25 @@ export default function CheckoutBtn({
         item.name = newName;
       }
     });
-    // Build Payload object to send for Transaction
+
+    //
+
+    //NOW: DECIDE TO GO GUEST ROUTE OR CUSTOMER PROFILE ROUTE
+    if (payment) {
+      completeCustomerCheckout(cart_items, stockDecremented);
+    } else if (guestPayment) {
+      completeGuestCheckout(cart_items, stockDecremented);
+    }
+  } //init checkout
+
+  async function completeCustomerCheckout(
+    cart_items: PurchasedItem[],
+    // cart_items: PurchasedItem[],
+    stockDecremented: boolean
+  ) {
+    console.log("Completing Customer Checkout..");
+
+    // [1] Build Payload object to send for Transaction
     let dataPayload: ChargeProfileDataToSend = {
       customerProfileId,
       customerPaymentProfileId: payment?.paymentProfileId ?? "",
@@ -149,27 +170,25 @@ export default function CheckoutBtn({
       ordered_items: cart_items,
       amountToCharge: Number(total),
     };
-    console.log("Checkout Payload: ", dataPayload);
 
     try {
-      //ATTEMPT CHECK INV AND HOLD IT
+      //[2] VERIFY ITEMS IN STOCK, DECREMENT IF SO
       const holdRes = await affectInventory("hold-inv", cart_items);
-      console.log("CheckRes: ", holdRes);
-      //SUCCESSFULLY DECR AVAILABLE STOCK...
       stockDecremented = true;
 
-      //CHARGE PROFILE
+      //[3] CHARGE PROFILE
       const { data } = await axios({
         url: "http://localhost:1400/chargeProfile",
         method: "POST",
         data: dataPayload,
       });
       console.log("Transaction Response: ", data);
-      // setPurchaseResponse({ success: true, text: "Transaction Complete!" });
-      //SUCCESSFUL TRANSACTION
+      // successful transaction!
 
-      //NOW CLEAR OUT CART ITEMS
+      //[4] CLEAR OUT CART ITEMS
       clearCartItems();
+
+      //[5] SAVE ORDER TO DB
       interface AxiosReqSaveOrder {
         url: "/api/orders";
         method: "POST";
@@ -185,18 +204,17 @@ export default function CheckoutBtn({
             refTransId,
             amountCharged: total,
             subtotal,
-            cardNum: payment.cardNumber,
-            expDate: payment.expDate,
+            cardNum: payment?.cardNumber!,
+            expDate: payment?.expDate!,
             userId: session?.user.id!,
           },
           purchasedItems: cart_items,
         },
       };
-
-      //AND SAVE ORDER AND PURCHASED_ITEMS
+      // ..saving order to db now
       const orderRes = await axios(saveOrderReqConfig);
       console.log("Save Order response: ", orderRes.data);
-      //REDIRECT TO THANK YOU PAGE (or component)
+      // [6] DONE - SHOW USER THANK YOU PAGE
       globals.refreshCart();
       setScreen(["successful transaction", refTransId]);
       setPurchaseResponse({
@@ -236,7 +254,100 @@ export default function CheckoutBtn({
         });
       }
     }
-  } //complete checkout
+  } // end completeCustomerCheckout
+
+  //
+
+  async function completeGuestCheckout(
+    cart_items: PurchasedItem[],
+    stockDecremented: boolean
+  ) {
+    if (!guestPayment) return;
+    console.log("Completing Guest Checkout..");
+    //re-parse purchasedItem into CartItem2 (unitPrice number to string)
+
+    // [1] Build Guest Payload object to send for Transaction
+    let guestPaymentPayload: ChargeCardData = {
+      creditCard: {
+        cardNumber: guestPayment.creditCard.cardNumber,
+        expDate: toSdkExpDate(guestPayment.creditCard.expDate),
+        cvv: guestPayment.creditCard.cvv,
+      },
+      invoiceNum: "INV-test", // change later
+      description: "idk bruh", // change later
+      amount: total,
+      billTo: {
+        firstName: guestPayment.billTo.firstName,
+        lastName: guestPayment.billTo.lastName,
+        address: guestPayment.billTo.address,
+        city: guestPayment.billTo.city,
+        state: guestPayment.billTo.state,
+        zip: guestPayment.billTo.zip,
+        country: guestPayment.billTo.country,
+      },
+      ordered_items: cart_items,
+    };
+
+    try {
+      //[2] VERIFY ITEMS IN STOCK, DECREMENT IF SO
+      const holdRes = await affectInventory("hold-inv", cart_items);
+      stockDecremented = true;
+
+      //[3] CHARGE GUEST's CARD
+      const { data } = await axios({
+        url: "http://localhost:1400/chargeCard",
+        method: "POST",
+        data: guestPaymentPayload,
+      });
+      console.log("Guest Transaction Response: ", data);
+      // successful transaction!
+
+      //[4] CLEAR OUT CART ITEMS
+      clearCartItems();
+
+      //[5] CAN'T save order because don't have a user to associate purchase with...
+      // [6] DONE - SHOW USER THANK YOU PAGE
+      const refTransId = data.transactionResponse.transId;
+      globals.refreshCart();
+      setScreen(["successful transaction", refTransId]);
+      setPurchaseResponse({
+        success: true,
+        text: "Purchase went through!",
+      });
+    } catch (e: any) {
+      setScreen(undefined);
+      // INSUFFICIENT STOCK or Network error
+      console.error("Error: ", e);
+      if (e?.message === "insufficient inventory") {
+        setInvIssues(e.stock);
+        setButtonProps({
+          color: "grey",
+          text: "Insufficient Inventory.",
+          cursor: "not-allowed",
+        });
+      } else {
+        //handle network error or transaction error
+        // "there was an issue processing your request. Try again later."
+        if (stockDecremented) {
+          //ATTEMPT to restock [NOT when it's insufficient, DUH]
+          try {
+            const restockRes = await affectInventory("restock-inv", cart_items);
+            console.log("RestockRes: ", restockRes);
+          } catch (e) {
+            console.log("Couldnt Restock: ", e);
+            setPurchaseResponse({
+              success: false,
+              text: "Merchant Error: couldn't restock.",
+            });
+          }
+        }
+        setPurchaseResponse({
+          success: false,
+          text: "Oops. Payment couldn't be processed.",
+        });
+      }
+    }
+  } // end completeGuestCheckout
 
   if (subtotal === "0.00") return <></>;
 
@@ -257,11 +368,18 @@ export default function CheckoutBtn({
       </div>
       <div className={classes.row}>
         <span>Payment</span>
-        {payment ? (
+        {payment && (
           <span style={{ textAlign: "right" }}>
             {payment?.cardType}
             <br />
             ••{payment?.cardNumber.slice(-4)}
+          </span>
+        )}
+        {guestPayment ? (
+          <span style={{ textAlign: "right" }}>
+            {detectCardType(guestPayment.creditCard.cardNumber)}
+            <br />
+            ••{guestPayment.creditCard.cardNumber.slice(-4)}
           </span>
         ) : (
           <>--</>
@@ -274,10 +392,8 @@ export default function CheckoutBtn({
       </h2>
       <div className={classes.buttonBox}>
         <button
-          disabled={
-            Number(count) === 0 || customerProfileId.length == 0 || !payment
-          }
-          onClick={completeCheckout}
+          disabled={buttonProps.cursor === "not-allowed"}
+          onClick={initCheckout}
           style={{
             backgroundColor: buttonProps.color,
             cursor: buttonProps.cursor,
@@ -334,4 +450,27 @@ async function affectInventory(
       })
       .catch((e) => reject(e.response.data));
   });
+}
+
+function detectCardType(number: string): string | undefined {
+  const re: any = {
+    Electron: /^(4026|417500|4405|4508|4844|4913|4917)\d+$/,
+    Maestro:
+      /^(5018|5020|5038|5612|5893|6304|6759|6761|6762|6763|0604|6390)\d+$/,
+    Dankort: /^(5019)\d+$/,
+    Interpayment: /^(636)\d+$/,
+    Unionpay: /^(62|88)\d+$/,
+    Visa: /^4[0-9]{12}(?:[0-9]{3})?$/,
+    Mastercard: /^5[1-5][0-9]{14}$/,
+    Amex: /^3[47][0-9]{13}$/,
+    Diners: /^3(?:0[0-5]|[68][0-9])[0-9]{11}$/,
+    Discover: /^6(?:011|5[0-9]{2})[0-9]{12}$/,
+    Jcb: /^(?:2131|1800|35\d{3})\d{11}$/,
+  };
+
+  for (var key in re) {
+    if (re[key].test(number)) {
+      return key;
+    }
+  }
 }

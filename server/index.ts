@@ -21,7 +21,7 @@ interface CartItem {
   name: string;
   description: string;
   quantity: string;
-  unitPrice: number;
+  unitPrice: string;
 }
 interface Address1 {
   firstName: string;
@@ -119,7 +119,7 @@ app.post("/chargeCard", (req: any, res: any) => {
     },
     invoiceNum: "test-Chard-Card",
     description: "charge card description",
-    amount: "200.00",
+    amount: "400.00",
     billTo: {
       firstName: "Billy",
       lastName: "Mohobe",
@@ -135,21 +135,21 @@ app.post("/chargeCard", (req: any, res: any) => {
         name: "Vape1",
         description: "my vape 1",
         quantity: "1",
-        unitPrice: 14.0,
+        unitPrice: "14.0",
       },
       {
         sku: "11",
         name: "Vape2",
         description: "my vape 2",
         quantity: "2",
-        unitPrice: 23.0,
+        unitPrice: "23.0",
       },
       {
         sku: "13",
         name: "Vape3",
         description: "my vape 3",
         quantity: "3",
-        unitPrice: 33.0,
+        unitPrice: "33.0",
       },
     ],
   };

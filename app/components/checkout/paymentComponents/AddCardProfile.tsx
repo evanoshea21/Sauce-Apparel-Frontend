@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import axios from "axios";
-import { returnDateStr } from "@/app/utils";
+import { returnDateStr, toSdkExpDate } from "@/app/utils";
 import type { Address, AddCardData, CustomerProfile } from "@/scripts/Types";
 import type { DisplayStates } from "../Payment";
 import { CreditCardForm, BillToForm } from "../../forms/AddCardForms";
@@ -83,7 +83,7 @@ export default function AddCardProfile({
         data: {
           customerProfileId: existingCustomerProfile.customerProfileId,
           cardNumber: card_number,
-          expDate,
+          expDate: toSdkExpDate(expDate),
           billTo: {
             firstName,
             lastName,

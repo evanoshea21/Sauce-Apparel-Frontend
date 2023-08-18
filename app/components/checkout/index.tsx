@@ -10,6 +10,7 @@ import axios from "axios";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import type { GuestPayment } from "./paymentComponents/GuestCard";
+import { getCartItems } from "@/app/utils";
 
 export interface Payment {
   paymentProfileId: string;
@@ -143,6 +144,9 @@ export default function CheckoutPage() {
       </div>
       <button onClick={() => signOut()}>Log out</button>
       <button onClick={chargeCard}>ChargeCard Hard-coded</button>
+      <button onClick={() => console.log(getCartItems())}>
+        Print cart items
+      </button>
     </>
   );
 }

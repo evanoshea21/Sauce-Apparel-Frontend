@@ -146,3 +146,15 @@ export function removeFromSaved(name: string) {
   });
   localStorage.setItem("saved_items", JSON.stringify(items));
 }
+
+export function toSdkExpDate(date: string): string {
+  if (date.indexOf("-") !== -1) {
+    return date;
+  }
+  //remove slash if present
+  date = date.replace("/", "");
+  const month = date.slice(0, 2);
+  const year = date.slice(-2);
+
+  return `20${year}-${month}`;
+}

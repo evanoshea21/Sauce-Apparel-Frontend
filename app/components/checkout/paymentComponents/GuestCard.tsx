@@ -35,10 +35,6 @@ export default function GuestCard({ setDisplayState, setGuestPayment }: Props) {
   const [state, setState] = React.useState<string>("");
   const [zip, setZip] = React.useState<string>("");
 
-  React.useEffect(() => {
-    console.log("expDate: ", expDate);
-  }, [expDate]);
-
   function sendForm() {
     let formData: GuestPayment = {
       creditCard: {
@@ -99,7 +95,14 @@ export default function GuestCard({ setDisplayState, setGuestPayment }: Props) {
         <div>F Name: {firstName}</div>
         <div>L Name: {lastName}</div>
         <div>Card: **{cardNumber.slice(-4)}</div>
-        <button onClick={() => setView("form")}>Return to form</button>
+        <button
+          onClick={() => {
+            setView("form");
+            setGuestPayment(undefined);
+          }}
+        >
+          Return to form
+        </button>
       </div>
 
       {/* FORM */}
@@ -157,6 +160,7 @@ export default function GuestCard({ setDisplayState, setGuestPayment }: Props) {
   );
 }
 
+// checks form inputs, returns error message if applicable
 function validateForm(data: GuestPayment): string {
   // first make sure billTo is filled in
   let errorToBe: string =
@@ -215,12 +219,16 @@ function validateForm(data: GuestPayment): string {
   if (isNaN(cardNum)) return "Only numbers are valid for 'Credit Card Number'";
 
   // check creditCard ExpDate
-  let expDate = data.creditCard.expDate;
+  let expDate = data.creditCard.expDate.split("/").join("");
   if (expDate.length < 4) {
     return "Invalid Expiration Date";
   }
-  if (isNaN(expDate.replace("/", "")))
-    return "Only numbers are valid for 'Expiration Date'";
+  if (isNaN(expDate)) return "Only numbers are valid for 'Expiration Date'";
+  const month: number = Number(expDate.slice(0, 2));
+  const year: number = Number(expDate.slice(-2));
+  if (month > 12) return "Invalid Expiration Month";
+
+  if (!isInDate(expDate)) return "Card is out of date.";
 
   // check creditCard CVV
   let cvv = data.creditCard.cvv;
@@ -232,6 +240,7 @@ function validateForm(data: GuestPayment): string {
   return "ok";
 }
 
+//util functions:
 function isNaN(input: string): boolean {
   let isNaN = false;
 
@@ -245,4 +254,14 @@ function isNaN(input: string): boolean {
   }
 
   return isNaN;
+}
+function isInDate(dateStr: string): boolean {
+  // input date format: 'mmyy'
+  const month = dateStr.slice(0, 2);
+  const year = dateStr.slice(-2);
+
+  const todaysDate = new Date();
+  const inputDate = new Date(`${month}/01/20${year}`);
+
+  return todaysDate < inputDate;
 }

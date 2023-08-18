@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import type { Order, PurchasedItem } from "@/scripts/Types";
+import type { Order, PurchasedItem, CartItem } from "@/scripts/Types";
 import prisma from "@/lib/prismaClient";
 
 export interface SaveOrderReq {
@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    const purchases: PurchasedItem[] = [...reqBody.purchasedItems];
+    const purchases = [...reqBody.purchasedItems];
     purchases.forEach((purchase) => {
       delete purchase.maxQuantity;
       purchase.refTransId = reqBody.order.refTransId;

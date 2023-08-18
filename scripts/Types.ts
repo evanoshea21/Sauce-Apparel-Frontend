@@ -104,12 +104,12 @@ export interface AddCardData {
 }
 
 // GUEST CHECKOUT
-interface CartItem2 {
+export interface CartItem2 {
   sku: string;
   name: string;
   description: string;
   quantity: string;
-  unitPrice: number;
+  unitPrice: string;
 }
 interface Address2 {
   firstName: string;

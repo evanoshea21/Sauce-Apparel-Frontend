@@ -13,7 +13,7 @@ interface UnHoldInventoryRequest {
 export async function POST(req: NextRequest) {
   const { method, items }: HoldInventoryRequest | UnHoldInventoryRequest =
     await req.json();
-  console.log(items); // these are the cart items
+  console.log("inv items: ", items); // these are the cart items
   // return NextResponse.json({ server: "pong" });
 
   if (method === "hold-inv") {
