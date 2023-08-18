@@ -8,7 +8,7 @@ export default function AdminClient() {
   return (
     <div className={classes.clientBox}>
       <Sidebar />
-      <ReadUpdateDelete />;
+      <ReadUpdateDelete />
     </div>
   );
 }
