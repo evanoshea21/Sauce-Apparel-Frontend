@@ -142,11 +142,11 @@ export default function CheckoutPage() {
           />
         </div>
       </div>
-      <button onClick={() => signOut()}>Log out</button>
+      {/* <button onClick={() => signOut()}>Log out</button>
       <button onClick={chargeCard}>ChargeCard Hard-coded</button>
       <button onClick={() => console.log(getCartItems())}>
         Print cart items
-      </button>
+      </button> */}
     </>
   );
 }
