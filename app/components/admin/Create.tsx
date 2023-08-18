@@ -5,7 +5,6 @@ import classes from "@/styles/Admin.module.css";
 import type { Categories, Product } from "@/scripts/Types";
 import Button from "@mui/material/Button";
 import { isValidPrice, isPositiveInteger } from "@/app/utils";
-
 import type { FlavorsInventoryObj } from "@/scripts/Types";
 import {
   ProductForm,

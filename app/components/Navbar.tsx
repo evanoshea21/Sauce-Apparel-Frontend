@@ -10,12 +10,15 @@ import { usePathname } from "next/navigation";
 
 export default function Navbar() {
   const pathname = usePathname();
+
+  if (pathname === "/admin") return <></>;
+
   return (
     <div
       className={classes.main}
-      style={{
-        display: pathname === "/admin" ? "none" : "",
-      }}
+      // style={{
+      //   display: pathname === "/admin" ? "none" : "",
+      // }}
     >
       <nav className={classes.nav}>
         <Link href="/">

@@ -7,7 +7,6 @@ import MenuItem from "@mui/material/MenuItem";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-import Tooltip from "@mui/material/Tooltip";
 import Button from "@mui/material/Button";
 import HelpOutlineTwoToneIcon from "@mui/icons-material/HelpOutlineTwoTone";
 import { categoryArr as categoryNames } from "@/scripts/Types";
@@ -174,6 +173,7 @@ export function ProductForm(props: ProductFormProps) {
             id={`adminProductCreate_category-${
               isCreateForm ? "create" : "update"
             }`}
+            style={{ marginTop: "8px" }}
           >
             Category
           </InputLabel>

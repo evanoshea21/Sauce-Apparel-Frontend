@@ -27,6 +27,8 @@ export default function ProductCard({ product, isSample }: Props) {
     fontSize = "1.3em";
   }
 
+  const color = determineColor(product.category ?? "");
+
   let dollar: string = product.unitPrice.split(".")[0];
   let cents: string = `.${product.unitPrice.split(".")[1] ?? "00"}`;
   let dollarSale: string | undefined = undefined;
@@ -37,11 +39,24 @@ export default function ProductCard({ product, isSample }: Props) {
   }
   return (
     <div className={classes.main}>
-      <div className={classes.imgBox}>
-        {product.salesPrice && <div className={classes.onSaleTag}>On Sale</div>}
-        <img src={product.imageUrl} alt="product image" />
-      </div>
+      <Link href={`/products/${product.name.split(" ").join("-")}`}>
+        <div className={classes.imgBox}>
+          {product.salesPrice && (
+            <div className={classes.onSaleTag}>On Sale</div>
+          )}
+          <img src={product.imageUrl} alt="product image" />
+        </div>
+      </Link>
       <div className={classes.info}>
+        <div
+          style={{
+            color,
+            border: `1px solid ${color}`,
+          }}
+          className={classes.category}
+        >
+          {product.category}
+        </div>
         <div className={classes.namePrice}>
           <p style={{ fontSize }} className={classes.name}>
             {name}
@@ -99,4 +114,23 @@ export default function ProductCard({ product, isSample }: Props) {
       </div>
     </div>
   );
+}
+
+export function determineColor(category: string): string {
+  switch (category) {
+    case "Disposable":
+      return "rgba(32, 143, 199, 0.858)";
+
+    case "Salt Nic":
+      return "rgba(236, 152, 16, 0.829)";
+
+    case "60ml":
+      return "rgba(136, 0, 255, 0.61)";
+
+    case "120ml":
+      return "rgba(231, 25, 196, 0.69)";
+
+    default:
+      return "grey";
+  }
 }

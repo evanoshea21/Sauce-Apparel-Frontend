@@ -42,7 +42,11 @@ export default function SignIn({ setDisplayState, setDisplayHome }: Props) {
       <>
         <div className={classes.signinMain}>
           {setDisplayState ? (
-            <h2>Log in to Complete Purchase</h2>
+            <>
+              <h2>Add Payment</h2>
+              <h3>Log in to Complete Purchase</h3>
+              <p>Save your payment methods for a quicker checkout.</p>
+            </>
           ) : (
             <h2 style={{ margin: "20px", textAlign: "center" }}>
               Log in to Profile
@@ -59,13 +63,15 @@ export default function SignIn({ setDisplayState, setDisplayHome }: Props) {
             <div className={classes.divider}>
               <span>or</span>
             </div>
-            <h2>Guest Checkout</h2>
-            <button
-              onClick={() => setDisplayState("guestCard")}
-              className={classes.guestBtn}
-            >
-              Guest Checkout
-            </button>
+            <h3>Guest Checkout</h3>
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <button
+                onClick={() => setDisplayState("guestCard")}
+                className={classes.guestBtn}
+              >
+                Continue as Guest
+              </button>
+            </div>
           </div>
         )}
       </>

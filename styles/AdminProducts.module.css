@@ -7,6 +7,7 @@
   margin-bottom: 20px;
   max-width: 1250px;
 }
+
 .main * {
   /* border: 1px solid blue; */
 }
@@ -140,10 +141,14 @@
 
 .category,
 .featured {
-  padding: 5px;
+  padding: 5px 8px;
   border-radius: 5px;
   margin: 2px;
   max-width: fit-content;
+
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 .featured {
   background-color: rgb(1, 128, 1);
@@ -177,6 +182,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  /* border: 1px solid red; */
+  margin-bottom: 40px;
   /* margin-left: auto;
   margin-right: auto; */
 }
@@ -246,5 +253,12 @@
 @media (max-width: 950px) {
   .sampleView {
     display: none;
+  }
+}
+@media (max-width: 600px) {
+  .main {
+    margin-left: auto;
+    margin-right: auto;
+    padding: 15px;
   }
 }

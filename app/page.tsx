@@ -27,7 +27,7 @@ export default async function Home() {
       {/* <Navbar /> */}
       <div className={classes.main}>
         <ProductGrid products={products} />
-        {/* <ProductSlider products={products}/> */}
+        <ProductSlider products={products} />
       </div>
     </>
   );

@@ -109,7 +109,7 @@ export default function Cart({
           const invMessage = invIssues?.find((issue) => issue.sku === item.sku);
           return (
             <div key={`${item.sku}-${i}`}>
-              {/* SMALL ROW */}
+              {/* SMALL ROW (only small type now) */}
               <div className={classes.cartRowMobile}>
                 <div className={classes.imgBoxRowSm}>
                   <img src={item.img} alt="product image" />

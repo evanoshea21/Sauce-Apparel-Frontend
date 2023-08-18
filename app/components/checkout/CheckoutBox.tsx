@@ -375,15 +375,15 @@ export default function CheckoutBtn({
             ••{payment?.cardNumber.slice(-4)}
           </span>
         )}
-        {guestPayment ? (
+        {guestPayment && (
           <span style={{ textAlign: "right" }}>
             {detectCardType(guestPayment.creditCard.cardNumber)}
             <br />
             ••{guestPayment.creditCard.cardNumber.slice(-4)}
           </span>
-        ) : (
-          <>--</>
         )}
+
+        {!guestPayment && !payment && <>--</>}
       </div>
 
       <h2 className={classes.row2}>

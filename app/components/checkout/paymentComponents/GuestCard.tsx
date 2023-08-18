@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import { getProviders, useSession, signIn } from "next-auth/react";
 import { DisplayStates } from "../Payment";
 import classes from "@/styles/GuestCard.module.css";
 import type { ChargeCardData } from "@/scripts/Types";
@@ -8,7 +7,8 @@ import TextInput from "@/app/components/ui/TextInput";
 import CardNumberInput from "@/app/components/ui/CreditInput";
 import ExpDateInput from "@/app/components/ui/ExpDateInput";
 import CvvInput from "@/app/components/ui/CvvInput";
-import { CreditCard } from "@mui/icons-material";
+import { BillToForm } from "../../forms/AddCardForms";
+import Button from "@mui/material/Button";
 
 interface Props {
   setDisplayState: React.Dispatch<React.SetStateAction<DisplayStates>>;
@@ -34,6 +34,7 @@ export default function GuestCard({ setDisplayState, setGuestPayment }: Props) {
   const [city, setCity] = React.useState<string>("");
   const [state, setState] = React.useState<string>("");
   const [zip, setZip] = React.useState<string>("");
+  const [_phone, setUnusedPhone] = React.useState<string>("");
 
   function sendForm() {
     let formData: GuestPayment = {
@@ -58,9 +59,8 @@ export default function GuestCard({ setDisplayState, setGuestPayment }: Props) {
       setErrorMessage(formValidation);
       return;
     }
-    console.log("form inputs look good");
 
-    // successful form inputs..
+    // Successful form inputs..
     setErrorMessage(undefined);
 
     let guestPaymentPayload: GuestPayment = {
@@ -91,34 +91,98 @@ export default function GuestCard({ setDisplayState, setGuestPayment }: Props) {
         style={{ display: view === "review" ? "block" : "none" }}
         className={classes.mainReview}
       >
-        <span>This is the review page of form elements</span>
-        <div>F Name: {firstName}</div>
-        <div>L Name: {lastName}</div>
-        <div>Card: **{cardNumber.slice(-4)}</div>
-        <button
-          onClick={() => {
-            setView("form");
-            setGuestPayment(undefined);
-          }}
-        >
-          Return to form
-        </button>
+        <h2>Review Payment</h2>
+        <div className={classes.reviewInfo}>
+          <div className={classes.row}>
+            <span>First Name: </span>
+            <span>{firstName}</span>
+          </div>
+          <div className={classes.row}>
+            <span>Last Name: </span>
+            <span>{lastName}</span>
+          </div>
+          <div className={classes.row}>
+            <span>Street: </span>
+            <span
+              style={{
+                inlineSize: "130px",
+                wordBreak: "break-word",
+              }}
+            >
+              {address}
+            </span>
+          </div>
+          <div className={classes.row}>
+            <span>City: </span>
+            <span>{city}</span>
+          </div>
+          <div className={classes.row}>
+            <span>State: </span>
+            <span>{state}</span>
+          </div>
+          <div className={classes.row}>
+            <span>Zip: </span>
+            <span>{zip}</span>
+          </div>
+
+          <div className={classes.row}></div>
+          <div className={classes.row}></div>
+
+          <div className={classes.row}>
+            <span>Card: </span>
+            <span>**{cardNumber.slice(-4)}</span>
+          </div>
+          <div className={classes.row}>
+            <span>Exp Date: </span>
+            <span>{expDate}</span>
+          </div>
+        </div>
+        <div className={classes.returnBtnBox}>
+          <button
+            className={classes.returnBtn}
+            onClick={() => {
+              setView("form");
+              setGuestPayment(undefined);
+            }}
+          >
+            Return to form
+          </button>
+        </div>
       </div>
 
       {/* FORM */}
       <div
         style={{ display: view === "form" ? "block" : "none" }}
-        className={classes.form}
+        className={classes.mainForm}
       >
         <h2>Guest Checkout</h2>
-        <button
-          className={classes.returnSignInBtn}
-          onClick={() => setDisplayState("loggedOut")}
-        >
-          Back
-        </button>
         <div className={classes.form}>
-          <TextInput
+          <h3>Payment</h3>
+          <div className={classes.creditFormBox}>
+            <CardNumberInput fontScale={0.95} onChange={setCardNumber} />
+            <ExpDateInput
+              fontScale={0.95}
+              display="inline-block"
+              onChange={setExpDate}
+            />
+            <CvvInput
+              fontScale={0.95}
+              display="inline-block"
+              onChange={setCvv}
+            />
+          </div>
+          <div className={classes.billToFormBox}>
+            <BillToForm
+              setFName={setFirstName}
+              setLName={setLastName}
+              setAddress={setAddress}
+              setCity={setCity}
+              setState={setState}
+              setZip={setZip}
+              setPhone={setUnusedPhone}
+            />
+          </div>
+          {/* <TextInput
             inputId="guestPayment-firstName"
             onChange={setFirstName}
             placeholder="First Name"
@@ -148,13 +212,27 @@ export default function GuestCard({ setDisplayState, setGuestPayment }: Props) {
             inputId="guestPayment-zip"
             onChange={setZip}
             placeholder="Zip"
-          />
-          <CardNumberInput onChange={setCardNumber} />
-          <ExpDateInput onChange={setExpDate} />
-          <CvvInput onChange={setCvv} />
+          /> */}
         </div>
-        {errorMessage && <p style={{ color: "red" }}>Error: {errorMessage}</p>}
-        <button onClick={sendForm}>Verify form</button>
+        {errorMessage && <p style={{ color: "red" }}> {errorMessage}</p>}
+        {/* <button onClick={sendForm}>Verify f2orm</button>
+        <button
+          className={classes.returnSignInBtn}
+          onClick={() => setDisplayState("loggedOut")}
+        >
+          Back2
+        </button> */}
+        <div className={classes.btns}>
+          <Button variant="contained" onClick={sendForm}>
+            Add Payment
+          </Button>
+          <Button
+            onClick={() => setDisplayState("loggedOut")}
+            variant="outlined"
+          >
+            Back
+          </Button>
+        </div>
       </div>
     </div>
   );
@@ -163,8 +241,7 @@ export default function GuestCard({ setDisplayState, setGuestPayment }: Props) {
 // checks form inputs, returns error message if applicable
 function validateForm(data: GuestPayment): string {
   // first make sure billTo is filled in
-  let errorToBe: string =
-    "Please fill in all fields. Current fields are empty: ";
+  let errorToBe: string = "Please fill in all fields: ";
   const emptyFields: string[] = [];
   let isError = false;
   if (data.billTo.firstName.length == 0) {

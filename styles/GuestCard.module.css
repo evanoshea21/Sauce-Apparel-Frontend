@@ -7,3 +7,59 @@
   border: none;
   cursor: pointer;
 }
+.expCvv {
+  display: flex;
+  flex-wrap: wrap;
+}
+.billToFormBox {
+  display: flex;
+  justify-content: center;
+}
+.creditFormBox {
+  margin: 10px auto 0 auto;
+  /* border: 1px solid red; */
+  width: fit-content;
+}
+
+/* REVIEW PAYMENT */
+.reviewInfo {
+  max-width: 300px;
+  /* border: 1px solid grey; */
+  margin: 15px auto;
+  padding: 10px;
+}
+.row {
+  display: flex;
+  justify-content: space-between;
+  margin: 5px 0;
+}
+.row > *:nth-child(1) {
+  color: grey;
+}
+.row > *:nth-child(2) {
+}
+.returnBtnBox {
+  display: flex;
+  justify-content: center;
+}
+.returnBtn {
+  outline: none;
+  border: none;
+  background-color: green;
+  color: white;
+  padding: 15px 20px;
+  font-size: 0.95rem;
+  border-radius: 100px;
+  cursor: pointer;
+}
+@media (max-width: 434px) {
+  .creditFormBox {
+    width: 100%;
+  }
+}
+.btns {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px;
+}

@@ -10,14 +10,14 @@ interface Props {
 
 export default async function CategoryPage({ params }: Props) {
   let response;
-  console.log("Category: ", params.categoryName);
+  console.log("Category: ", params.categoryName.replace("-", " "));
   try {
     response = await axios({
       url: "http://localhost:3000/api/products",
       method: "POST",
       data: {
         method: "read",
-        category: params.categoryName,
+        category: params.categoryName.replace("-", " "),
       },
     });
   } catch (e) {

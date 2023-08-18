@@ -4,6 +4,7 @@ import type { Product } from "@/scripts/Types";
 import ConfigAddToCart from "./ConfigAddToCart";
 import classes from "@/styles/DetailsPage.module.css";
 import { roundPrice } from "@/app/utils";
+import { determineColor } from "@/app/components/ProductCard";
 
 export const revalidate = 1800;
 
@@ -43,9 +44,18 @@ export default async function ProductDetails({ params }: Props) {
           <img src={product.imageUrl} alt="product image" />
         </div>
         <div className={classes.details}>
-          <h1>{product.name}</h1>
+          <h1 style={{ marginBottom: "15px" }}>{product.name}</h1>
+          <div
+            style={{
+              border: `1px solid ${determineColor(product.category ?? "")}`,
+              color: determineColor(product.category ?? ""),
+            }}
+            className={classes.category}
+          >
+            {product.category}
+          </div>
           {product.salesPrice ? (
-            <div className={classes.salesPrice}>
+            <div style={{ marginTop: "12px" }} className={classes.salesPrice}>
               <h2 style={{ color: "red" }}>
                 $ {roundPrice(product.salesPrice)}
               </h2>

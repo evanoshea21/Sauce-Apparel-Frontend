@@ -13,14 +13,17 @@ import {
   FlavorsInventoryForm,
   ProductForm,
 } from "../forms/ProductFlavorsForms";
+import StarIcon from "@mui/icons-material/Star";
 import type { FlavorsInventoryObj } from "@/scripts/Types";
 import Button from "@mui/material/Button";
 import EditTwoToneIcon from "@mui/icons-material/EditTwoTone";
 import FilterSearch from "./FilterSearch";
 import Create from "./Create";
+import Tooltip from "@mui/material/Tooltip";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 //Product (everything) vs ProductData (only the product's data)
 import AddIcon from "@mui/icons-material/Add";
-import ProductCard from "@/app/components/ProductCard";
+import ProductCard, { determineColor } from "@/app/components/ProductCard";
 
 export default function Read() {
   const [update, setUpdate] = React.useState<boolean>(false);
@@ -202,19 +205,7 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
   // [TODO] -- set category tags color
   React.useEffect(() => {
     let category: string | null = product.category;
-    if (category === "Disposable") {
-      setCategoryColor("gold");
-    } else if (category === "60ml") {
-      setCategoryColor("lightblue");
-    } else if (category === "120ml") {
-      setCategoryColor("orange");
-    } else if (category === "Salt Nic") {
-      setCategoryColor("voilet");
-    } else if (category === "Other") {
-      setCategoryColor("grey");
-    } else {
-      setCategoryColor("grey");
-    }
+    setCategoryColor(determineColor(product.category ?? ""));
   }, [product]);
 
   function deleteEntireProduct() {
@@ -341,7 +332,10 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
               {product.category}
             </div>
             {product.isFeatured && (
-              <div className={classes.featured}>Featured</div>
+              <div className={classes.featured}>
+                <StarIcon sx={{ fontSize: 16 }} />
+                <span>Featured</span>
+              </div>
             )}
           </div>
         </div>
@@ -662,6 +656,9 @@ function FlavorsCrud({
                     className={classes.flavorName}
                   >
                     {item.flavor}
+                    <Tooltip title={`SKU: ${item.sku}`}>
+                      <HelpOutlineIcon sx={{ ml: 1, fontSize: 16 }} />
+                    </Tooltip>
                   </div>
                   <input
                     className={classes.inventoryInput}

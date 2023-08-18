@@ -11,6 +11,7 @@
   left: 1.125em;
   opacity: 0.7;
   font-size: 1em;
+  pointer-events: none;
   /* transition: all 0.2s ease; */
 }
 

@@ -24,7 +24,7 @@ interface BillToProps {
 export function CreditCardForm(props: CreditCardProps) {
   return (
     <div>
-      <h3 style={{ marginLeft: "8px" }}>Add Payment</h3>
+      <h3 style={{ marginBottom: "12px" }}>Add Payment</h3>
       <form
         style={{
           // border: "1px solid red",

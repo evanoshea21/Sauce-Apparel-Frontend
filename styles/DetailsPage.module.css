@@ -10,6 +10,11 @@
 .main > * {
   flex: 1;
 }
+.category {
+  width: fit-content;
+  border-radius: 100px;
+  padding: 0 10px;
+}
 .imgBox img {
   width: 95%;
   height: 100%;
