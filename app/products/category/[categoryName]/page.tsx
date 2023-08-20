@@ -38,9 +38,12 @@ export default async function CategoryPage({ params }: Props) {
       {products.length > 0 ? (
         <ProductGrid products={products} />
       ) : (
-        <p style={{ textAlign: "center" }}>
-          We currently have no vapes under that category.
-        </p>
+        <>
+          <p style={{ textAlign: "center" }}>
+            We currently have no vapes under that category.
+          </p>
+          <div style={{ height: "70vh" }}></div>
+        </>
       )}
     </div>
   );

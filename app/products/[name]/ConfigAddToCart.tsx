@@ -96,7 +96,7 @@ export default function AddToCart({ product }: Props) {
           fontSize: "1.4rem",
         }}
       >
-        Product Out of stock.
+        Product Out of Stock
       </div>
     );
   }

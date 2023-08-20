@@ -19,10 +19,10 @@ html {
 }
 
 .MuiSelect-select {
-  width: 170px;
-  color: grey;
-  height: 30px;
-  padding: 10px;
+  width: 170px !important;
+  color: grey !important;
+  height: 27px !important;
+  padding: 10px !important;
 }
 /* .MuiSelect-select:focus {
   outline: none;
@@ -38,9 +38,9 @@ html {
 }
 
 .MuiToggleButton-root {
-  padding: 6px;
+  padding: 6px !important;
 }
 
 .MuiTooltip-tooltip {
-  font-size: 1rem;
+  font-size: 1rem !important;
 }

@@ -484,7 +484,6 @@ function FlavorsCrud({
   flavors_inventory,
   refreshRow,
 }: FlavorsProps) {
-  const [showFlavorForm, setShowFlavorForm] = React.useState<boolean>(false);
   const [errorMessage1, setErrorMessage1] = React.useState<
     string | undefined
   >();
