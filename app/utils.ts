@@ -158,3 +158,23 @@ export function toSdkExpDate(date: string): string {
 
   return `20${year}-${month}`;
 }
+
+// FETCH CALLS FOR SSR
+interface Config {
+  url: string;
+  method: "POST" | "GET" | "DELETE";
+  data: Record<string, any>;
+}
+
+export async function axiosCall(config: Config) {
+  const response = await fetch(config.url, {
+    method: config.method,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(config.data),
+  });
+
+  const data = await response.json();
+  return data;
+}

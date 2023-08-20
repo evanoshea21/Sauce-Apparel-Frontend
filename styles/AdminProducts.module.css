@@ -156,19 +156,19 @@
 }
 .btn,
 .btnDelete {
-  margin-left: 10px;
-  margin-top: 10px;
+  margin-left: 10px !important;
+  margin-top: 10px !important;
 }
 .btnDelete {
-  color: red;
-  border: 1px solid red;
+  color: red !important;
+  border: 1px solid red !important;
 }
 .btnDelete:hover {
-  outline: none;
-  color: red;
-  background-color: red;
-  color: white;
-  border: 1px solid red;
+  outline: none !important;
+  color: red !important;
+  background-color: red !important;
+  color: white !important;
+  border: 1px solid red !important;
 }
 @media (max-width: 463px) {
   .btnDelete {

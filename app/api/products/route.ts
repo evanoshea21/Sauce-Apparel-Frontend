@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import type { Categories, Product, ProductData } from "@/scripts/Types";
 import prisma from "@/lib/prismaClient";
-import { categoryArr } from "@/scripts/Types";
 
 type ProductAlone = Omit<Product, "Flavors_Inventory">;
 interface CreateProduct {
@@ -27,6 +26,7 @@ interface DeleteProduct {
 }
 
 export async function POST(req: NextRequest) {
+  // return NextResponse.json([]);
   const reqBody: CreateProduct | ReadProduct | UpdateProduct = await req.json();
 
   // CREATE

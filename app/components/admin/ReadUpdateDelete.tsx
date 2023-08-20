@@ -443,17 +443,19 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
           </div>
           <div className={classes.sampleView}>
             <div style={{ textAlign: "center" }}>Sample View:</div>
-            <ProductCard
-              product={{
-                name,
-                unitPrice,
-                description,
-                imageUrl,
-                salesPrice,
-                category,
-              }}
-              isSample={true}
-            />
+            <div style={{ maxWidth: "300px" }}>
+              <ProductCard
+                product={{
+                  name,
+                  unitPrice,
+                  description,
+                  imageUrl,
+                  salesPrice,
+                  category,
+                }}
+                isSample={true}
+              />
+            </div>
           </div>
         </div>
       )}

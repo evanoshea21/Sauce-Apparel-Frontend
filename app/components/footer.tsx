@@ -52,16 +52,16 @@ const Footer = () => {
         <div className={classes.col3}>
           <h4>Company</h4>
           <a href="">About Us</a>
-          {/* <a href="">Contact Us</a>
-          <a href="">Meet the Team</a> */}
+          <a href="">Contact Us</a>
+          <a href="">Meet the Team</a>
           <a href="">Jobs</a>
         </div>
-        <div className={classes.col4}>
+        {/* <div className={classes.col4}>
           <h4>Information</h4>
           <a href="">Promotions</a>
           <a href="">Affiliate Program</a>
           <a href="">Testimonials</a>
-        </div>
+        </div> */}
       </div>
     </div>
   );

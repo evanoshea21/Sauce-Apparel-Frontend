@@ -3,24 +3,26 @@ import ProductGrid from "./components/ProductGrid";
 import ProductSlider from "./components/ProductSlider";
 import axios from "axios";
 import { ProductData, Product } from "@/scripts/Types";
+import { axiosCall } from "./utils";
 
-export const revalidate = 1800;
+export const revalidate = 12;
 
 export default async function Home() {
   // get ALL products, show them below
-  let response;
-  try {
-    response = await axios({
-      url: "http://localhost:3000/api/products",
-      method: "POST",
-      data: {
-        method: "read",
-      },
-    });
-  } catch (e) {
-    console.error("Error fetching products: ", e);
-  }
-  const products: Product[] | ProductData[] = response?.data;
+
+  const response = await axiosCall({
+    url: `http://localhost:3000/api/products`,
+    method: "POST",
+    data: {
+      method: "read",
+    },
+  });
+
+  const products: Product[] | ProductData[] = response;
+
+  // console.log("Producst at /: =======\n", products);
+
+  if (!products) return <></>;
 
   return (
     <>

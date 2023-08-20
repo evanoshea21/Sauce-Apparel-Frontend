@@ -1,8 +1,9 @@
 import axios from "axios";
 import type { Product } from "@/scripts/Types";
 import ProductGrid from "@/app/components/ProductGrid";
+import { axiosCall } from "@/app/utils";
 
-export const revalidate = 1800;
+export const revalidate = 12;
 
 interface Props {
   params: any;
@@ -10,9 +11,9 @@ interface Props {
 
 export default async function CategoryPage({ params }: Props) {
   let response;
-  console.log("Category: ", params.categoryName.replace("-", " "));
+  // console.log("Category: ", params.categoryName.replace("-", " "));
   try {
-    response = await axios({
+    response = await axiosCall({
       url: "http://localhost:3000/api/products",
       method: "POST",
       data: {
@@ -24,7 +25,7 @@ export default async function CategoryPage({ params }: Props) {
     console.log("Issue getting productDetails: ", e);
   }
 
-  const products: Product[] = response?.data;
+  const products: Product[] = response;
 
   if (!products) {
     return <>Issue loading products for Category</>;

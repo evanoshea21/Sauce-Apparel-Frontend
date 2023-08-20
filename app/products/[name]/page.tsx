@@ -5,8 +5,9 @@ import ConfigAddToCart from "./ConfigAddToCart";
 import classes from "@/styles/DetailsPage.module.css";
 import { roundPrice } from "@/app/utils";
 import { determineColor } from "@/app/components/ProductCard";
+import { axiosCall } from "@/app/utils";
 
-export const revalidate = 1800;
+export const revalidate = 12;
 
 interface Props {
   params: any;
@@ -17,7 +18,7 @@ export default async function ProductDetails({ params }: Props) {
   let newName = name.replace("%26", "&");
   let response;
   try {
-    response = await axios({
+    response = await axiosCall({
       url: "http://localhost:3000/api/products",
       method: "POST",
       data: {
@@ -30,7 +31,7 @@ export default async function ProductDetails({ params }: Props) {
     console.log("Issue getting productDetails: ", e);
   }
 
-  const product: Product = response?.data[0];
+  const product: Product = response[0];
 
   if (!product) {
     return <>Issue loading product</>;

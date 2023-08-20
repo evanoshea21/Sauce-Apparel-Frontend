@@ -8,7 +8,7 @@ import GithubProvider from "next-auth/providers/github";
 // import FacebookProvider from "next-auth/providers/facebook";
 import GoogleProvider from "next-auth/providers/google";
 
-export const authOptions: NextAuthOptions = {
+const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     GithubProvider({
@@ -25,7 +25,7 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async session({ session, token, user }) {
+    async session({ session, user }) {
       // Send properties to the client, like an access_token and user id from a provider.
       // console.log(
       //   "Session stuff=======\n",
