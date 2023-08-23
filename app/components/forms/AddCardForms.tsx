@@ -18,7 +18,7 @@ interface BillToProps {
   setState: React.Dispatch<React.SetStateAction<string>>;
   setZip: React.Dispatch<React.SetStateAction<string>>;
   setPhone: React.Dispatch<React.SetStateAction<string>>;
-  defaultValues?: Address;
+  defaultValues?: any;
 }
 
 export function CreditCardForm(props: CreditCardProps) {
