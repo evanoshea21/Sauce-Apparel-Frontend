@@ -1,4 +1,3 @@
-import axios from "axios";
 import type { Product } from "@/scripts/Types";
 import ProductGrid from "@/app/components/ProductGrid";
 import { axiosCall } from "@/app/utils";
