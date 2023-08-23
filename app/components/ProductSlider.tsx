@@ -5,12 +5,30 @@ import ProductCard from "./ProductCard";
 
 interface Props {
   products: Product[] | ProductData[];
+  title: string;
 }
 
-export default async function ProductSlider({ products }: Props) {
+export default async function ProductSlider({ products, title }: Props) {
   return (
     <div className={classes.sliderMain}>
-      {/* <h1>Vapes For You!</h1> */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "5px",
+          margin: "20px 0 10px 0",
+        }}
+      >
+        <h1>{title}</h1>
+        <div
+          style={{
+            width: "140px",
+            height: "3px",
+            backgroundColor: "green",
+            borderRadius: "20px",
+          }}
+        ></div>
+      </div>
       <div className={classes.boxForFade}>
         <div className={classes.sliderDisplay}>
           {products.map((product) => {

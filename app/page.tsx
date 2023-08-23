@@ -17,8 +17,17 @@ export default async function Home() {
       method: "read",
     },
   });
+  const response2 = await axiosCall({
+    url: `${process.env.NEXT_PUBLIC_SDK_SERVER_BASE_URL}/products`,
+    method: "POST",
+    data: {
+      method: "read",
+      isFeatured: true,
+    },
+  });
 
   const products: Product[] | ProductData[] = response;
+  const products2: Product[] | ProductData[] = response2;
 
   // console.log("Producst at /: =======\n", products);
 
@@ -28,8 +37,9 @@ export default async function Home() {
     <>
       {/* <Navbar /> */}
       <div className={classes.main}>
+        <ProductSlider title="Featured" products={products2} />
+        <h1 style={{ textAlign: "center" }}>Shop All</h1>
         <ProductGrid products={products} />
-        <ProductSlider products={products} />
       </div>
     </>
   );
