@@ -4,13 +4,13 @@ import classes from "@/styles/Checkout.module.css";
 import Cart from "./Cart";
 import Payment from "./Payment";
 import CheckoutBox from "./CheckoutBox";
-import { signOut } from "next-auth/react";
+// import { signOut } from "next-auth/react";
 import type { InvIssues } from "./CheckoutBox";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import type { GuestPayment } from "./paymentComponents/GuestCard";
-import { getCartItems } from "@/app/utils";
+// import { getCartItems } from "@/app/utils";
 
 export interface Payment {
   paymentProfileId: string;
@@ -37,36 +37,6 @@ export default function CheckoutPage() {
   const [cartIsDefined, setCartIsDefined] = React.useState<boolean>(false);
   const [screen, setScreen] = React.useState<Screens>("loading");
 
-  function refundProfile() {
-    let obj = {
-      refTransId: "80001755520",
-      amount: "10.00",
-      cardNum: "0885",
-      expDate: "XXXX",
-    };
-
-    axios({
-      url: `${process.env.NEXT_PUBLIC_SDK_SERVER_BASE_URL}/refundProfile`,
-      method: "POST",
-      data: obj,
-    })
-      .then((res) => console.log("Refund Res: ", res.data))
-      .catch((e) => console.error("Error refunding: ", e));
-  }
-
-  function chargeCard() {
-    const payload = {
-      cardNumber: "4242424242242",
-    };
-    axios({
-      url: `${process.env.NEXT_PUBLIC_SDK_SERVER_BASE_URL}/chargeCard`,
-      method: "POST",
-      data: payload,
-    })
-      .then((res) => console.log("ChargeCard Res: ", res.data))
-      .catch((e) => console.error("Error refunding: ", e));
-  }
-
   React.useEffect(() => {
     if (status && cartIsDefined) {
       console.log("status");
@@ -78,24 +48,26 @@ export default function CheckoutPage() {
     <>
       {screen === "loading" && (
         <div className={classes.screen}>
-          <img src="https://i.gifer.com/XOsX.gif" width="350px" />
-          <h2>Loading...</h2>
+          {/* <img src="https://i.gifer.com/XOsX.gif" width="350px" /> */}
+          <h2 style={{ color: "black" }}>Loading...</h2>
           {/* <img src="https://i.gifer.com/ZKZg.gif" width="50px" /> */}
         </div>
       )}
       {screen === "sending purchase" && (
         <div className={classes.screen}>
-          <img src="https://i.gifer.com/7Q9s.gif" width="350px" />
-          <h2>Hopefully your transaction goes through...</h2>
+          <img src="https://i.gifer.com/7Q9s.gif" width="200px" />
+          <h2 style={{ marginTop: "0" }}>
+            Hopefully your transaction goes through...
+          </h2>
           <img src="https://i.gifer.com/ZKZg.gif" width="50px" />
         </div>
       )}
       {Array.isArray(screen) && (
         <div className={`${classes.screen} ${classes.success}`}>
-          <img src="https://i.gifer.com/CGQ.gif" width="250px" />
+          <img src="https://i.gifer.com/CGQ.gif" width="200px" />
           <h2>Your Order has been placed!</h2>
           <h3>Order #: {screen[1]}</h3>
-          <p>
+          <p className={classes.screenThankYou}>
             Thank you! At ECigCity we greatly value our patrons as they keep our
             business alive.
           </p>

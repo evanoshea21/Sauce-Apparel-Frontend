@@ -19,6 +19,9 @@
   justify-content: center;
   align-items: center;
 }
+.screen > * {
+  transform: translateY(50px);
+}
 .screen h2 {
   text-align: center;
   color: black;
@@ -32,7 +35,7 @@
 }
 @media (max-width: 300px) {
   .screen p {
-    max-width: 280px;
+    display: none;
   }
 }
 .success {
