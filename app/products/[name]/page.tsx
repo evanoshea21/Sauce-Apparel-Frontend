@@ -7,7 +7,7 @@ import { roundPrice } from "@/app/utils";
 import { determineColor } from "@/app/components/ProductCard";
 import { axiosCall } from "@/app/utils";
 
-export const revalidate = 12;
+export const revalidate = 60;
 
 interface Props {
   params: any;
@@ -19,7 +19,7 @@ export default async function ProductDetails({ params }: Props) {
   let response;
   try {
     response = await axiosCall({
-      url: "http://localhost:3000/api/products",
+      url: `${process.env.NEXT_PUBLIC_SDK_SERVER_BASE_URL}/products`,
       method: "POST",
       data: {
         method: "read",

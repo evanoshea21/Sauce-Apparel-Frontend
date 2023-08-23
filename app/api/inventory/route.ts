@@ -13,7 +13,7 @@ interface UnHoldInventoryRequest {
 export async function POST(req: NextRequest) {
   const { method, items }: HoldInventoryRequest | UnHoldInventoryRequest =
     await req.json();
-  console.log("inv items: ", items); // these are the cart items
+  // console.log("inv items: ", items); // these are the cart items
   // return NextResponse.json({ server: "pong" });
 
   if (method === "hold-inv") {
@@ -37,10 +37,20 @@ export async function POST(req: NextRequest) {
       const dbResponses = await Promise.all(checkStockPromises);
       //
       // FOR EACH dbResponse, ADD any Insufficient Funds
-      dbResponses.forEach((dbItem) => {
+      dbResponses.forEach((dbItem, i: number) => {
         let correspondingItem = items.find((item) => item.sku === dbItem?.sku);
         // if inventory is less than requested quantity OR if it will bring inventory below 0, add to error inv
-        if (
+
+        // could be NULL (product DNE anymore)
+        if (!dbItem && !correspondingItem) {
+          // if both undefined, means product DNE anymore
+          // we want to send back (errorInv) with
+          // {sku: items[i].sku, availableInv: 0}
+          errorInv.push({
+            sku: items[i].sku,
+            availableInv: 0,
+          });
+        } else if (
           (dbItem?.inventory ?? 0) < (correspondingItem?.quantity ?? 0) ||
           (dbItem?.inventory ?? 0) - (correspondingItem?.quantity ?? 0) < 0
         ) {
@@ -53,7 +63,7 @@ export async function POST(req: NextRequest) {
       //
       //
       if (errorInv.length !== 0) {
-        console.log("errorInv: ", errorInv);
+        // console.log("errorInv: ", errorInv);
         return NextResponse.json(
           { message: "insufficient inventory", stock: errorInv },
           { status: 500 }

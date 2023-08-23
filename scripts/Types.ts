@@ -5,6 +5,7 @@ export type Categories =
   | "Salt Nic"
   | "Other"
   | null;
+
 export const categoryArr: Categories[] = [
   "Disposable",
   "60ml",
