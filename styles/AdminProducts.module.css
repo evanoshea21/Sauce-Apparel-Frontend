@@ -181,7 +181,7 @@
 .flavors {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   /* border: 1px solid red; */
   margin-bottom: 40px;
   /* margin-left: auto;

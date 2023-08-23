@@ -701,7 +701,13 @@ function FlavorsCrud({
         </div>
       )}
 
-      <div className={classes.addFlavorForm}>
+      <div
+        style={{
+          position: "sticky",
+          top: "20px",
+        }}
+        className={classes.addFlavorForm}
+      >
         <FlavorsInventoryForm
           productId={productData.id}
           setFlavorsInvArr={setFlavorsInvArr}
