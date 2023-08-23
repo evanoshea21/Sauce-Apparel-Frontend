@@ -250,7 +250,7 @@ export default function Payment({
 async function getCustomerProfile(id: string): Promise<CustomerProfile> {
   return new Promise((resolve, reject) => {
     axios({
-      url: "http://localhost:1400/getprofile",
+      url: `${process.env.NEXT_PUBLIC_SDK_SERVER_BASE_URL}/getprofile`,
       method: "POST",
       data: { id },
     })

@@ -40,7 +40,7 @@ export default function ChooseCard({
   function deleteProfile() {
     if (!customerProfile) return;
     axios({
-      url: "http://localhost:1400/deleteprofile",
+      url: `${process.env.NEXT_PUBLIC_SDK_SERVER_BASE_URL}/deleteprofile`,
       method: "DELETE",
       data: {
         customerId: customerProfile.customerProfileId,

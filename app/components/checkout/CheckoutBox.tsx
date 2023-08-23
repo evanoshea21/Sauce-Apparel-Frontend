@@ -178,7 +178,7 @@ export default function CheckoutBtn({
 
       //[3] CHARGE PROFILE
       const { data } = await axios({
-        url: "http://localhost:1400/chargeProfile",
+        url: `${process.env.NEXT_PUBLIC_SDK_SERVER_BASE_URL}/chargeProfile`,
         method: "POST",
         data: dataPayload,
       });
@@ -295,7 +295,7 @@ export default function CheckoutBtn({
 
       //[3] CHARGE GUEST's CARD
       const { data } = await axios({
-        url: "http://localhost:1400/chargeCard",
+        url: `${process.env.NEXT_PUBLIC_SDK_SERVER_BASE_URL}/chargeCard`,
         method: "POST",
         data: guestPaymentPayload,
       });

@@ -78,7 +78,7 @@ export default function AddCardProfile({
     setDisplayState("loadingCP");
     if (existingCustomerProfile) {
       let addCardReqConfig: AddCardRequest = {
-        url: "http://localhost:1400/addCard",
+        url: `${process.env.NEXT_PUBLIC_SDK_SERVER_BASE_URL}/addCard`,
         method: "POST",
         data: {
           customerProfileId: existingCustomerProfile.customerProfileId,
@@ -131,7 +131,7 @@ export default function AddCardProfile({
       };
       // send form data to SDK create profile
       axios({
-        url: "http://localhost:1400/createprofile",
+        url: `${process.env.NEXT_PUBLIC_SDK_SERVER_BASE_URL}/createprofile`,
         method: "POST",
         data: formData,
       })

@@ -46,7 +46,7 @@ export default function CheckoutPage() {
     };
 
     axios({
-      url: "http://localhost:1400/refundProfile",
+      url: `${process.env.NEXT_PUBLIC_SDK_SERVER_BASE_URL}/refundProfile`,
       method: "POST",
       data: obj,
     })
@@ -59,7 +59,7 @@ export default function CheckoutPage() {
       cardNumber: "4242424242242",
     };
     axios({
-      url: "http://localhost:1400/chargeCard",
+      url: `${process.env.NEXT_PUBLIC_SDK_SERVER_BASE_URL}/chargeCard`,
       method: "POST",
       data: payload,
     })

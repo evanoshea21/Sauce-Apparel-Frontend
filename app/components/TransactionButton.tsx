@@ -11,7 +11,7 @@ import React from "react";
 export default function TransactionButton() {
   function createProfile() {
     axios({
-      url: "http://localhost:1400/createProfile",
+      url: `${process.env.NEXT_PUBLIC_SDK_SERVER_BASE_URL}/createProfile`,
       method: "GET",
     }).then((res) => {
       console.log("response from getProfile:\n ", res.data);
@@ -20,7 +20,7 @@ export default function TransactionButton() {
 
   function getProfile() {
     axios({
-      url: "http://localhost:1400/getprofile",
+      url: `${process.env.NEXT_PUBLIC_SDK_SERVER_BASE_URL}/getprofile`,
       method: "GET",
     }).then((res) => {
       console.log("response from getProfile:\n ", res.data);
@@ -29,7 +29,7 @@ export default function TransactionButton() {
 
   function getPaymentProfile() {
     axios({
-      url: "http://localhost:1400/getpaymentprofile",
+      url: `${process.env.NEXT_PUBLIC_SDK_SERVER_BASE_URL}/getpaymentprofile`,
       method: "GET",
     }).then((res) => {
       console.log("response from getPaymentProfile:\n ", res.data);
@@ -37,7 +37,7 @@ export default function TransactionButton() {
   }
   function chargePaymentProfile() {
     axios({
-      url: "http://localhost:1400/chargeProfile",
+      url: `${process.env.NEXT_PUBLIC_SDK_SERVER_BASE_URL}/chargeProfile`,
       method: "GET",
     }).then((res) => {
       console.log("response from chargeProfile:\n ", res.data);
@@ -45,7 +45,7 @@ export default function TransactionButton() {
   }
   function addCardToProfile() {
     axios({
-      url: "http://localhost:1400/addCard",
+      url: `${process.env.NEXT_PUBLIC_SDK_SERVER_BASE_URL}/addCard`,
       method: "GET",
     }).then((res) => {
       console.log("response from addCard:\n ", res.data);
