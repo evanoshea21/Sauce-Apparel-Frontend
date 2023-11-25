@@ -21,6 +21,14 @@
   position: relative;
   cursor: pointer;
 }
+.backClose {
+  /* background-color: rgba(128, 128, 128, 0.583); */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+}
 .savedNavDropdown {
   position: absolute;
   background-color: white;

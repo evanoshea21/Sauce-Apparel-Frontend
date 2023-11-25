@@ -30,6 +30,9 @@ export default function Dropdown({ values, handleChange }: Props) {
   return (
     <div className={classes.main}>
       <span>Select Size</span>
+      {open && (
+        <div onClick={() => setOpen(false)} className={classes.backClose}></div>
+      )}
       <div onClick={() => setOpen((prev) => !prev)} className={classes.select}>
         <div
           style={{

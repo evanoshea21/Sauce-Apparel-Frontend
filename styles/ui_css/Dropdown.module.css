@@ -31,6 +31,15 @@
   border-radius: 5px;
 }
 
+.backClose {
+  /* background-color: rgba(128, 128, 128, 0.583); */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
 .fade2 {
   background-color: blue;
   position: absolute;

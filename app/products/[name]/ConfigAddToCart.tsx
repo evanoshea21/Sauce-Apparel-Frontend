@@ -129,6 +129,8 @@ export default function AddToCart({ product }: Props) {
         <div
           style={{
             backgroundColor: chosenSize.length !== 0 ? "" : "grey",
+            fontSize: ".95em",
+            padding: ".8em 2em",
           }}
           className={classes2.addToCartBtn}
           onClick={addItemToCart}

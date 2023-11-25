@@ -102,73 +102,83 @@ export function SavedNav() {
   }
 
   return (
-    <div
-      onClick={() => setIsOpen((prev) => !prev)}
-      className={`${navClasses.saved} ${classes.savedNav}`}
-    >
-      {savedItemsGlobal.length > 0 ? (
-        <Badge color="primary" badgeContent={savedItemsGlobal.length}>
-          <FavoriteIcon className={navClasses.icon} />
-        </Badge>
-      ) : (
-        <FavoriteBorderIcon className={navClasses.icon} />
-      )}
+    <>
       {isOpen && (
-        <div className={classes.savedNavDropdown}>
-          {savedArr.map((item, i) => {
-            return (
-              <div key={`${item.name}-${i}`}>
-                <div
-                  onClick={() => {
-                    router.push(`/products/${item.name.split(" ").join("-")}`);
-                  }}
-                  className={classes.savedNavRow}
-                >
-                  <div className={classes.imgBox}>
-                    <img src={item.img} alt="image" />
-                  </div>
-                  <span>
-                    {item.name.length > 30
-                      ? item.name.slice(0, 30) + "..."
-                      : item.name}
-                  </span>
-                  <div
-                    style={{
-                      paddingLeft: "8px",
-                      paddingRight: "5px",
-                      // border: "1px solid red",
-                      height: "70px",
-                      color: "red",
-                      display: "flex",
-                      alignItems: "center",
-                    }}
-                    onClick={(e) => removeSaved(e, item.name)}
-                  >
-                    <DeleteForeverIcon />
-                  </div>
-                </div>
-                {savedArr.length > 1 && (
-                  <div className={classes.savedNavBorder}></div>
-                )}
-              </div>
-            );
-          })}
-          {savedArr.length === 0 && (
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                height: "80px",
-                color: "grey",
-              }}
-            >
-              No items saved
-            </div>
-          )}
-        </div>
+        <div
+          onClick={() => setIsOpen(false)}
+          className={classes.backClose}
+        ></div>
       )}
-    </div>
+      <div
+        onClick={() => setIsOpen((prev) => !prev)}
+        className={`${navClasses.saved} ${classes.savedNav}`}
+      >
+        {savedItemsGlobal.length > 0 ? (
+          <Badge color="primary" badgeContent={savedItemsGlobal.length}>
+            <FavoriteIcon className={navClasses.icon} />
+          </Badge>
+        ) : (
+          <FavoriteBorderIcon className={navClasses.icon} />
+        )}
+        {isOpen && (
+          <div className={classes.savedNavDropdown}>
+            {savedArr.map((item, i) => {
+              return (
+                <div key={`${item.name}-${i}`}>
+                  <div
+                    onClick={() => {
+                      router.push(
+                        `/products/${item.name.split(" ").join("-")}`
+                      );
+                    }}
+                    className={classes.savedNavRow}
+                  >
+                    <div className={classes.imgBox}>
+                      <img src={item.img} alt="image" />
+                    </div>
+                    <span>
+                      {item.name.length > 30
+                        ? item.name.slice(0, 30) + "..."
+                        : item.name}
+                    </span>
+                    <div
+                      style={{
+                        paddingLeft: "8px",
+                        paddingRight: "5px",
+                        // border: "1px solid red",
+                        height: "70px",
+                        color: "red",
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                      onClick={(e) => removeSaved(e, item.name)}
+                    >
+                      <DeleteForeverIcon />
+                    </div>
+                  </div>
+                  {savedArr.length > 1 && (
+                    <div className={classes.savedNavBorder}></div>
+                  )}
+                </div>
+              );
+            })}
+            {savedArr.length === 0 && (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: "80px",
+                  color: "grey",
+                }}
+              >
+                No items saved
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </>
   );
 }
 
