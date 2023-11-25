@@ -13,7 +13,7 @@ import Chip from "@mui/material/Chip";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import { flavorsHasLowInventory } from "@/app/utils";
+import { sizesHasLowInventory } from "@/app/utils";
 
 import { categoryArr as categoryNames } from "@/scripts/Types";
 const ITEM_HEIGHT = 48;
@@ -71,8 +71,8 @@ export default function FilterSearch({
       }
       if (
         lowInv &&
-        product.Flavors_Inventory &&
-        !flavorsHasLowInventory(product.Flavors_Inventory, 8)
+        product.Sizes_Inventory &&
+        !sizesHasLowInventory(product.Sizes_Inventory, 8)
       ) {
         continue;
       }

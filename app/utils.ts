@@ -1,4 +1,4 @@
-import type { CartItem, SavedItem, FlavorsInventoryObj } from "@/scripts/Types";
+import type { CartItem, SavedItem, SizesInventoryObj } from "@/scripts/Types";
 
 export function getCartItems() {
   if (typeof window === "undefined") return [];
@@ -85,14 +85,14 @@ export function isValidPrice(input: string | number): boolean {
   return true;
 }
 
-export function flavorsHasLowInventory(
-  flavorsInv: FlavorsInventoryObj[],
+export function sizesHasLowInventory(
+  sizesInv: SizesInventoryObj[],
   lessThanCount: number
 ): boolean {
   let hasLowInv: boolean = false;
 
-  flavorsInv.forEach((flavorObj: FlavorsInventoryObj) => {
-    if (flavorObj.inventory < lessThanCount) {
+  sizesInv.forEach((sizeObj: SizesInventoryObj) => {
+    if (sizeObj.inventory < lessThanCount) {
       hasLowInv = true;
     }
   });
@@ -177,4 +177,28 @@ export async function axiosCall(config: Config) {
 
   const data = await response.json();
   return data;
+}
+
+export function sortNormalSizes(sizeArr: string[]): string[] {
+  let weights: { [key: string]: number } = {
+    "one size": 1,
+    xxs: 2,
+    xs: 3,
+    s: 4,
+    m: 5,
+    xl: 6,
+    xxl: 7,
+    small: 8,
+    medium: 9,
+    large: 10,
+  };
+
+  let sortedArray = sizeArr.sort((a, b) => {
+    let aL = a.toLowerCase();
+    let bL = b.toLowerCase();
+
+    return weights[aL] - weights[bL];
+  });
+
+  return sortedArray;
 }

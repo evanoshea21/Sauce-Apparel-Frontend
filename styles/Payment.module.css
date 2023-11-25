@@ -97,15 +97,18 @@
   flex-direction: column;
   /* justify-content: center; */
 }
+
 .githubBtn,
 .facebookBtn,
 .googleBtn {
-  width: 200px;
-  margin: 10px auto;
-  padding: 15px;
-  border-radius: 20px;
+  width: 220px;
+  height: 50px;
+  margin: 5px auto;
+  padding: 12px 15px;
+  /* border-radius: 20px; */
   border: 0px solid grey;
   cursor: pointer;
+  /* font-weight: 200; */
 }
 
 .githubBtn {
@@ -113,12 +116,26 @@
   color: white;
 }
 .googleBtn {
-  background-color: rgb(228, 31, 31);
-  color: white;
+  background-color: white;
+  color: grey;
+  border: 1px solid grey;
 }
 .facebookBtn {
-  background-color: rgb(13, 82, 210);
+  background-color: #3c77e9;
   color: white;
+}
+.githubBtn,
+.facebookBtn,
+.googleBtn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.fbIcon,
+.googleIcon {
+  /* height: 100%; */
+  width: 25px;
+  margin-right: 7px;
 }
 
 .divider {
@@ -145,7 +162,7 @@
   outline: none;
   padding: 15px 20px;
   font-size: 1rem;
-  background-color: green;
+  background-color: rgb(55, 64, 57);
   color: white;
   border-radius: 30px;
   cursor: pointer;

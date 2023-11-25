@@ -27,26 +27,30 @@ export default function Navbar() {
               <img
                 width="100%"
                 height="100%"
-                src="https://logomakercdn.truic.com/ux-flow/industry/vape-shop-meta.png"
+                src="https://t4.ftcdn.net/jpg/03/21/98/71/360_F_321987179_mJndthZlqmXBXAAYOXE6pMJaHVlqxufa.jpg"
                 alt="logo"
               />
               {/* <img width="100%" height="100%" src="/vape-logo-1.png" alt="logo" /> */}
             </div>
-            <h1>ECigCity</h1>
+            <h1>
+              Sauce
+              <br />
+              Apparel
+            </h1>
           </div>
         </Link>
         <ul className={classes.links}>
           <li>
-            <Link href="/products/category/Disposable">Disposable</Link>
+            <Link href="/products/category/Tees">Tees</Link>
           </li>
           <li>
-            <Link href="/products/category/Salt-Nic">Salt Nic</Link>
+            <Link href="/products/category/Pants">Pants</Link>
           </li>
           <li>
-            <Link href="/products/category/60ml">60ml</Link>
+            <Link href="/products/category/Hoodies">Hoodies</Link>
           </li>
           <li>
-            <Link href="/products/category/120ml">120ml</Link>
+            <Link href="/products/category/Hats">Hats</Link>
           </li>
         </ul>
         <div className={classes.rightBtns}>

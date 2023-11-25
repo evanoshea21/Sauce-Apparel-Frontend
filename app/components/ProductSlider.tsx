@@ -9,6 +9,9 @@ interface Props {
 }
 
 export default async function ProductSlider({ products, title }: Props) {
+  if (Array.isArray(products) && products.length === 0) {
+    return <></>;
+  }
   return (
     <div className={classes.sliderMain}>
       <div
@@ -24,7 +27,7 @@ export default async function ProductSlider({ products, title }: Props) {
           style={{
             width: "140px",
             height: "3px",
-            backgroundColor: "green",
+            backgroundColor: "rgb(55, 64, 57)",
             borderRadius: "20px",
           }}
         ></div>

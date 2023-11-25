@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
 
     items.forEach((item) => {
       checkStockPromises.push(
-        prisma.flavors_Inventory.findUnique({
+        prisma.sizes_Inventory.findUnique({
           where: { sku: item.sku },
           select: {
             sku: true,
@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
         const decrPromises: any[] = [];
         items.forEach((item) => {
           decrPromises.push(
-            prisma.flavors_Inventory.update({
+            prisma.sizes_Inventory.update({
               where: {
                 sku: item.sku,
               },
@@ -99,7 +99,7 @@ export async function POST(req: NextRequest) {
     const incrPromises: any[] = [];
     items.forEach((item) => {
       incrPromises.push(
-        prisma.flavors_Inventory.update({
+        prisma.sizes_Inventory.update({
           where: {
             sku: item.sku,
           },

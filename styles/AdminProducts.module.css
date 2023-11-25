@@ -40,7 +40,7 @@
 }
 .title h2 {
   flex: 1;
-  /* border: 1px solid green; */
+  /* border: 1px solid rgb(55, 64, 57); */
   /* inline-size: 300px; */
   /* overflow-wrap: break-word; */
 }
@@ -177,8 +177,8 @@
   }
 }
 
-/* FLAVOR ROW (CRUD) */
-.flavors {
+/* SIZE ROW (CRUD) */
+.sizes {
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -188,20 +188,20 @@
   margin-right: auto; */
 }
 @media (max-width: 900px) {
-  .flavors {
+  .sizes {
     flex-direction: column;
   }
 }
-.flavorRows {
+.sizeRows {
   padding: 20px;
 }
-.flavorRow {
+.sizeRow {
   display: flex;
   align-items: center;
   margin-top: 10px;
   margin-bottom: 10px;
 }
-.flavorName {
+.sizeName {
   /* background-color: rgb(125, 159, 190); */
   /* border: 1px solid red; */
   /* width: 180px; */
@@ -221,18 +221,18 @@
 .inventoryInput:focus {
   outline: none;
 }
-.flavorDelete {
+.sizeDelete {
   background-color: white !important;
   margin: 4px !important;
   color: red !important;
   border: 1px solid red !important;
 }
-.flavorDelete:hover {
+.sizeDelete:hover {
   background-color: red !important;
   color: white !important;
 }
 
-.headerFlavor,
+.headerSize,
 .headerInv {
   display: inline-block;
   font-size: 1.2rem;
@@ -242,11 +242,11 @@
   margin-top: 0px;
   margin-bottom: 0px;
 }
-.headerFlavor {
+.headerSize {
   width: 180px;
 }
 
-.addFlavorBtn {
+.addSizeBtn {
   margin-top: 10px !important;
 }
 

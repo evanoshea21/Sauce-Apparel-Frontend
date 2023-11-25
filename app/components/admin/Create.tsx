@@ -5,11 +5,8 @@ import classes from "@/styles/Admin.module.css";
 import type { Categories, Product } from "@/scripts/Types";
 import Button from "@mui/material/Button";
 import { isValidPrice, isPositiveInteger } from "@/app/utils";
-import type { FlavorsInventoryObj } from "@/scripts/Types";
-import {
-  ProductForm,
-  FlavorsInventoryForm,
-} from "../forms/ProductFlavorsForms";
+import type { SizesInventoryObj } from "@/scripts/Types";
+import { ProductForm, SizesInventoryForm } from "../forms/ProductSizesForms";
 interface CreateProps {
   formValues?: Product;
   setRefreshList: React.Dispatch<React.SetStateAction<boolean>>;
@@ -34,9 +31,7 @@ export default function Create({
   const [salesPrice, setSalesPrice] = React.useState<string | null>(null);
   const [category, setCategory] = React.useState<string | null>("Other");
   const [isFeatured, setIsFeatured] = React.useState<boolean>(false);
-  const [flavorsInvArr, setFlavorsInvArr] = React.useState<
-    FlavorsInventoryObj[]
-  >([]);
+  const [sizesInvArr, setSizesInvArr] = React.useState<SizesInventoryObj[]>([]);
 
   function timeoutSuccess() {
     setTimeout(() => {
@@ -67,42 +62,39 @@ export default function Create({
       return;
     }
 
-    // check for valid Flavor-Inventory Entries
-    console.log("flavors: \n", flavorsInvArr);
-    const validFlavorArr: FlavorsInventoryObj[] = [];
-    const duplicateFlavors: { [key: string]: boolean } = {};
-    for (let i = 0; i < flavorsInvArr.length; i++) {
-      let item = flavorsInvArr[i];
+    // check for valid Size-Inventory Entries
+    console.log("sizes: \n", sizesInvArr);
+    const validSizeArr: SizesInventoryObj[] = [];
+    const duplicateSizes: { [key: string]: boolean } = {};
+    for (let i = 0; i < sizesInvArr.length; i++) {
+      let item = sizesInvArr[i];
       if (!item) continue;
       //if only 1..
-      if (
-        (item.flavor && !item.inventory) ||
-        (!item.flavor && item.inventory)
-      ) {
+      if ((item.size && !item.inventory) || (!item.size && item.inventory)) {
         setErrorMessage(
-          "Every flavor must have a corresponding inventory (that is > 0)."
+          "Every size must have a corresponding inventory (that is > 0)."
         );
         setIsLoadingAjax(false);
         return;
       }
       // if none, skip
-      if (!item.flavor && !item.inventory) continue;
+      if (!item.size && !item.inventory) continue;
       // if 2, but invalid inventory
       if (!isPositiveInteger(item.inventory)) {
         setErrorMessage("Invalid inventory found. Must be positive integer.");
         setIsLoadingAjax(false);
         return;
       }
-      //if duplicate flavor
-      if (duplicateFlavors[item.flavor] !== undefined) {
-        setErrorMessage("Duplicate Flavors found.");
+      //if duplicate size
+      if (duplicateSizes[item.size] !== undefined) {
+        setErrorMessage("Duplicate Sizes found.");
         setIsLoadingAjax(false);
         return;
       } else {
-        duplicateFlavors[item.flavor] = true;
+        duplicateSizes[item.size] = true;
       }
       // else push
-      validFlavorArr.push(item);
+      validSizeArr.push(item);
     }
 
     const dataPayload: Product = {
@@ -113,7 +105,7 @@ export default function Create({
       salesPrice,
       category: category ?? "Other",
       isFeatured,
-      Flavors_Inventory: validFlavorArr,
+      Sizes_Inventory: validSizeArr,
     };
 
     // console.log("Data payload: \n", dataPayload);
@@ -133,7 +125,7 @@ export default function Create({
         console.log("Create Res: ", res.data);
         setRefreshList((prev) => !prev);
         setErrorMessage(undefined);
-        setFlavorsInvArr([]);
+        setSizesInvArr([]);
         setSuccessMessage("Successfully Added!");
         timeoutSuccess();
         setIsLoadingAjax(false);
@@ -172,7 +164,7 @@ export default function Create({
           style={{
             fontSize: "1.1rem",
             padding: "10px 20px",
-            backgroundColor: "green",
+            backgroundColor: "rgb(55, 64, 57)",
             color: "white",
             cursor: "pointer",
           }}
@@ -198,7 +190,11 @@ export default function Create({
           )}
           {successMessage && (
             <p
-              style={{ marginLeft: "20px", color: "green", maxWidth: "400px" }}
+              style={{
+                marginLeft: "20px",
+                color: "rgb(55, 64, 57)",
+                maxWidth: "400px",
+              }}
             >
               {successMessage}
             </p>
@@ -212,7 +208,7 @@ export default function Create({
             {isLoadingAjax ? "Sending.." : "Submit Product"}
           </Button>
         </div>
-        <FlavorsInventoryForm setFlavorsInvArr={setFlavorsInvArr} />
+        <SizesInventoryForm setSizesInvArr={setSizesInvArr} />
       </div>
     </div>
   );

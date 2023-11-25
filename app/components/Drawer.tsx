@@ -3,9 +3,9 @@
 import React from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
-import Button from "@mui/material/Button";
+// import Button from "@mui/material/Button";
 import List from "@mui/material/List";
-import Divider from "@mui/material/Divider";
+// import Divider from "@mui/material/Divider";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
@@ -41,7 +41,7 @@ export default function TemporaryDrawer() {
       onKeyDown={toggleDrawer(false)}
     >
       <List>
-        {["Disposable", "Salt Nic", "60ml", "120ml"].map((text, index) => (
+        {["Tees", "Pants", "Hoodies", "Hats"].map((text, index) => (
           <ListItem key={text} disablePadding>
             <ListItemButton sx={{ m: 0, p: 0 }}>
               {/* <ListItemIcon>

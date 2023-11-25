@@ -39,7 +39,7 @@ export default function QuantitySelect({
       style={{
         maxWidth: "150px",
         flex: "1",
-        // border: "1px solid green",
+        // border: "1px solid rgb(55, 64, 57)",
         zIndex: "100",
       }}
     >

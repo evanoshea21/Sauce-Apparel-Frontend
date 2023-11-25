@@ -90,7 +90,7 @@ export default function CheckoutBtn({
       }
       setButtonProps({
         text: "Order for Pickup",
-        color: "green",
+        color: "rgb(55, 64, 57)",
         cursor: "pointer",
       });
     } else {
@@ -419,7 +419,11 @@ export default function CheckoutBtn({
           Learn More
         </a>
       </div>
-      <p style={{ color: purchaseResponse.success ? "green" : "red" }}>
+      <p
+        style={{
+          color: purchaseResponse.success ? "rgb(55, 64, 57)" : "red",
+        }}
+      >
         {purchaseResponse.text}
       </p>
     </div>

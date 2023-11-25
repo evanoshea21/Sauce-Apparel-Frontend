@@ -4,7 +4,7 @@
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 80px;
-  /* border: 1px solid rgba(128, 128, 128, 0.226); */
+  /* border: 1px solid rgba(235, 7, 7, 0.905); */
   display: flex;
 }
 .main > * {
@@ -20,11 +20,11 @@
   height: 100%;
   object-fit: contain;
 }
-.chooseFlavorText {
+.chooseSizeText {
   margin-top: 15px;
   margin-bottom: 0px;
 }
-.configFlavorAndQuantity {
+.configSizeAndQuantity {
   display: flex;
   gap: 30px;
   flex-wrap: wrap;
@@ -52,7 +52,7 @@
   transform: rotate(-12deg);
 }
 @media (max-width: 910px) {
-  .configFlavorAndQuantity {
+  .configSizeAndQuantity {
     /* flex-direction: column; */
   }
 }
@@ -60,10 +60,10 @@
   .main {
     flex-direction: column;
   }
-  .chooseFlavorText {
+  .chooseSizeText {
     margin: 0;
   }
-  .configFlavorAndQuantity {
+  .configSizeAndQuantity {
     margin-top: 10px;
   }
 

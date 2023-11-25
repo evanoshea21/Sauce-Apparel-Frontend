@@ -5,16 +5,13 @@ import axios from "axios";
 import {
   isValidPrice,
   isPositiveInteger,
-  flavorsHasLowInventory,
+  sizesHasLowInventory,
   roundPrice,
 } from "@/app/utils";
 import classes from "@/styles/AdminProducts.module.css";
-import {
-  FlavorsInventoryForm,
-  ProductForm,
-} from "../forms/ProductFlavorsForms";
+import { SizesInventoryForm, ProductForm } from "../forms/ProductSizesForms";
 import StarIcon from "@mui/icons-material/Star";
-import type { FlavorsInventoryObj } from "@/scripts/Types";
+import type { SizesInventoryObj } from "@/scripts/Types";
 import Button from "@mui/material/Button";
 import EditTwoToneIcon from "@mui/icons-material/EditTwoTone";
 import FilterSearch from "./FilterSearch";
@@ -127,7 +124,7 @@ export default function Read() {
           style={{
             fontSize: "1.1rem",
             padding: "10px 20px",
-            backgroundColor: "green",
+            backgroundColor: "rgb(55, 64, 57)",
             color: "white",
             cursor: "pointer",
             textAlign: "center",
@@ -171,7 +168,7 @@ interface ProductRowProps {
 
 function ProductRow({ product, refreshRow }: ProductRowProps) {
   const [display, setDisplay] = React.useState<
-    "product" | "edit product" | "configure flavors"
+    "product" | "edit product" | "configure sizes"
   >("product");
   const [errorMessage, setErrorMessage] = React.useState<string | undefined>();
   const [successMessage, setSuccessMessage] = React.useState<
@@ -360,19 +357,15 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
               variant="outlined"
               onClick={() =>
                 setDisplay(
-                  display === "configure flavors"
-                    ? "product"
-                    : "configure flavors"
+                  display === "configure sizes" ? "product" : "configure sizes"
                 )
               }
             >
-              {display === "configure flavors"
-                ? "Hide Flavors"
-                : "Edit Flavors"}
+              {display === "configure sizes" ? "Hide Sizes" : "Edit Sizes"}
             </Button>
           </div>
-          {product.Flavors_Inventory &&
-            flavorsHasLowInventory(product.Flavors_Inventory, 8) && (
+          {product.Sizes_Inventory &&
+            sizesHasLowInventory(product.Sizes_Inventory, 8) && (
               <p className={classes.lowInvWarning}>Low Inventory Warning</p>
             )}
         </div>
@@ -399,7 +392,7 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
                 imageUrl: product.imageUrl,
 
                 description: product.description,
-                salesPrice: product.salesPrice, // if no flavors
+                salesPrice: product.salesPrice, // if no sizes
                 category: product.category,
                 isFeatured: product.isFeatured,
               }}
@@ -419,7 +412,7 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
               </p>
             )}
             {successMessage && (
-              <p style={{ marginLeft: "30px", color: "green" }}>
+              <p style={{ marginLeft: "30px", color: "rgb(55, 64, 57)" }}>
                 Success: {successMessage}
               </p>
             )}
@@ -459,13 +452,13 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
           </div>
         </div>
       )}
-      {/* SHOW CONFIG FLAVORS */}
-      {display === "configure flavors" && (
-        <div className={`flavorsCRUD-${product.id}`}>
-          <FlavorsCrud
+      {/* SHOW CONFIG SIZES */}
+      {display === "configure sizes" && (
+        <div className={`sizesCRUD-${product.id}`}>
+          <SizesCrud
             refreshRow={refreshRow}
             productData={product}
-            flavors_inventory={product.Flavors_Inventory ?? []}
+            sizes_inventory={product.Sizes_Inventory ?? []}
           />
         </div>
       )}
@@ -473,92 +466,83 @@ function ProductRow({ product, refreshRow }: ProductRowProps) {
   );
 }
 
-interface FlavorsProps {
+interface SizesProps {
   productData: ProductData;
-  flavors_inventory: FlavorsInventoryObj[];
+  sizes_inventory: SizesInventoryObj[];
   refreshRow: (isDelete: boolean, productId: string) => Promise<void>;
 }
 
-function FlavorsCrud({
-  productData,
-  flavors_inventory,
-  refreshRow,
-}: FlavorsProps) {
+function SizesCrud({ productData, sizes_inventory, refreshRow }: SizesProps) {
   const [errorMessage1, setErrorMessage1] = React.useState<
     string | undefined
   >();
   const [errorMessage, setErrorMessage] = React.useState<string | undefined>();
-  const [flavorUpdates, setFlavorUpdates] = React.useState<{
+  const [sizeUpdates, setSizeUpdates] = React.useState<{
     [key: string]: number;
   }>({});
   const [stockResponse, setStockResponse] = React.useState<
     string | undefined
   >();
-  const [flavorsInvArr, setFlavorsInvArr] = React.useState<
-    FlavorsInventoryObj[]
-  >([]);
+  const [sizesInvArr, setSizesInvArr] = React.useState<SizesInventoryObj[]>([]);
   const [isLoadingAjax, setIsLoadingAjax] = React.useState(false);
 
-  function addFlavorsInv() {
+  function addSizesInv() {
     if (isLoadingAjax) return;
     setIsLoadingAjax(true);
-    // check for valid Flavor-Inventory Entries
-    const validFlavorArr: FlavorsInventoryObj[] = [];
-    const duplicateFlavors: { [key: string]: boolean } = {};
-    for (let i = 0; i < flavorsInvArr.length; i++) {
-      let item = flavorsInvArr[i];
+    // check for valid Size-Inventory Entries
+    const validSizeArr: SizesInventoryObj[] = [];
+    const duplicateSizes: { [key: string]: boolean } = {};
+    for (let i = 0; i < sizesInvArr.length; i++) {
+      let item = sizesInvArr[i];
       if (!item) continue;
       //if only 1..
-      if (
-        (item.flavor && !item.inventory) ||
-        (!item.flavor && item.inventory)
-      ) {
-        setErrorMessage("Every flavor must have a corresponding inventory.");
+      if ((item.size && !item.inventory) || (!item.size && item.inventory)) {
+        setErrorMessage("Every size must have a corresponding inventory.");
         setIsLoadingAjax(false);
         return;
       }
       // if none, skip //
-      if (!item.flavor && !item.inventory) continue;
+      if (!item.size && !item.inventory) continue;
       // if 2, but invalid inventory
       if (!isPositiveInteger(item.inventory)) {
         setErrorMessage("Invalid inventory found. Must be positive integer.");
         setIsLoadingAjax(false);
         return;
       }
-      //if duplicate flavor
-      if (duplicateFlavors[item.flavor] !== undefined) {
-        setErrorMessage("Duplicate Flavors found.");
+      //if duplicate size
+      if (duplicateSizes[item.size] !== undefined) {
+        setErrorMessage("Duplicate Sizes found.");
         setIsLoadingAjax(false);
         return;
       } else {
-        duplicateFlavors[item.flavor] = true;
+        duplicateSizes[item.size] = true;
       }
       // else push
-      validFlavorArr.push(item);
+      validSizeArr.push(item);
     }
 
-    console.log("Payload add FlavorsInv: \n", flavorsInvArr);
+    console.log("Payload add SizesInv: \n", sizesInvArr);
 
-    const payload = validFlavorArr;
+    const payload = validSizeArr;
     payload.forEach((row) => {
       row.productId = productData.id || "";
     });
 
     //CREATE
     axios({
-      url: "api/flavor",
+      url: "api/size",
       method: "POST",
       data: { method: "create", data: payload },
     })
       .then((res) => {
         const elems: NodeListOf<HTMLInputElement> = document.querySelectorAll(
-          ".flavorInventoryInput"
+          ".sizeInventoryInput"
         );
         elems.forEach((elem) => (elem.value = ""));
 
-        console.log("added flavor: ", res);
+        console.log("added size: ", res);
         refreshRow(false, productData.id || "");
-        setFlavorsInvArr([]);
+        setSizesInvArr([]);
         setIsLoadingAjax(false);
         setErrorMessage(undefined);
       })
@@ -566,34 +550,34 @@ function FlavorsCrud({
         setIsLoadingAjax(false);
         if (
           e.response.data.error.meta.target ===
-          "Flavors_Inventory_productId_flavor_key"
+          "Sizes_Inventory_productId_size_key"
         ) {
           setErrorMessage(
-            "A Flavor you're trying to add already exists. Try again."
+            "A Size you're trying to add already exists. Try again."
           );
         } else {
-          setErrorMessage("Error adding flavors..");
-          console.error("Error adding flavor: ", e);
+          setErrorMessage("Error adding sizes..");
+          console.error("Error adding size: ", e);
         }
       });
   }
 
-  function deleteFlavor(flavor: string) {
+  function deleteSize(size: string) {
     if (isLoadingAjax) return;
     setIsLoadingAjax(true);
-    // use product.NAME and FLAVOR to delete row
+    // use product.NAME and SIZE to delete row
     axios({
-      url: "api/flavor",
+      url: "api/size",
       method: "DELETE",
-      data: { productId: productData.id, flavor },
+      data: { productId: productData.id, size },
     })
       .then((res) => {
-        console.log("deleted flavor: ", res.data);
+        console.log("deleted size: ", res.data);
         refreshRow(false, productData.id || "");
         setIsLoadingAjax(false);
       })
       .catch((e) => {
-        console.error("Error deleting flavor: ", e);
+        console.error("Error deleting size: ", e);
         setIsLoadingAjax(false);
       });
   }
@@ -603,7 +587,7 @@ function FlavorsCrud({
     setIsLoadingAjax(true);
 
     let validInventory = true;
-    Object.values(flavorUpdates).forEach((inventory) => {
+    Object.values(sizeUpdates).forEach((inventory) => {
       if (!isPositiveInteger(inventory)) {
         validInventory = false;
       }
@@ -615,17 +599,17 @@ function FlavorsCrud({
     }
 
     axios({
-      url: "api/flavor",
+      url: "api/size",
       method: "POST",
       data: {
         method: "update_inventory",
         productId: productData.id,
-        flavorUpdates,
+        sizeUpdates,
       },
     })
       .then((res) => {
         console.log("updated stock: ", res);
-        setFlavorUpdates({});
+        setSizeUpdates({});
         setErrorMessage1(undefined);
         refreshRow(false, productData.id || "");
         setStockResponse("Successfully Updated!");
@@ -641,22 +625,22 @@ function FlavorsCrud({
   }
 
   return (
-    <div className={classes.flavors}>
-      {flavors_inventory.length !== 0 && (
-        <div className={classes.flavorRows}>
-          <h3 className={classes.headerFlavor}>Flavor</h3>
+    <div className={classes.sizes}>
+      {sizes_inventory.length !== 0 && (
+        <div className={classes.sizeRows}>
+          <h3 className={classes.headerSize}>Size</h3>
           <h3 className={classes.headerInv}>Inventory</h3>
-          {Array.isArray(flavors_inventory) &&
-            flavors_inventory.map((item: FlavorsInventoryObj, i: number) => {
+          {Array.isArray(sizes_inventory) &&
+            sizes_inventory.map((item: SizesInventoryObj, i: number) => {
               return (
-                <div className={classes.flavorRow} key={item.sku ?? i}>
+                <div className={classes.sizeRow} key={item.sku ?? i}>
                   <div
                     style={{
                       color: item.inventory < 8 ? "orange" : "",
                     }}
-                    className={classes.flavorName}
+                    className={classes.sizeName}
                   >
-                    {item.flavor}
+                    {item.size}
                     <Tooltip title={`SKU: ${item.sku}`}>
                       <HelpOutlineIcon sx={{ ml: 1, fontSize: 16 }} />
                     </Tooltip>
@@ -667,16 +651,16 @@ function FlavorsCrud({
                     min="0"
                     defaultValue={item.inventory ?? ""}
                     onChange={(e) =>
-                      setFlavorUpdates((prev) => {
-                        prev[item.flavor] = Number(e.target.value);
+                      setSizeUpdates((prev) => {
+                        prev[item.size] = Number(e.target.value);
                         return prev;
                       })
                     }
                   />
                   <Button
-                    className={classes.flavorDelete}
+                    className={classes.sizeDelete}
                     variant="contained"
-                    onClick={() => deleteFlavor(item.flavor)}
+                    onClick={() => deleteSize(item.size)}
                     disabled={isLoadingAjax}
                   >
                     X
@@ -689,7 +673,9 @@ function FlavorsCrud({
             <p style={{ color: "red", maxWidth: "400px" }}>{errorMessage1}</p>
           )}
           {stockResponse && (
-            <p style={{ color: "green", maxWidth: "400px" }}>{stockResponse}</p>
+            <p style={{ color: "rgb(55, 64, 57)", maxWidth: "400px" }}>
+              {stockResponse}
+            </p>
           )}
           <Button
             variant="contained"
@@ -706,11 +692,11 @@ function FlavorsCrud({
           position: "sticky",
           top: "20px",
         }}
-        className={classes.addFlavorForm}
+        className={classes.addSizeForm}
       >
-        <FlavorsInventoryForm
+        <SizesInventoryForm
           productId={productData.id}
-          setFlavorsInvArr={setFlavorsInvArr}
+          setSizesInvArr={setSizesInvArr}
         />
         {errorMessage && (
           <p style={{ marginLeft: "30px", color: "red", maxWidth: "400px" }}>
@@ -718,12 +704,12 @@ function FlavorsCrud({
           </p>
         )}
         <Button
-          className={classes.addFlavorBtn}
+          className={classes.addSizeBtn}
           variant="contained"
-          onClick={addFlavorsInv}
+          onClick={addSizesInv}
           disabled={isLoadingAjax}
         >
-          {isLoadingAjax ? "Sending.." : "Add Flavors"}
+          {isLoadingAjax ? "Sending.." : "Add Sizes"}
         </Button>
       </div>
     </div>

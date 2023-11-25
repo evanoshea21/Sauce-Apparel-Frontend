@@ -6,19 +6,15 @@ const Footer = () => {
   return (
     <div className={classes.main}>
       <div className={classes.left}>
-        <h1>ECigCity</h1>
+        <h1>Sauce Apparel</h1>
         <p>
-          A Vape Shop based out of LA, selling flavored products online for
-          pickup in store.
+          A forward-thinking fashion company bringing you apparel that blends
+          stylish with quality.
         </p>
         <p className={classes.plug}>
           Site made by{" "}
           <a target="_blank" href="https://evanoshea.dev">
             Evan O'Shea
-          </a>{" "}
-          &{" "}
-          <a target="_blank" href="https://evanoshea.dev">
-            Arie
           </a>
         </p>
         <div className={classes.socials}>
@@ -30,7 +26,7 @@ const Footer = () => {
           </Link> */}
         </div>
         <p style={{ margin: "30px 0 0 0" }}>
-          Copyright © ECigCity {new Date().getFullYear()}
+          Copyright © Sauce Apparel {new Date().getFullYear()}
           <br />
           All rights reserved.
         </p>

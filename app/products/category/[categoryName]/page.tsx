@@ -30,16 +30,21 @@ export default async function CategoryPage({ params }: Props) {
     return <>Issue loading products for Category</>;
   }
   return (
-    <div>
+    <div
+      style={{
+        margin: "0 30px",
+        // border: "1px solid red",
+      }}
+    >
       <h1 style={{ textAlign: "center" }}>
-        {params.categoryName.split("-").join(" ")} Vapes
+        {params.categoryName.split("-").join(" ")}
       </h1>
       {products.length > 0 ? (
         <ProductGrid products={products} />
       ) : (
         <>
           <p style={{ textAlign: "center" }}>
-            We currently have no vapes under that category.
+            We currently have no apparel under that category.
           </p>
           <div style={{ height: "70vh" }}></div>
         </>

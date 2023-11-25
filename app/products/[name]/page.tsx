@@ -34,7 +34,11 @@ export default async function ProductDetails({ params }: Props) {
   const product: Product = response[0];
 
   if (!product) {
-    return <>Issue loading product</>;
+    return (
+      <h2 style={{ textAlign: "center", margin: "100px" }}>
+        Couldn't Find Product
+      </h2>
+    );
   }
 
   return (
@@ -68,7 +72,7 @@ export default async function ProductDetails({ params }: Props) {
           ) : (
             <h2>$ {product.unitPrice}</h2>
           )}
-          <h3 className={classes.chooseFlavorText}>Choose a Flavor</h3>
+          <h3 className={classes.chooseSizeText}>Choose a Size</h3>
           <ConfigAddToCart product={product} />
         </div>
       </div>

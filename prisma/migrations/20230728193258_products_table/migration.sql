@@ -3,7 +3,7 @@ CREATE TABLE `Products` (
     `id` VARCHAR(191) NOT NULL,
     `itemId` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
-    `flavor` VARCHAR(191) NOT NULL,
+    `size` VARCHAR(191) NOT NULL,
     `unitPrice` INTEGER NOT NULL,
     `inStock` INTEGER NOT NULL,
     `imageUrl` VARCHAR(191) NOT NULL,

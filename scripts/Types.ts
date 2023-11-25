@@ -1,26 +1,14 @@
-export type Categories =
-  | "Disposable"
-  | "60ml"
-  | "120ml"
-  | "Salt Nic"
-  | "Other"
-  | null;
+export type Categories = "Tees" | "Pants" | "Hoodies" | "Hats" | null;
 
-export const categoryArr: Categories[] = [
-  "Disposable",
-  "60ml",
-  "120ml",
-  "Salt Nic",
-  "Other",
-];
+export const categoryArr: Categories[] = ["Tees", "Pants", "Hoodies", "Hats"];
 export interface CartItem {
   sku: string;
   name: string;
   quantity: string;
   maxQuantity?: string;
-  unitPrice: string; // account for sales price
+  unitPrice: string; // consider sales price
 
-  description: string; // flavor choice, sku
+  description: string; // size choice, sku
   img: string;
 }
 export interface SavedItem {
@@ -29,7 +17,7 @@ export interface SavedItem {
 }
 
 export interface Product extends ProductData {
-  Flavors_Inventory?: FlavorsInventoryObj[];
+  Sizes_Inventory?: SizesInventoryObj[];
 }
 export interface ProductData {
   id?: string; //optional bc CREATE payload doesn't need it
@@ -38,14 +26,14 @@ export interface ProductData {
   imageUrl: string;
 
   description: string | null;
-  salesPrice: string | null; // if no flavors
+  salesPrice: string | null; // if no sizes
   category: string | null;
   isFeatured?: boolean;
 }
 
-export interface FlavorsInventoryObj {
+export interface SizesInventoryObj {
   sku?: string; // don't need for CREATE
-  flavor: string;
+  size: string;
   inventory: number;
   productId: string; // returns for READ; for CREATE, pass empty string
 }

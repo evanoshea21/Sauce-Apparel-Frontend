@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import type { Product, FlavorsInventoryObj, CartItem } from "@/scripts/Types";
+import type { Product, SizesInventoryObj, CartItem } from "@/scripts/Types";
 import { addToCart } from "@/app/utils";
 //MUI
 
@@ -15,7 +15,7 @@ import { Context } from "@/app/Context";
 /*
 Purpose:
 - gather product data (props)
-- hold state for FLAVOR and QUANITY
+- hold state for SIZE and QUANITY
 - transmute data to cartItem + max-quanity
 - add to cart (utils.ts)
 */
@@ -26,27 +26,26 @@ interface Props {
 export default function AddToCart({ product }: Props) {
   const router = useRouter();
   const { refreshCart } = React.useContext(Context);
-  const [chosenFlavor, setChosenFlavor] = React.useState<string>("");
+  const [chosenSize, setChosenSize] = React.useState<string>("");
   const [chosenSku, setChosenSku] = React.useState<string>("");
   const [chosenQuantity, setChosenQuantity] = React.useState<number>(1);
   const [inventory, setInventory] = React.useState<number>();
   const [disabled, setDisabled] = React.useState<boolean>(true);
   const [determinedPrice, setDeterminedPrice] = React.useState<string>("");
 
-  const [flavorsArr, setFlavorsArr] = React.useState<string[]>([]);
+  const [sizesArr, setSizesArr] = React.useState<string[]>([]);
 
   React.useEffect(() => {
-    if (chosenFlavor?.length === 0 || !product.Flavors_Inventory) return;
+    if (chosenSize?.length === 0 || !product.Sizes_Inventory) return;
     setDisabled(false);
     setChosenQuantity(1);
     //set sku, AND inventory (for cart later)
-    let flavorRow: FlavorsInventoryObj | undefined =
-      product.Flavors_Inventory.find(
-        (product) => chosenFlavor === product.flavor
-      );
-    setInventory(Number(flavorRow?.inventory));
-    setChosenSku(flavorRow?.sku ?? "");
-  }, [chosenFlavor]);
+    let sizeRow: SizesInventoryObj | undefined = product.Sizes_Inventory.find(
+      (product) => chosenSize === product.size
+    );
+    setInventory(Number(sizeRow?.inventory));
+    setChosenSku(sizeRow?.sku ?? "");
+  }, [chosenSize]);
 
   React.useEffect(() => {
     if (product) {
@@ -55,27 +54,27 @@ export default function AddToCart({ product }: Props) {
           ? product.salesPrice
           : product.unitPrice
       );
-      // set flavors array (for dropdown)
+      // set sizes array (for dropdown)
       const arr: string[] = [];
-      if (!product.Flavors_Inventory) return;
-      product.Flavors_Inventory.forEach((flavorInv) => {
-        if (flavorInv.inventory > 0) {
-          arr.push(flavorInv.flavor);
+      if (!product.Sizes_Inventory) return;
+      product.Sizes_Inventory.forEach((sizeInv) => {
+        if (sizeInv.inventory > 0) {
+          arr.push(sizeInv.size);
         }
       });
-      setFlavorsArr(arr);
+      setSizesArr(arr);
     }
   }, [product]);
 
   function addItemToCart() {
-    if (chosenFlavor.length === 0) return;
+    if (chosenSize.length === 0) return;
     //transmute data
     const cartItem: CartItem = {
       sku: chosenSku,
       name: product.name,
       quantity: String(chosenQuantity),
       unitPrice: determinedPrice,
-      description: `Flavor: ${chosenFlavor}`,
+      description: `Size: ${chosenSize}`,
       img: product.imageUrl,
       maxQuantity: String(inventory),
     };
@@ -87,7 +86,7 @@ export default function AddToCart({ product }: Props) {
     router.push("/");
   }
 
-  if (flavorsArr.length === 0) {
+  if (sizesArr.length === 0) {
     return (
       <div
         style={{
@@ -103,8 +102,8 @@ export default function AddToCart({ product }: Props) {
 
   return (
     <div>
-      <div className={classes.configFlavorAndQuantity}>
-        <Dropdown handleChange={setChosenFlavor} values={flavorsArr} />
+      <div className={classes.configSizeAndQuantity}>
+        <Dropdown handleChange={setChosenSize} values={sizesArr} />
         <div style={{ zIndex: "0" }}>
           <QSelect
             value={chosenQuantity}
@@ -129,7 +128,7 @@ export default function AddToCart({ product }: Props) {
       <div style={{ display: "flex", gap: "20px", alignItems: "center" }}>
         <div
           style={{
-            backgroundColor: chosenFlavor.length !== 0 ? "" : "grey",
+            backgroundColor: chosenSize.length !== 0 ? "" : "grey",
           }}
           className={classes2.addToCartBtn}
           onClick={addItemToCart}
@@ -147,24 +146,24 @@ export default function AddToCart({ product }: Props) {
   );
 }
 
-/* {product.flavors_inventory.map((flavorInv: FlavorsInventoryObj) => {
+/* {product.sizes_inventory.map((sizeInv: SizesInventoryObj) => {
         return (
           <div
             onClick={() => {
-              setChosenFlavor({
-                sku: flavorInv.sku ?? "",
-                flavor: flavorInv.flavor,
+              setChosenSize({
+                sku: sizeInv.sku ?? "",
+                size: sizeInv.size,
               });
-              setInventory(flavorInv.inventory);
+              setInventory(sizeInv.inventory);
             }}
             style={{
-              border: "1px solid green",
+              border: "1px solid rgb(55, 64, 57)",
               backgroundColor:
-                chosenFlavor.flavor === flavorInv.flavor ? "grey" : "",
+                chosenSize.size === sizeInv.size ? "grey" : "",
             }}
           >
-            <p>Flavor: {flavorInv.flavor}</p>
-            <p>Inventory: {flavorInv.inventory}</p>
+            <p>Size: {sizeInv.size}</p>
+            <p>Inventory: {sizeInv.inventory}</p>
           </div>
         );
       })} */

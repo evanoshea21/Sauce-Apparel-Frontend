@@ -1,6 +1,6 @@
 .returnSignInBtn {
   padding: 10px 20px;
-  background-color: green;
+  background-color: rgb(55, 64, 57);
   font-size: 1.1rem;
   color: white;
   outline: none;
@@ -45,7 +45,7 @@
 .returnBtn {
   outline: none;
   border: none;
-  background-color: green;
+  background-color: rgb(55, 64, 57);
   color: white;
   padding: 15px 20px;
   font-size: 0.95rem;

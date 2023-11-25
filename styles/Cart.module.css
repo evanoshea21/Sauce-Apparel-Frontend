@@ -41,7 +41,7 @@
   border-bottom: 1px solid rgba(218, 218, 218, 0.673);
 }
 .cartRow > * {
-  /* border: 1px solid green; */
+  /* border: 1px solid rgb(55, 64, 57); */
 }
 .product {
   display: flex;
@@ -49,12 +49,12 @@
 
   /* border: 1px solid red; */
 }
-.nameFlavor > * {
+.nameSize > * {
   /* width: 50%; */
   inline-size: 200px;
   overflow-wrap: break-word;
 }
-.nameFlavor p {
+.nameSize p {
   color: rgb(153, 153, 153);
 }
 .imgBoxRow {
@@ -76,7 +76,7 @@
   width: 80px;
   font-size: 1.3rem;
   font-weight: 600;
-  color: green;
+  color: rgb(55, 64, 57);
 }
 .delete {
   width: 50px;
@@ -109,7 +109,7 @@
 }
 .plusMinus {
   font-size: 1.5rem;
-  color: green;
+  color: rgb(55, 64, 57);
   width: 30%;
   height: 100%;
   display: flex;
@@ -128,13 +128,16 @@
 .imgBoxRowSm {
   flex: 1;
   /* border: 1px solid blue; */
-  object-fit: contain;
+  /* object-fit: cover; */
   margin-right: 15px;
   margin-left: 25px;
-  /* border-radius: 20px;
+  border-radius: 20px;
+  /*
   overflow: hidden; */
 }
 .imgBoxRowSm img {
+  border-radius: 18px;
+  object-fit: cover;
   width: 100%;
   max-width: 165px;
   max-height: 165px;
@@ -157,7 +160,7 @@
   align-items: center;
 }
 
-.nameFlavorSm h3 {
+.nameSizeSm h3 {
   font-size: 1.1rem;
   inline-size: 120px;
   overflow-wrap: break-word;
@@ -165,7 +168,7 @@
   margin-bottom: 20px;
   /* border: 1px solid red; */
 }
-.nameFlavorSm p {
+.nameSizeSm p {
   /* border: 1px solid red; */
   font-size: 0.9rem;
   margin: 0;
@@ -196,7 +199,7 @@
 }
 .priceSm {
   font-size: 1.2rem;
-  color: green;
+  color: rgb(55, 64, 57);
 }
 @media (max-width: 470px) {
   .right {
@@ -211,11 +214,11 @@
   }
 }
 @media (min-width: 400px) {
-  .nameFlavorSm h3 {
+  .nameSizeSm h3 {
     font-size: 1.3rem;
     inline-size: 180px;
   }
-  .nameFlavorSm p {
+  .nameSizeSm p {
     font-size: 1rem;
   }
 }

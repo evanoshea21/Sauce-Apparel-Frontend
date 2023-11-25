@@ -1,7 +1,6 @@
 import classes from "@/styles/HomePage.module.css";
 import ProductGrid from "./components/ProductGrid";
 import ProductSlider from "./components/ProductSlider";
-import axios from "axios";
 import { ProductData, Product } from "@/scripts/Types";
 import { axiosCall } from "./utils";
 
@@ -17,7 +16,7 @@ export default async function Home() {
       method: "read",
     },
   });
-  const response2 = await axiosCall({
+  const featuredResponse = await axiosCall({
     url: `${process.env.NEXT_PUBLIC_SDK_SERVER_BASE_URL}/products`,
     method: "POST",
     data: {
@@ -27,7 +26,7 @@ export default async function Home() {
   });
 
   const products: Product[] | ProductData[] = response;
-  const products2: Product[] | ProductData[] = response2;
+  const products2: Product[] | ProductData[] = featuredResponse;
 
   // console.log("Producst at /: =======\n", products);
 
@@ -38,7 +37,7 @@ export default async function Home() {
       {/* <Navbar /> */}
       <div className={classes.main}>
         <ProductSlider title="Featured" products={products2} />
-        <h1 style={{ textAlign: "center" }}>Shop All</h1>
+        <h1 style={{ textAlign: "center", marginTop: "70px" }}>Shop All</h1>
         <ProductGrid products={products} />
       </div>
     </>

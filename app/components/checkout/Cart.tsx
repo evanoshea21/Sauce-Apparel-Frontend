@@ -43,6 +43,7 @@ export default function Cart({
   React.useEffect(() => {
     if (cartItems) {
       setCartIsDefined(true);
+
       // set the Qs state
       let obj: { [key: string]: string } = {};
       cartItems.forEach((item: CartItem) => {
@@ -79,6 +80,7 @@ export default function Cart({
     changeQuantityCart(sku, newQ);
     setCartItems(getCartItems());
     setRefreshCart((prev) => !prev);
+    refreshCart();
   }
 
   if (cartItems.length === 0) {
@@ -89,7 +91,7 @@ export default function Cart({
           <div
             style={{
               padding: "10px 20px",
-              backgroundColor: "green",
+              backgroundColor: "rgb(55, 64, 57)",
               color: "white",
               borderRadius: "5px",
             }}
@@ -116,7 +118,7 @@ export default function Cart({
                 </div>
                 <div className={classes.right}>
                   <div className={classes.top}>
-                    <div className={classes.nameFlavorSm}>
+                    <div className={classes.nameSizeSm}>
                       <h3 onClick={() => console.log(item.sku)}>{item.name}</h3>
                       <p>{item.description.split(":")[1].trim()}</p>
                     </div>
@@ -205,7 +207,7 @@ function ChangeQuantity({
 // <div className={classes.imgBoxRow}>
 //   <img src={item.img} alt="product image" />
 // </div>
-// <div className={classes.nameFlavor}>
+// <div className={classes.nameSize}>
 //   <h3>{item.name}</h3>
 //   <p>{item.description.split(":")[1].trim()}</p>
 // </div>

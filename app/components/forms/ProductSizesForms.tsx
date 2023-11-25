@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import type { FlavorsInventoryObj, ProductData } from "@/scripts/Types";
+import type { SizesInventoryObj, ProductData } from "@/scripts/Types";
 import classes from "@/styles/Admin.module.css";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -57,7 +57,7 @@ export function ProductForm(props: ProductFormProps) {
           <input
             required
             id={`adminProductCreate_name-${isCreateForm ? "create" : "update"}`}
-            placeholder="Flum.."
+            placeholder="White Tee..."
             name="name"
             type="text"
             defaultValue={props.defaultValues?.name ?? ""}
@@ -99,7 +99,7 @@ export function ProductForm(props: ProductFormProps) {
             id={`adminProductCreate_imageUrl-${
               isCreateForm ? "create" : "update"
             }`}
-            placeholder="http://...."
+            placeholder="http://imgur.com/xad92..."
             name="imageUrl"
             type="text"
             defaultValue={props.defaultValues?.imageUrl ?? ""}
@@ -162,7 +162,7 @@ export function ProductForm(props: ProductFormProps) {
             id={`adminProductCreate_description-${
               isCreateForm ? "create" : "update"
             }`}
-            placeholder="Fast-charging and ..."
+            placeholder="Made of Polyester..."
             name="description"
             type="text"
             defaultValue={props.defaultValues?.description ?? ""}
@@ -200,30 +200,30 @@ export function ProductForm(props: ProductFormProps) {
   );
 }
 
-interface FlavorsInventoryProps {
+interface SizesInventoryProps {
   productId?: string;
-  setFlavorsInvArr: React.Dispatch<React.SetStateAction<FlavorsInventoryObj[]>>;
+  setSizesInvArr: React.Dispatch<React.SetStateAction<SizesInventoryObj[]>>;
 }
 
-export function FlavorsInventoryForm(props: FlavorsInventoryProps) {
+export function SizesInventoryForm(props: SizesInventoryProps) {
   const [rowsCount, setRowsCount] = React.useState(4);
 
   function handleChange(rowIndex: number) {
-    // get the i-th input with name flavor/inventory/salesPrice
-    let flavorElem: any = document.querySelector(
-      `#flavor-${rowIndex}-${props.productId ?? "create"}`
+    // get the i-th input with name size/inventory/salesPrice
+    let sizeElem: any = document.querySelector(
+      `#size-${rowIndex}-${props.productId ?? "create"}`
     );
     let inventoryElem: any = document.querySelector(
       `#inventory-${rowIndex}-${props.productId ?? "create"}`
     );
 
     let obj = {
-      flavor: flavorElem.value,
+      size: sizeElem.value,
       inventory: Number(inventoryElem.value),
       productId: props.productId ?? "",
     };
 
-    props.setFlavorsInvArr((prev) => {
+    props.setSizesInvArr((prev) => {
       let arr = [...prev];
       arr[rowIndex] = obj;
       return arr;
@@ -232,21 +232,21 @@ export function FlavorsInventoryForm(props: FlavorsInventoryProps) {
 
   return (
     <div className={classes.main}>
-      <form className={classes.flavorForm}>
-        <h3>Add Flavors & Inventories</h3>
+      <form className={classes.sizeForm}>
+        <h3>Add Sizes & Inventories</h3>
         {Array.apply(null, Array(rowsCount)).map((_x, i: number) => {
           return (
             <div key={i} className={classes.inputRow}>
               <input
-                className="flavorInventoryInput"
-                id={`flavor-${i}-${props.productId ?? "create"}`}
+                className="sizeInventoryInput"
+                id={`size-${i}-${props.productId ?? "create"}`}
                 type="text"
-                name="flavor"
-                placeholder={`Flavor #${i + 1}`}
+                name="size"
+                placeholder={`Size #${i + 1}`}
                 onChange={() => handleChange(i)}
               />
               <input
-                className="flavorInventoryInput"
+                className="sizeInventoryInput"
                 id={`inventory-${i}-${props.productId ?? "create"}`}
                 type="number"
                 min="0"
@@ -255,7 +255,7 @@ export function FlavorsInventoryForm(props: FlavorsInventoryProps) {
                 onChange={() => handleChange(i)}
               />
               {/* <input
-                className="flavorInventoryInput"
+                className="sizeInventoryInput"
                 id={`salesPrice-${i}-${props.productId ?? "create"}`}
                 type="text"
                 name="salesPrice"
@@ -271,7 +271,7 @@ export function FlavorsInventoryForm(props: FlavorsInventoryProps) {
         disabled={rowsCount >= 40}
         onClick={() => setRowsCount((prev) => prev + 4)}
       >
-        Add more Flavors
+        Add more Sizes
       </Button>
     </div>
   );

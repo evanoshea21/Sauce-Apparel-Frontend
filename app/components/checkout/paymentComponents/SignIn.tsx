@@ -55,8 +55,14 @@ export default function SignIn({ setDisplayState, setDisplayHome }: Props) {
           <button className={classes.githubBtn} onClick={Login}>
             GITHUB
           </button>
-          <button className={classes.googleBtn}>GOOGLE (non-op rn)</button>
-          <button className={classes.facebookBtn}>FACEBOOK (non-op rn)</button>
+          <button className={classes.googleBtn}>
+            <img className={classes.googleIcon} src="google.png" />
+            <div>Continue with Google</div>
+          </button>
+          <button className={classes.facebookBtn}>
+            <img className={classes.fbIcon} src="fb.png" />
+            <div>Continue with Facebook</div>
+          </button>
         </div>
         {setDisplayState && (
           <div className={classes.guestCheckout}>

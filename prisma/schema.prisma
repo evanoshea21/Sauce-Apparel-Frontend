@@ -106,24 +106,24 @@ model Products {
   unitPrice String
   imageUrl  String @db.VarChar(500)
 
-  description       String?
-  salesPrice        String?
-  category          String?
-  createdAt         DateTime            @default(now())
-  isFeatured        Boolean             @default(false)
-  Flavors_Inventory Flavors_Inventory[]
+  description     String?
+  salesPrice      String?
+  category        String?
+  createdAt       DateTime          @default(now())
+  isFeatured      Boolean           @default(false)
+  Sizes_Inventory Sizes_Inventory[]
 
   @@index([id])
 }
 
-model Flavors_Inventory {
+model Sizes_Inventory {
   sku       String @id @default(cuid())
-  flavor    String
+  size      String
   inventory Int
   productId String
 
   product Products @relation(fields: [productId], references: [id], onDelete: Cascade)
 
-  @@unique([productId, flavor]) // cant have 2 identical flavors under 1 product
+  @@unique([productId, size]) // cant have 2 identical sizes under 1 product
   @@index([productId])
 }

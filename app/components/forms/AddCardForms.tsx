@@ -37,7 +37,7 @@ export function CreditCardForm(props: CreditCardProps) {
         {/* <div style={{ display: "flex", justifyContent: "space-between" }}> */}
         <div
           style={{
-            // border: "1px solid green",
+            // border: "1px solid rgb(55, 64, 57)",
             paddingRight: "10px",
             paddingBottom: "20px",
           }}

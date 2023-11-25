@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import type { Categories, Product, ProductData } from "@/scripts/Types";
 import prisma from "@/lib/prismaClient";
 
-type ProductAlone = Omit<Product, "Flavors_Inventory">;
+type ProductAlone = Omit<Product, "Sizes_Inventory">;
 interface CreateProduct {
   method: "create";
   data: Product;
@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
     //DONE
 
     const data: Product = { ...reqBody.data };
-    delete data.Flavors_Inventory;
+    delete data.Sizes_Inventory;
     const newData: ProductAlone = data;
 
     try {
@@ -44,19 +44,19 @@ export async function POST(req: NextRequest) {
         },
       });
 
-      // build the flavors_inventory array
-      const flavorInventoryArr = [...(reqBody.data.Flavors_Inventory ?? [])];
-      flavorInventoryArr.forEach((obj) => {
+      // build the sizes_inventory array
+      const sizeInventoryArr = [...(reqBody.data.Sizes_Inventory ?? [])];
+      sizeInventoryArr.forEach((obj) => {
         // add productId from productResponse
         obj.productId = productResponse.id;
       });
 
-      const flavorResponse = await prisma.flavors_Inventory.createMany({
-        data: flavorInventoryArr,
+      const sizeResponse = await prisma.sizes_Inventory.createMany({
+        data: sizeInventoryArr,
       });
 
       return NextResponse.json({
-        response: { productResponse, flavorResponse },
+        response: { productResponse, sizeResponse },
       });
     } catch (e) {
       console.log("error creating product: \n", e);
@@ -85,15 +85,15 @@ export async function POST(req: NextRequest) {
           isFeatured: reqBody.isFeatured,
         },
         include: {
-          Flavors_Inventory: true,
+          Sizes_Inventory: true,
         },
       });
       if (reqBody.excludeOutOfStock) {
-        // loop through and filter out those with empty flavors
+        // loop through and filter out those with empty sizes
         const filteredResponse = productResponse.filter((product) => {
           return (
-            product.Flavors_Inventory != undefined &&
-            product.Flavors_Inventory.length != 0
+            product.Sizes_Inventory != undefined &&
+            product.Sizes_Inventory.length != 0
           );
         });
         return NextResponse.json(filteredResponse);
@@ -122,7 +122,7 @@ export async function DELETE(req: NextRequest) {
   const reqBody: DeleteProduct = await req.json();
 
   try {
-    const flavorResponse = await prisma.flavors_Inventory.deleteMany({
+    const sizeResponse = await prisma.sizes_Inventory.deleteMany({
       where: {
         productId: reqBody.id,
       },
@@ -132,9 +132,9 @@ export async function DELETE(req: NextRequest) {
         id: reqBody.id,
       },
     });
-    return NextResponse.json({ productResponse, flavorResponse });
+    return NextResponse.json({ productResponse, sizeResponse });
   } catch (e) {
-    console.log("Error deleting product and/or flavors: ", e);
+    console.log("Error deleting product and/or sizes: ", e);
     return NextResponse.json({ error: e }, { status: 500 });
   }
 }

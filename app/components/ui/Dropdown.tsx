@@ -2,6 +2,7 @@
 import React from "react";
 import classes from "@/styles/ui_css/Dropdown.module.css";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import { sortNormalSizes } from "../../utils";
 
 interface Props {
   values: string[];
@@ -9,6 +10,7 @@ interface Props {
 }
 
 export default function Dropdown({ values, handleChange }: Props) {
+  let valuesSorted = sortNormalSizes(values);
   const [open, setOpen] = React.useState<boolean>(false);
   const [selection, setSelection] = React.useState<string>("");
   const [fontSize, setFontSize] = React.useState<string>("1rem");
@@ -27,7 +29,7 @@ export default function Dropdown({ values, handleChange }: Props) {
 
   return (
     <div className={classes.main}>
-      <span>Select Flavor</span>
+      <span>Select Size</span>
       <div onClick={() => setOpen((prev) => !prev)} className={classes.select}>
         <div
           style={{
@@ -37,7 +39,7 @@ export default function Dropdown({ values, handleChange }: Props) {
           }}
         >
           <p style={{ fontSize, textAlign: "center" }}>
-            {selectionText ? selectionText : "Choose a flavor"}
+            {selectionText ? selectionText : "Choose a size"}
           </p>
           <div
             style={{
@@ -54,17 +56,17 @@ export default function Dropdown({ values, handleChange }: Props) {
           className={classes.dropdown}
           style={{ display: open ? "block" : "none" }}
         >
-          {values.map((flavor, i) => (
-            <div key={flavor}>
+          {valuesSorted.map((size, i) => (
+            <div key={size}>
               <div
                 className={classes.option}
                 style={{
                   backgroundColor:
-                    selection === flavor ? "rgba(188, 185, 185, 0.335)" : "",
+                    selection === size ? "rgba(188, 185, 185, 0.335)" : "",
                 }}
-                onClick={() => setSelection(flavor)}
+                onClick={() => setSelection(size)}
               >
-                {flavor}
+                {size}
               </div>
               <div className={classes.border}></div>
             </div>

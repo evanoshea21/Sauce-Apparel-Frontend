@@ -118,17 +118,17 @@ export default function ProductCard({ product, isSample }: Props) {
 
 export function determineColor(category: string): string {
   switch (category) {
-    case "Disposable":
+    case "Tees":
       return "rgba(32, 143, 199, 0.858)";
 
-    case "Salt Nic":
+    case "Pants":
       return "rgba(236, 152, 16, 0.829)";
 
-    case "60ml":
+    case "Hoodies":
       return "rgba(136, 0, 255, 0.61)";
 
-    case "120ml":
-      return "rgba(231, 25, 196, 0.69)";
+    // case "120ml":
+    //   return "rgba(231, 25, 196, 0.69)";
 
     default:
       return "grey";
