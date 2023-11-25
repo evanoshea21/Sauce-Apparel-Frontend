@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import type { Product, SizesInventoryObj, CartItem } from "@/scripts/Types";
-import { addToCart } from "@/app/utils";
+import { addToCart, getQOfItem } from "@/app/utils";
 //MUI
 
 import classes from "@/styles/DetailsPage.module.css";
@@ -108,7 +108,7 @@ export default function AddToCart({ product }: Props) {
           <QSelect
             value={chosenQuantity}
             changeQuantity={setChosenQuantity}
-            maxQuantity={inventory ?? 1}
+            maxQuantity={inventory ? inventory - getQOfItem(chosenSku) : 1}
           />
         </div>
       </div>

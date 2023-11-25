@@ -222,7 +222,7 @@ export function LoginNav() {
               {display === "loading" ? (
                 <h2 style={{ textAlign: "center" }}>Logging you in...</h2>
               ) : (
-                <SignIn setDisplayHome={setDisplay} />
+                <SignIn isModal={true} setDisplayHome={setDisplay} />
               )}
             </div>
           </Dialog>

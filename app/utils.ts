@@ -6,6 +6,20 @@ export function getCartItems() {
   return JSON.parse(cart_itemsJSON);
 }
 
+export function getQOfItem(sku: string): number {
+  let cartItems: CartItem[] = getCartItems();
+  let quantity = 0;
+  //find the item that matches sku, return it's quantity
+  for (let item of cartItems) {
+    if (item.sku === sku) {
+      quantity = Number(item.quantity);
+      break;
+    }
+  }
+
+  return quantity;
+}
+
 export function clearCartItems() {
   localStorage.removeItem("cart_items");
 }
@@ -16,8 +30,23 @@ export function addToCart(cartItem: CartItem) {
     const items = [{ ...cartItem }];
     localStorage.setItem("cart_items", JSON.stringify(items));
   } else {
-    const cartItems = JSON.parse(cartItemsJSON);
-    cartItems.push({ ...cartItem });
+    const cartItems: CartItem[] = JSON.parse(cartItemsJSON);
+    //first go through and see if this sku exists
+    let alreadyThere = false;
+    for (let item of cartItems) {
+      if (cartItem.sku === item.sku) {
+        //add item, set variable, break;
+        item.quantity = String(
+          Number(item.quantity) + Number(cartItem.quantity)
+        );
+        alreadyThere = true;
+        break;
+      }
+    }
+    //if it doesn't exist, then you can push as new item
+    if (!alreadyThere) {
+      cartItems.push({ ...cartItem });
+    }
     localStorage.setItem("cart_items", JSON.stringify(cartItems));
   }
 }
