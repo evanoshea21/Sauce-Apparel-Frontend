@@ -231,3 +231,16 @@ export function sortNormalSizes(sizeArr: string[]): string[] {
 
   return sortedArray;
 }
+
+export function returnShuffledArray(arr: any[]): any[] {
+  const arrL = arr.length;
+  let shuffleArray = [];
+  let i;
+
+  while (shuffleArray.length < arrL) {
+    i = Math.floor(Math.random() * arr.length); // gets random index from spots left
+    shuffleArray.push(arr.splice(i, 1)[0]);
+  }
+  return shuffleArray;
+  //pick random one from input, splice it, push it in new array
+}

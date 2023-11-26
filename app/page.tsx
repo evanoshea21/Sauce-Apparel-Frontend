@@ -4,7 +4,7 @@ import ProductSlider from "./components/ProductSlider";
 import { ProductData, Product } from "@/scripts/Types";
 import { axiosCall } from "./utils";
 
-export const revalidate = 60;
+export const revalidate = 20;
 
 export default async function Home() {
   // get ALL products, show them below
@@ -36,7 +36,7 @@ export default async function Home() {
     <>
       {/* <Navbar /> */}
       <div className={classes.main}>
-        <ProductSlider title="Featured" products={products2} />
+        <ProductSlider title="Featured" products={products2} shuffle={true} />
         <h1 style={{ textAlign: "center", marginTop: "70px" }}>Shop All</h1>
         <ProductGrid products={products} />
       </div>

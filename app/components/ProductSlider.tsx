@@ -2,16 +2,23 @@ import { ProductData, Product } from "@/scripts/Types";
 import classes from "@/styles/ProductDisplay.module.css";
 import axios from "axios";
 import ProductCard from "./ProductCard";
+import { returnShuffledArray } from "../utils";
 
 interface Props {
   products: Product[] | ProductData[];
   title: string;
+  shuffle?: boolean;
 }
 
-export default async function ProductSlider({ products, title }: Props) {
+export default async function ProductSlider({
+  products,
+  title,
+  shuffle,
+}: Props) {
   if (Array.isArray(products) && products.length === 0) {
     return <></>;
   }
+
   return (
     <div className={classes.sliderMain}>
       <div
@@ -34,9 +41,14 @@ export default async function ProductSlider({ products, title }: Props) {
       </div>
       <div className={classes.boxForFade}>
         <div className={classes.sliderDisplay}>
-          {products.map((product) => {
-            return <ProductCard key={product.id} product={product} />;
-          })}
+          {!shuffle &&
+            products.map((product) => {
+              return <ProductCard key={product.id} product={product} />;
+            })}
+          {shuffle &&
+            returnShuffledArray(products).map((product) => {
+              return <ProductCard key={product.id} product={product} />;
+            })}
           <div
             style={{
               display: "block",
@@ -48,18 +60,6 @@ export default async function ProductSlider({ products, title }: Props) {
         </div>
         <div className={classes.fade}></div>
       </div>
-
-      {/* <div className={classes.flexContainer}>
-        <div className={classes.box}>1</div>
-        <div className={classes.box}>2</div>
-        <div className={classes.box}>3</div>
-        <div className={classes.box}>4</div>
-        <div className={classes.box}>5</div>
-        <div className={classes.box}>6</div>
-        <div className={classes.box}>7</div>
-        <div className={classes.box}>8</div>
-        <div className={classes.box}>9</div>
-      </div> */}
     </div>
   );
 }

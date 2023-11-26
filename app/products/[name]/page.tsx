@@ -7,7 +7,7 @@ import { roundPrice } from "@/app/utils";
 import { determineColor } from "@/app/components/ProductCard";
 import { axiosCall } from "@/app/utils";
 
-export const revalidate = 60;
+export const revalidate = 20;
 
 interface Props {
   params: any;

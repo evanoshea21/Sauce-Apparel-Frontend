@@ -2,7 +2,7 @@ import type { Product } from "@/scripts/Types";
 import ProductGrid from "@/app/components/ProductGrid";
 import { axiosCall } from "@/app/utils";
 
-export const revalidate = 60;
+export const revalidate = 20;
 
 interface Props {
   params: any;
