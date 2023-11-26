@@ -28,13 +28,13 @@ Note: each operation works through Authorize.net's in-house PCI-approved databas
 
 # The Complex Process of Securing a Checkout
 
-Securing and processing an order seemed like a straight-forward operation, or so I thought. Turns out, there's a lot of logic that goes into this user story to avoid inconsistencies with the database. I'll give a few examples:
+Securing and processing an order seemed like a straight-forward operation, or so I thought. Turns out, there's a lot of logic that goes into this user story to avoid inconsistencies with the database. I'll give a few examples I had to account for:
 
-- User A adds an item to their cart, but moments before they complete checkout, User B clears out the limited inventory for that item.
-- Simultaneously 2 users purchase the same item, hence decrementing the inventory on both ends, but due to limited stock, only 1 customer can complete the transaction successfully, in effect canceling one of the orders
+- User A adds an item to their cart, but moments before they complete checkout, User B processes _their_ order, hence clearing out the limited inventory for that item.
+- Simultaneously 2 users purchase the same item, hence decrementing the inventory on both ends, but due to limited stock only 1 customer can complete the transaction successfully, in effect canceling one of the orders
 - A user has items in their cart with sufficient inventory but upon processing their order, their card gets declined
 
-All of these scenarios are based on 2 async queries with unknown results:
+All of these scenarios are based on 2 async queries with unknown responses:
 
 1. Is there sufficient inventory at the time of purchase?
 2. Will the user's payment method work?
