@@ -1,6 +1,6 @@
 ## Overview
 
-This is the front-end repository for an e-Commerce site build for a client using the following tech stack:
+This is the front-end repository for an e-Commerce site built for a client using the following tech stack:
 
 - The whole full-stack project was written in Typescript for type-safety and explicit object programming
 - React.js bootstrapped with Next.js framework
@@ -9,7 +9,13 @@ This is the front-end repository for an e-Commerce site build for a client using
 - MySQL database (paired with Prisma ORM as a querying tool) to store Products, Customers, Accounts (OAuth providers/sessions), etc. All queries can be found in the `/app/api` directory.
 - Authorize.net to process payment transactions and to store sensitive user info in their PCI-approved CIM database (customer info manager).
 
-## Authorize.net's SDK was implemented with Node.js which facilitates the following operations:
+This application provides the store owner with an admin dashboard to Create-Read-Update-Delete products on their database, which includes inventory management of each product's variation (sizes in this case).
+
+What is shown on the customer's side is a traditional e-commerce grid of products, with a dynamic product-details page allowing the customer to configure item variation and quantity before adding items to their cart. An additional feature allows users to save items to navigate to later.
+
+Upon navigating to the checkout page, the user can update their cart, choose their payment method via sign-in or guest checkout, and complete their order via Authorize.net payment processor.
+
+## Authorize.net's SDK was implemented with Node.js and facilitated the following operations:
 
 Note: each operation works through Authorize.net's in-house PCI-approved database for payment processing
 
