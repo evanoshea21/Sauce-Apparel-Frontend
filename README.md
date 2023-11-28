@@ -1,7 +1,5 @@
 ## Overview
 
-![alt text](./public/architectureDesign.jpg | width=100)
-
 This is the front-end repository for an e-Commerce site built for a client using the following tech stack:
 
 - The whole full-stack project was written in Typescript for type-safety and explicit object programming
@@ -10,6 +8,10 @@ This is the front-end repository for an e-Commerce site built for a client using
 - Auth.js for client-side authentication and server-side session management via Prisma's Adapter
 - MySQL database (paired with Prisma ORM as a querying tool) to store Products, Customers, Accounts (OAuth providers/sessions), etc. All queries can be found in the `/app/api` directory.
 - Authorize.net to process payment transactions and to store sensitive user info in their PCI-approved CIM database (customer info manager).
+
+<p align="center">
+<img src="./public/architectureDesign.jpg" height="400" /> 
+</p>
 
 This application provides the store owner with an admin dashboard to Create-Read-Update-Delete products on their database, which includes inventory management of each product's variation (sizes in this case).
 
@@ -53,6 +55,10 @@ The reason I chose to have the inventory put on hold is because it's much more c
 Furthermore, querying a SQL database for inventory is much quicker than processing a payment (which has to pass data through multiple institutions). This means less time is shared between simultaneous purchases, which decreases the likelihood of purchases depending on the same limited stock.
 
 By putting inventory on hold for User A before their purchase is even complete, this prevents User B from entering the transaction step (#3) until User A has completed their order.
+
+<p align="center">
+<img src="./public/db_tables.jpg" height="400" /> 
+</p>
 
 ## Features of the Application
 
