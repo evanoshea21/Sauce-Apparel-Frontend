@@ -1,5 +1,7 @@
 ## Overview
 
+![alt text](./public/architectureDesign.jpg | width=100)
+
 This is the front-end repository for an e-Commerce site built for a client using the following tech stack:
 
 - The whole full-stack project was written in Typescript for type-safety and explicit object programming
