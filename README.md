@@ -10,7 +10,7 @@ This is the front-end repository for an e-Commerce site built for a client using
 - Authorize.net to process payment transactions and to store sensitive user info in their PCI-approved CIM database (customer info manager).
 
 <p align="center">
-<img src="./public/architectureDesign.jpg" height="400" /> 
+<img src="./public/architectureDesign.jpg" height="400" />
 </p>
 
 This application provides the store owner with an admin dashboard to Create-Read-Update-Delete products on their database, which includes inventory management of each product's variation (sizes in this case).
@@ -57,7 +57,7 @@ Furthermore, querying a SQL database for inventory is much quicker than processi
 By putting inventory on hold for User A before their purchase is even complete, this prevents User B from entering the transaction step (#3) until User A has completed their order.
 
 <p align="center">
-<img src="./public/db_tables.jpg" height="400" /> 
+<img src="./public/db_tables.jpg" height="400" />
 </p>
 
 ## Good practices I picked up from this project
