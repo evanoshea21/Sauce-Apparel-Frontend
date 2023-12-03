@@ -50,7 +50,7 @@ All of these scenarios are based on 2 async queries with unknown responses:
 3. Finally, the Customer's profile is charged from the payload created in Step #1. If the payment DOES NOT go through, the inventory "ON-HOLD" is re-stocked by incrementing their values to their original amounts. If the payment DOES go through, the purchase is complete
 4. As a last step, cart-items (stored in localStorage) are cleared out, and user is shown a Thank You page
 
-The reason I chose to have the inventory put on hold is because it's much more convenient to re-stock inventory after a failed transaction than it is to refund a profile because of insufficient inventory.
+<p style="color:red">The reason I chose to have the inventory put on hold is because it's much more convenient to re-stock inventory after a failed transaction than it is to refund a profile because of insufficient inventory.</p>
 
 Furthermore, querying a SQL database for inventory is much quicker than processing a payment (which has to pass data through multiple institutions). This means less time is shared between simultaneous purchases, which decreases the likelihood of purchases depending on the same limited stock.
 
