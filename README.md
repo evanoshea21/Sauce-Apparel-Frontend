@@ -23,6 +23,10 @@ Upon navigating to the checkout page, the user can update their cart, choose the
 
 Note: each operation works through Authorize.net's in-house PCI-approved database for payment processing
 
+<p align="center">
+<img src="./public/2c.jpg" height="400" />
+</p>
+
 1. **Create Profile** -- Save a profile with credit card, address, and email information
 2. **Add Card** -- Allows user to save a credit card to their profile for future use
 3. **Charge Profile** -- Charge a Customer Profile (#1) by supplying the customer's id, and the payment id associated with the credit card
@@ -45,12 +49,20 @@ All of these scenarios are based on 2 async queries with unknown responses:
 
 ### Ordering the API calls to complete a purchase
 
+<p align="center">
+<img src="./public/18-all.jpg" height="400" />
+</p>
+
 1. First, a payload object is created that contains [1] the Cart Items, [2] the User's Information, and [3] the Customer's chosen Payment Method
 2. Next, an API call is made to verify sufficient inventory. If sufficient inventory DOES exist, the inventory is decremented (put "ON-HOLD" as the transaction is not yet complete). If sufficient inventory DOES NOT exist, a return object provides information indicating the remaining inventory for each item (prompting the user to edit their cart).
 3. Finally, the Customer's profile is charged from the payload created in Step #1. If the payment DOES NOT go through, the inventory "ON-HOLD" is re-stocked by incrementing their values to their original amounts. If the payment DOES go through, the purchase is complete
 4. As a last step, cart-items (stored in localStorage) are cleared out, and user is shown a Thank You page
 
 ## The reason I chose to have the inventory put on hold is because it's much more convenient to re-stock inventory after a failed transaction than it is to refund a profile because of insufficient inventory.
+
+<p align="center">
+<img src="./public/20-1d.jpg" height="400" />
+</p>
 
 Furthermore, querying a SQL database for inventory is much quicker than processing a payment (which has to pass data through multiple institutions). This means less time is shared between simultaneous purchases, which decreases the likelihood of purchases depending on the same limited stock.
 
@@ -66,9 +78,17 @@ By putting inventory on hold for User A before their purchase is even complete, 
 
 My first step in creating any api route involved figuring out the shape of the payload based on where this data was going (like my db or Authorize.net’s db) and what had to be accounted for. These interfaces made it so much easier to build my payload on the front end and parse it in the backend, all while making it virtually impossible to run into type errors.
 
+<p align="center">
+<img src="./public/22-3.jpg" height="400" />
+</p>
+
 #### Saved items and Cart items added to LocalStorage
 
 This decision was made for persistence between sessions, regardless of whether a user is signed in. Global state was created with React Context API to update the Cart and Saved (heart) components in the navbar with ease.
+
+<p align="center">
+<img src="./public/26.jpg" height="400" />
+</p>
 
 #### Email Protected `/admin` page with `.env` variable
 
