@@ -50,7 +50,7 @@ All of these scenarios are based on 2 async queries with unknown responses:
 3. Finally, the Customer's profile is charged from the payload created in Step #1. If the payment DOES NOT go through, the inventory "ON-HOLD" is re-stocked by incrementing their values to their original amounts. If the payment DOES go through, the purchase is complete
 4. As a last step, cart-items (stored in localStorage) are cleared out, and user is shown a Thank You page
 
-The reason I chose to have the inventory put on hold is because it's much more convenient to re-stock inventory after a failed transaction than it is to refund a profile because of insufficient inventory.
+## The reason I chose to have the inventory put on hold is because it's much more convenient to re-stock inventory after a failed transaction than it is to refund a profile because of insufficient inventory.
 
 Furthermore, querying a SQL database for inventory is much quicker than processing a payment (which has to pass data through multiple institutions). This means less time is shared between simultaneous purchases, which decreases the likelihood of purchases depending on the same limited stock.
 
@@ -60,11 +60,11 @@ By putting inventory on hold for User A before their purchase is even complete, 
 <img src="./public/db_tables.jpg" height="400" /> 
 </p>
 
-## Features of the Application
+## Good practices I picked up from this project
 
-#### Shop owner's Dashboard hosted on the `/admin` page to CRUD Products
+#### Using typescript interfaces to shape the payload for each API route
 
-Most of the front-end is rendered on the server-side with Next.js's incremental static regeneration which rebuilds pages every 20 seconds to keep content fresh. The /admin page, however, is client-rendered with Products fetched in batches and stored in an array client-side. This makes searching and filtering products lightning-fast. CRUD operations per product are also batched by sending full forms in single payloads, reducing load time and increasing the User Experience.
+My first step in creating any api route involved figuring out the shape of the payload based on where this data was going (like my db or Authorize.net’s db) and what had to be accounted for. These interfaces made it so much easier to build my payload on the front end and parse it in the backend, all while making it virtually impossible to run into type errors.
 
 #### Saved items and Cart items added to LocalStorage
 
