@@ -226,6 +226,7 @@ export default function CheckoutBtn({
       // INSUFFICIENT STOCK or Network error
       console.error("Error: ", e);
       if (e?.message === "insufficient inventory") {
+        console.log("Insufficient Inventory: \n", e.stock);
         setInvIssues(e.stock);
         setButtonProps({
           color: "grey",
