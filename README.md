@@ -1,4 +1,4 @@
-Watch the video demo here! [Video Link]([https://link-url-here.org](https://www.linkedin.com/posts/evan-oshea_fullstackdeveloper-nodejs-ecommerceapp-activity-7155746425941762048-vTcX?utm_source=share&utm_medium=member_desktop))
+Watch the video demo here! [Video Link]([https://link-url-here.org](https://www.linkedin.com/posts/evan-oshea_fullstackdeveloper-nodejs-ecommerceapp-activity-7155746425941762048-vTcX?utm_source=share&utm_medium=member_desktop)
 
 ## Overview
 
